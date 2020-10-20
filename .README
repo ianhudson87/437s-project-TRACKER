@@ -1,0 +1,15 @@
+things to do:
+download node.js
+download postman
+download exponent XDE from getexponent.com
+
+get the repo
+go to backend folder
+do npm install
+
+the mongodb server is under the account ihudson@wustl.edu password is Oooofers1!
+
+current routes are:
+GET localhost:3000/api/users
+POST localhost:3000/api/users
+	requires body={name: something, password: something2}
