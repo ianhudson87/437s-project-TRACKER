@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import NewUserForm from './NewUserForm'
 import {
   StyleSheet,
   TouchableOpacity,
@@ -25,9 +26,9 @@ class App extends Component {
       this.setState({users: data.users})
     })
 
-    createUser().then((data)=>{
-      this.setState({response: data})
-    })
+    // createUser().then((data)=>{
+    //   this.setState({response: data})
+    // })
   }
 
   onPress = () => {
@@ -44,6 +45,7 @@ class App extends Component {
             this.state.users.map((user, key)=> (<Text key={key}>{user.name}</Text>))
           }
         </Text>
+        <NewUserForm></NewUserForm>
         <TouchableOpacity
          style={styles.button}
          onPress={this.onPress}

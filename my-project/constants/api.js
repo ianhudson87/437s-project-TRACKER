@@ -8,7 +8,7 @@ export const fetchUsers = async () =>{
     return data
 }
 
-export const createUser = async () =>{
+export const createUser = async (name, password) =>{
     const res = await fetch("http://localhost:3000/api/users",{
         method: 'POST',
         headers: {
@@ -16,8 +16,8 @@ export const createUser = async () =>{
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            name: "ian",
-            password: "oof"
+            name: name,
+            password: password
         })
     })
     const data = await res.json();
