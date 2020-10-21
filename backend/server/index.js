@@ -2,8 +2,10 @@ const express = require('express')
 import dbConfig from "./config/db"
 import middlewaresConfig from './config/middlewares'
 import {TrackerRoutes} from './modules'
+var cors = require('cors')
 
 const app = express();
+app.use(cors())
 
 /**
  * Database

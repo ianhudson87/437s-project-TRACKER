@@ -13,6 +13,7 @@ export const createUser = async (req, res) => {
 }
 
 export const getAllUsers = async (req, res) => {
+    console.log("REQUESTING USERS")
     try{
         return res.status(200).json({ users: await Tracker.find() })
     } catch(e) {
