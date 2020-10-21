@@ -15,8 +15,8 @@ class App extends Component {
   }
 
   state = {
-    users: ["asdf"],
-    count: 69,
+    users: [],
+    count: 0,
     loading: false,
     response: ""
   }
@@ -25,10 +25,6 @@ class App extends Component {
     fetchUsers().then((data)=>{
       this.setState({users: data.users})
     })
-
-    // createUser().then((data)=>{
-    //   this.setState({response: data})
-    // })
   }
 
   onPress = () => {
