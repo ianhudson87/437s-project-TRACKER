@@ -27,6 +27,8 @@ class NewUserForm extends Component {
         createUser(this.state.username, this.state.password).then((data)=>{
             this.setState({response: data})
         })
+        this.setState({username: ''});
+        this.setState({password: ''});
         event.preventDefault();
     }
 
