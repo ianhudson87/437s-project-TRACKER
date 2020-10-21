@@ -18,9 +18,6 @@ dbConfig();
 middlewaresConfig(app);
 
 app.use('/api', [TrackerRoutes])
-app.get('/test', (res,req)=>{
-    res = "hi"
-})
 
 const PORT = process.env.PORT || 3000;
 

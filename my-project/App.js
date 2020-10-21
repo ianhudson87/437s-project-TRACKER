@@ -5,24 +5,29 @@ import {
   Text,
   View,
 } from 'react-native'
-import { fetchUsers } from "./constants/api"
+import { fetchUsers, createUser } from "./constants/api"
 
 class App extends Component {
   static defaultProps = {
-    fetchUsers
+    fetchUsers,
+    createUser
   }
 
   state = {
     users: ["asdf"],
-    count: 4,
-    loading: false
+    count: 69,
+    loading: false,
+    response: ""
   }
 
   componentDidMount() {
-    fetch(fetchUsers())
-    .then(res => res.json())
-    .then(json => {this.setState({users: json.users}); console.log(json.users[0].name)})
-    .catch(error => console.log('Authorization failed : ' + error.message));
+    fetchUsers().then((data)=>{
+      this.setState({users: data.users})
+    })
+
+    createUser().then((data)=>{
+      this.setState({response: data})
+    })
   }
 
   onPress = () => {
