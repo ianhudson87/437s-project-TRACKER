@@ -26,7 +26,12 @@ class NewUserForm extends Component {
         alert('New user registration was submitted');
         createUser(this.state.username, this.state.password).then((data)=>{
             this.setState({response: data})
+            if(data.repeatedUser){
+                alert('Username already exists');
+                this.setState({username: '', password: ''});
+            }
         })
+        
         this.setState({username: ''});
         this.setState({password: ''});
         event.preventDefault();
