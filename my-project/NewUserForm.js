@@ -26,7 +26,12 @@ class NewUserForm extends Component {
         alert('New user registration was submitted');
         createUser(this.state.username, this.state.password).then((data)=>{
             this.setState({response: data})
+            if(data.repeatedUser){
+                alert('Username already exists');
+                this.setState({username: '', password: ''});
+            }
         })
+        
         this.setState({username: ''});
         this.setState({password: ''});
         event.preventDefault();
@@ -41,7 +46,7 @@ class NewUserForm extends Component {
                 </label>
                 <label>
                     Password:
-                    <input type="text" value={this.state.password} onChange={this.handleChangePass} />
+                    <input type="password" value={this.state.password} onChange={this.handleChangePass} />
                 </label>
                 <input type="submit" value="Register" />
             </form>
