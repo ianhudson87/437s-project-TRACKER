@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { View, Text, TextInput, Button} from 'react-native'
 import { createUser } from "./constants/api"
 
 class NewUserForm extends Component {
@@ -42,17 +43,24 @@ class NewUserForm extends Component {
 
     render() {
         return (
-            <form onSubmit={this.handleSubmit}>
-                <label>
-                    Username:
-                    <input type="text" value={this.state.username} onChange={this.handleChangeName} />
-                </label>
-                <label>
-                    Password:
-                    <input type="password" value={this.state.password} onChange={this.handleChangePass} />
-                </label>
-                <input type="submit" value="Register" />
-            </form>
+            // <form onSubmit={this.handleSubmit}>
+            //     <label>
+            //         Username:
+            //         <input type="text" value={this.state.username} onChange={this.handleChangeName} />
+            //     </label>
+            //     <label>
+            //         Password:
+            //         <input type="password" value={this.state.password} onChange={this.handleChangePass} />
+            //     </label>
+            //     <input type="submit" value="Register" />
+            // </form>
+            <View>
+                <Text>Username:</Text>
+                <TextInput value={this.state.username} onChange={this.handleChangeName}/>
+                <Text>Password:</Text>
+                <TextInput value={this.state.password} onChange={this.handleChangePass}/>
+                <Button title="Register" onPress={this.handleSubmit} />
+            </View>
         )
     }
 }
