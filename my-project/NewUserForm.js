@@ -46,7 +46,7 @@ class NewUserForm extends Component {
                 </label>
                 <label>
                     Password:
-                    <input type="text" value={this.state.password} onChange={this.handleChangePass} />
+                    <input type="password" value={this.state.password} onChange={this.handleChangePass} />
                 </label>
                 <input type="submit" value="Register" />
             </form>
