@@ -15,3 +15,4 @@ POST localhost:3000/api/users
 	requires body={name: something, password: something2}
 	
 in order to run the react-native app. go to the my-project folder and do npm start
+in oder to run the server. go to backend and do npm run dev
