@@ -15,14 +15,17 @@ class NewUserForm extends Component {
     }
 
     handleChangeName(event) {
+        // handler for name box change
         this.setState({username: event.target.value});
     }
 
     handleChangePass(event) {
+        // handler for password box change
         this.setState({password: event.target.value});
     }
 
     handleSubmit(event) {
+        // handler for when submit button gets pressed
         alert('New user registration was submitted');
         createUser(this.state.username, this.state.password).then((data)=>{
             this.setState({response: data})
