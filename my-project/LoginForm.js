@@ -66,7 +66,7 @@ class LoginForm extends Component {
                 <Text>Username:</Text>
                 <TextInput value={this.state.username} onChange={this.handleChangeName}/>
                 <Text>Password:</Text>
-                <TextInput value={this.state.password} onChange={this.handleChangePass}/>
+                <TextInput secureTextEntry={true} value={this.state.password} onChange={this.handleChangePass}/>
                 <Button title="Login" onPress={this.handleSubmit} />
             </View>
         )
