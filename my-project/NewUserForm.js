@@ -56,9 +56,9 @@ class NewUserForm extends Component {
             // </form>
             <View>
                 <Text>Username:</Text>
-                <TextInput value={this.state.username} onChange={this.handleChangeName} style={styles.text}/>
+                <TextInput value={this.state.username} onChange={this.handleChangeName} />
                 <Text>Password:</Text>
-                <TextInput secureTextEntry={true} value={this.state.password} onChange={this.handleChangePass} style={styles.text}/>
+                <TextInput secureTextEntry={true} value={this.state.password} onChange={this.handleChangePass} />
                 <Button title="Register" onPress={this.handleSubmit} />
             </View>
         )
@@ -70,7 +70,9 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      border: '2px solid black'
+      borderColor: 'black',
+      borderStyle: 'solid',
+      borderWidth: 2
     }
   })
 
