@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, Button, StyleSheet} from 'react-native'
-import { createUser } from "./constants/api"
+import { createUser, loginUser } from "./constants/api"
 
-class NewUserForm extends Component {
+class LoginForm extends Component {
     static defaultProps = {
-        createUser
+        createUser,
+        loginUser
       }
     constructor(props) {
         super(props);
@@ -27,13 +28,20 @@ class NewUserForm extends Component {
 
     handleSubmit(event) {
         // handler for when submit button gets pressed
-        alert('New user registration was submitted');
-        createUser(this.state.username, this.state.password).then((data)=>{
-            this.setState({response: data})
-            if(data.repeatedUser){
-                alert('Username already exists');
-                this.setState({username: '', password: ''});
+        alert('Login request submitted');
+
+        loginUser(this.state.username, this.state.password).then((data)=>{
+            this.setState({response: data});
+            if(data.userExists && data.correctPassword){ // user exists and password correct
+                console.log(data.user.name + " logged in");
             }
+            else if(data.userExists){ // user exists but password is incorrect
+                console.log("Wrong password");
+            }
+            else{ // user does not exist
+                console.log("User does not exist");
+            }
+            
         })
         
         this.setState({username: ''});
@@ -43,23 +51,12 @@ class NewUserForm extends Component {
 
     render() {
         return (
-            // <form onSubmit={this.handleSubmit}>
-            //     <label>
-            //         Username:
-            //         <input type="text" value={this.state.username} onChange={this.handleChangeName} />
-            //     </label>
-            //     <label>
-            //         Password:
-            //         <input type="password" value={this.state.password} onChange={this.handleChangePass} />
-            //     </label>
-            //     <input type="submit" value="Register" />
-            // </form>
             <View>
                 <Text>Username:</Text>
                 <TextInput value={this.state.username} onChange={this.handleChangeName} />
                 <Text>Password:</Text>
                 <TextInput secureTextEntry={true} value={this.state.password} onChange={this.handleChangePass} />
-                <Button title="Register" onPress={this.handleSubmit} />
+                <Button title="Login" onPress={this.handleSubmit} />
             </View>
         )
     }
@@ -72,8 +69,8 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       borderColor: 'black',
       borderStyle: 'solid',
-      borderWidth: 2
+      borderWidth: 2,
     }
   })
 
-export default NewUserForm;
+export default LoginForm;

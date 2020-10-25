@@ -1,6 +1,7 @@
 import * as Models from './model'
 const bcrypt = require('bcrypt');
 
+// checks whether a valid username was entered and if so, creates a new user
 export const createUser = async (req, res) => {
     // req body requires name and password of user you're creating
     const {name, password} = req.body;
@@ -8,29 +9,35 @@ export const createUser = async (req, res) => {
     const saltRounds = 6;
     const newUser = new Models.UserModel( {name, password, groups});
 
-    // salt and hash passwords
+
+    // hashes and salts the entered password for storage in database
     bcrypt.hash(password, saltRounds, function(err, hash){
         newUser.password = hash;
-        console.log(hash);
     })
     
     try{
+
+        // iterates through users from database to check whether the requested 
+        //  username already exists
         let existingUsers  = await Models.UserModel.find();
         // determine if username is taken already
+
         for(let i=0; i<existingUsers.length; i++){
-            console.log("New user" + newUser.name)
-            console.log("Existing user" + existingUsers[i].name)
             if(newUser.name == existingUsers[i].name){
+              
+                //does not create user if the username already exists
                 return res.status(202).json({ error:false, repeatedUser:true, message: "user is taken"})
             }
         }
-        // name not taken yet
+        // // creates user if username does not already exist
         return res.status(202).json({ user: await newUser.save(), error:false, repeatedUser:false })
+
     } catch(e) {
         return res.status(400).json({ error:true, message: "error with creating user"})
     }
 }
 
+// retrieves a list of all users in the database
 export const getAllUsers = async (req, res) => {
     // no requirements for req.body
     console.log("REQUESTING USERS")
@@ -40,6 +47,7 @@ export const getAllUsers = async (req, res) => {
         return res.status(e.status).json({ error:true, message: "error with getAllUsers"})
     }
 }
+
 
 export const createGroup = async (req, res) => {
     // req.body requires the name of the group that you are creating
@@ -105,3 +113,45 @@ export const joinGroup = async (req, res) => {
         return res.status(400).json({ error:true, error_message: "error with joining group"})
     }
 }
+
+
+// logs in user by validating username and password, then returning that user
+export const loginUser = async (req, res) => {
+    console.log("LOGGING IN USER");
+    const {name, password} = req.body;
+    const bcrypt = require('bcrypt');
+
+    try{
+        let existingUsers = await Tracker.find();
+        let userExists = false;
+        let correctPassword = false;
+        let selectedUser = null;
+        for(let i=0; i<=existingUsers.length; i++){
+            if(i==existingUsers.length){
+                // no user was found with the same name
+                return res.status(202).json({ user: selectedUser, error:false, userExists: false, correctPassword: false, message: "INVALID USERNAME"})
+            }
+            else{
+                // possible for user to be found
+                if(name == existingUsers[i].name){
+                    selectedUser = existingUsers[i];
+                    userExists = true;
+                    bcrypt.compare(password, existingUsers[i].password, function(err, result) {
+                        if(result){ // entered password matches stored password
+                            correctPassword = true;
+                            return res.status(200).json({ user: selectedUser, error:false, userExists: true, correctPassword: true, message: "VALID LOGIN"})
+                        }else{  // entered password is invalid
+                            return res.status(201).json({ user: selectedUser, error:false, userExists: true, correctPassword: false, message: "INVALID PASSWORD"})
+                        }
+                    });
+                    break;
+                }
+            }
+            
+        }  
+    } catch(e) {
+        return res.status(400).json({ error:true, message: "ERROR LOGGING IN USER", error_msg:e})
+    }
+
+}
+
