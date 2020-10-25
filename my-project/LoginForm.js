@@ -53,9 +53,9 @@ class LoginForm extends Component {
         return (
             <View>
                 <Text>Username:</Text>
-                <TextInput value={this.state.username} onChange={this.handleChangeName} />
+                <TextInput value={this.state.username} onChange={this.handleChangeName} style={styles.text}/>
                 <Text>Password:</Text>
-                <TextInput secureTextEntry={true} value={this.state.password} onChange={this.handleChangePass} />
+                <TextInput secureTextEntry={true} value={this.state.password} onChange={this.handleChangePass} style={styles.text} />
                 <Button title="Login" onPress={this.handleSubmit} />
             </View>
         )
@@ -64,9 +64,6 @@ class LoginForm extends Component {
 
 const styles = StyleSheet.create({
     text: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
       borderColor: 'black',
       borderStyle: 'solid',
       borderWidth: 2,
