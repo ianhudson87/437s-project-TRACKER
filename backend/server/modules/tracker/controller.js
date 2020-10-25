@@ -37,8 +37,6 @@ export const getAllUsers = async (req, res) => {
 export const loginUser = async (req, res) => {
     console.log("LOGGING IN USER");
     const {name, password} = req.body;
-    const groups = [];
-    const saltRounds = 6;
     const bcrypt = require('bcrypt');
 
     try{
