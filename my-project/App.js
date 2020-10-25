@@ -6,6 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 // need to make sure to import all pages
+import Register from './Register';
 import Login from './Login';
 import Home from './Home';
 
@@ -20,6 +21,8 @@ class Test extends Component {
                 <Text>THIS IS THE TEST SCREEn</Text>
                 {/* use the navigation prop to go to other screens */}
                 <Button title="go to login" onPress={ () => navigation.navigate("Login") }></Button>
+                <Button title="go to registration" onPress={ () => navigation.navigate("Register") }></Button>
+                
             </View>
             
         )
@@ -36,6 +39,7 @@ class App extends Component {
                     {/* All the screens that can be routed to need to be here*/}
                     <Stack.Screen name="Test" component={Test} options={{ title: 'THIS IS THE NEW TITLE' }}/>
                     <Stack.Screen name="Login" component={Login} />
+                    <Stack.Screen name="Register" component={Register} />
                     <Stack.Screen name="Home" component={Home} />
                 </Stack.Navigator>
             </NavigationContainer>
