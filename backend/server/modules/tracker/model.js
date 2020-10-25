@@ -28,5 +28,5 @@ const GroupSchema = new Schema({
     }
 })
 
-export const UserModel =  mongoose.model('User', UserSchema)
-export const GroupModel = mongoose.model('Group', GroupSchema)
+export const UserModel =  mongoose.model('users', UserSchema)
+export const GroupModel = mongoose.model('groups', GroupSchema)
