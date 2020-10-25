@@ -8,12 +8,13 @@ import {
     View,
     Button
   } from 'react-native'
-  import { fetchUsers, createUser } from "./constants/api"
+  import { fetchUsers, createUser, loginUser } from "./constants/api"
 
   class Login extends Component {
     static defaultProps = {
       fetchUsers,
-      createUser
+      createUser,
+      loginUser
     }
   
     state = {

@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, Button} from 'react-native'
-import { createUser } from "./constants/api"
+import { createUser, loginUser } from "./constants/api"
 
 class LoginForm extends Component {
     static defaultProps = {
-        createUser
+        createUser,
+        loginUser
       }
     constructor(props) {
         super(props);
@@ -28,6 +29,20 @@ class LoginForm extends Component {
     handleSubmit(event) {
         // handler for when submit button gets pressed
         alert('Login request submitted');
+
+        loginUser(this.state.username, this.state.password).then((data)=>{
+            this.setState({response: data});
+            if(data.userExists && data.correctPassword){
+                console.log(data.user.name + " logged in");
+            }
+            else if(data.userExists){
+                console.log("Wrong password");
+            }
+            else{
+                console.log("User does not exist");
+            }
+            
+        })
         
         this.setState({username: ''});
         this.setState({password: ''});
