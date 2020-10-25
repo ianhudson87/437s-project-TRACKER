@@ -42,7 +42,10 @@ class LoginForm extends Component {
             this.setState({response: data});
             if(data.userExists && data.correctPassword){ // user exists and password correct
                 console.log(data.user.name + " logged in");
-                this.props.navigation.navigate("UserHome");
+                this.props.navigation.navigate("UserHome", {
+                    itemId: 86,
+                    user: data.user
+                });
             }
             else if(data.userExists){ // user exists but password is incorrect
                 console.log("Wrong password");
