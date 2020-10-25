@@ -10,9 +10,23 @@ const UserSchema = new Schema({
         required: true
     },
     groups: {
+        // contains ids of Groups that User is in
         type: Array,
         required: true
     }
 })
 
-export default mongoose.model('User', UserSchema)
+const GroupSchema = new Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    users: {
+        // contains ids of Users in the Group
+        type: Array,
+        required: true
+    }
+})
+
+export const UserModel =  mongoose.model('users', UserSchema)
+export const GroupModel = mongoose.model('groups', GroupSchema)
