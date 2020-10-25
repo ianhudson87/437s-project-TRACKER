@@ -122,7 +122,7 @@ export const loginUser = async (req, res) => {
     const bcrypt = require('bcrypt');
 
     try{
-        let existingUsers = await Tracker.find();
+        let existingUsers = await Models.UserModel.find();
         let userExists = false;
         let correctPassword = false;
         let selectedUser = null;
