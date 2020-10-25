@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput, Button} from 'react-native'
+import { View, Text, TextInput, Button, StyleSheet} from 'react-native'
 import { createUser, loginUser } from "./constants/api"
 
 class LoginForm extends Component {
@@ -53,13 +53,22 @@ class LoginForm extends Component {
         return (
             <View>
                 <Text>Username:</Text>
-                <TextInput value={this.state.username} onChange={this.handleChangeName}/>
+                <TextInput value={this.state.username} onChange={this.handleChangeName} style={styles.text}/>
                 <Text>Password:</Text>
-                <TextInput secureTextEntry={true} value={this.state.password} onChange={this.handleChangePass}/>
+                <TextInput secureTextEntry={true} value={this.state.password} onChange={this.handleChangePass} style={styles.text}/>
                 <Button title="Login" onPress={this.handleSubmit} />
             </View>
         )
     }
 }
+
+const styles = StyleSheet.create({
+    text: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      border: '2px solid black'
+    }
+  })
 
 export default LoginForm;
