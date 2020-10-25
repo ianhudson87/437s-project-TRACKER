@@ -32,13 +32,13 @@ class LoginForm extends Component {
 
         loginUser(this.state.username, this.state.password).then((data)=>{
             this.setState({response: data});
-            if(data.userExists && data.correctPassword){
+            if(data.userExists && data.correctPassword){ // user exists and password correct
                 console.log(data.user.name + " logged in");
             }
-            else if(data.userExists){
+            else if(data.userExists){ // user exists but password is incorrect
                 console.log("Wrong password");
             }
-            else{
+            else{ // user does not exist
                 console.log("User does not exist");
             }
             
@@ -51,17 +51,6 @@ class LoginForm extends Component {
 
     render() {
         return (
-            // <form onSubmit={this.handleSubmit}>
-            //     <label>
-            //         Username:
-            //         <input type="text" value={this.state.username} onChange={this.handleChangeName} />
-            //     </label>
-            //     <label>
-            //         Password:
-            //         <input type="password" value={this.state.password} onChange={this.handleChangePass} />
-            //     </label>
-            //     <input type="submit" value="Register" />
-            // </form>
             <View>
                 <Text>Username:</Text>
                 <TextInput value={this.state.username} onChange={this.handleChangeName}/>
