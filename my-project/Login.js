@@ -24,6 +24,7 @@ class Login extends Component {
 
   componentDidMount() {
     fetchUsers().then((data)=>{
+      console.log("users", data)
       this.setState({users: data.users})
     })
   }

@@ -13,7 +13,7 @@ app.use(cors())
 dbConfig();
 
 /**
- * Database
+ * Api
  */
 middlewaresConfig(app);
 
