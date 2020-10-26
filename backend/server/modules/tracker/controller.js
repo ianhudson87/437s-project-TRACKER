@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 export const createUser = async (req, res) => {
     // req body requires name and password of user you're creating
     const {name, password} = req.body;
+    console.log(req.body);
     const groups = []
     const saltRounds = 6;
     const newUser = new Models.UserModel( {name, password, groups});
@@ -83,6 +84,26 @@ export const getAllGroups = async (req, res) => {
     }
 }
 
+export const getGroupByID = async (req, res) => {
+    // no requirements for req.body
+    console.log("GETTING GROUP FROM ID")
+    const {id} = req.body;
+    let group_id = id
+    try{
+        let group_with_given_id = await Models.GroupModel.find({ '_id': group_id})
+        if(group_with_given_id.length == 0){
+            // there doesn't exist a user with the given id
+            console.log("Group ID: " + group_id)
+            return res.status(200).json({ group: null, error: false, group_exists: false, message: "group_id DNE"})
+        }
+        else{
+            return res.status(201).json({ group: group_with_given_id, error: false, group_exists: false, message: "Group Found"})
+        }
+    } catch(e) {
+        return res.status(500).json({ error:true, message: "error with getting group"})
+    }
+}
+
 export const joinGroup = async (req, res) => {
     // req.body requires the id of the user and the id of the group
     const {user_id, join_group_id} = req.body;
@@ -122,7 +143,7 @@ export const loginUser = async (req, res) => {
     const bcrypt = require('bcrypt');
 
     try{
-        let existingUsers = await Tracker.find();
+        let existingUsers = await Models.UserModel.find();
         let userExists = false;
         let correctPassword = false;
         let selectedUser = null;

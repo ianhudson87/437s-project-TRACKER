@@ -9,6 +9,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Register from './Register';
 import Login from './Login';
 import Home from './Home';
+import UserHome from './UserHome'
+import LoginForm from './LoginForm'
 
 // docs: https://reactnavigation.org/docs/hello-react-navigation
 
@@ -41,6 +43,7 @@ class App extends Component {
                     <Stack.Screen name="Login" component={Login} />
                     <Stack.Screen name="Register" component={Register} />
                     <Stack.Screen name="Home" component={Home} />
+                    <Stack.Screen name="UserHome" component={UserHome} />
                 </Stack.Navigator>
             </NavigationContainer>
         )

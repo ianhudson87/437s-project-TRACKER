@@ -48,7 +48,7 @@ import {
               this.state.users.map((user, key)=> (<Text key={key}>{user.name}</Text>))
             }
           </Text>
-          <LoginForm></LoginForm>
+          <LoginForm navigation={navigation}></LoginForm>
           <TouchableOpacity
            style={styles.button}
            onPress={this.onPress}

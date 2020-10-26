@@ -43,3 +43,20 @@ export const loginUser = async (name, password) =>{
     console.log(data);
     return data
 }
+
+export const getGroupByID = async (input) =>{
+    console.log(input.id)
+    const res = await fetch("http://localhost:3000/api/getGroupByID",{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id: input.id
+        })
+    })
+    const data = await res.json();
+    console.log(data);
+    return data
+}
