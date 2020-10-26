@@ -18,9 +18,12 @@ class GroupPage extends Component {
     componentDidMount(){
         const group = this.props.route.params.group;
         this.setState({group: group});
-        console.log(group)
-        console.log(this.state.group)
-        console.log(this.state.group.users)
+        
+        this.handleNewUser = this.handleNewUser.bind(this);
+    }
+
+    handleNewUser(){
+        console.log('New user being added')
     }
 
   
@@ -33,6 +36,7 @@ render() {
         <Text>
             Group: {this.state.group.name}
         </Text>
+        <Button title='Add User' onPress={(e) => this.handleNewUser(e)}/>
         <Text>
         {
             this.state.group.users.map((user, key)=> (<Text key={key}>{user}</Text>))
