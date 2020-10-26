@@ -3,6 +3,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Text,
+  Button,
   View,
 } from 'react-native'
 import { getGroupByID } from "./constants/api"
@@ -12,6 +13,7 @@ class UserHome extends Component {
     constructor(props) {
         super(props);
         this.state = {groups: ["hi"], user: {'name': "default"}}
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     componentDidMount(){
@@ -23,12 +25,19 @@ class UserHome extends Component {
             getGroupByID({'id': groupIDs[i]}).then((data)=>{
                 this.setState({groups: data.group})
             })
-            
         }
     }
+
+    handleSubmit(group, event) {
+        console.log(group.name);
+        this.props.navigation.navigate("GroupPage", {
+            itemId: 86,
+            group: group
+        });
+    }
+
   
 render() {
-    
     return (
       <View style={styles.container}>
         <Text>
@@ -39,7 +48,8 @@ render() {
         </Text>
         <Text>
         {
-            this.state.groups.map((group, key)=> (<Text key={key}>{group.name}</Text>))
+            this.state.groups.map((group, key)=> (<Button title={group.name} key={key} 
+                onPress={(e) => this.handleSubmit(group, e)}/>))
         }
         </Text>
       </View>
