@@ -30,11 +30,14 @@ class UserHome extends Component {
 
     handleSubmit(group, event) {
         console.log(group.name);
+        this.props.navigation.navigate("GroupPage", {
+            itemId: 86,
+            group: group
+        });
     }
 
   
 render() {
-    
     return (
       <View style={styles.container}>
         <Text>
