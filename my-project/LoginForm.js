@@ -35,7 +35,6 @@ class LoginForm extends Component {
 
     handleSubmit(navigation, event) {
         // handler for when submit button gets pressed
-        alert('Login request submitted');
         console.log(navigation);
 
         loginUser(this.state.username, this.state.password).then((data)=>{
