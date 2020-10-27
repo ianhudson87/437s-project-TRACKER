@@ -7,9 +7,9 @@ import {
   View,
 } from 'react-native'
 import { getGroupByID } from "./constants/api"
-import LoginForm from './LoginForm'
+import AddUserForm from './AddUserForm'
 
-class GroupPage extends Component {
+class AddUserToGroup extends Component {
     constructor(props) {
         super(props);
         this.state = {group: {'name': "default", 'users': []}}
@@ -18,17 +18,7 @@ class GroupPage extends Component {
     componentDidMount(){
         const group = this.props.route.params.group;
         this.setState({group: group});
-        
-        this.handleNewUser = this.handleNewUser.bind(this);
-    }
-
-    handleNewUser(){
-        this.props.navigation.navigate("AddUserToGroup", {
-            itemId: 86,
-            group: this.state.group,
-            navigation: this.props.navigation,
-            loggedInUser: this.props.loggedInUser
-        });
+        console.log(this.props.route.params.group)
     }
 
   
@@ -36,17 +26,17 @@ render() {
     return (
       <View style={styles.container}>
         <Text>
-          Group Page
+          Add users to group {this.state.group.name}
         </Text>
         <Text>
-            Group: {this.state.group.name}
+            Current Users:
         </Text>
-        <Button title='Add User' onPress={(e) => this.handleNewUser(e)}/>
         <Text>
         {
             this.state.group.users.map((user, key)=> (<Text key={key}>{user}</Text>))
         }
         </Text>
+        <AddUserForm group={this.state.group} navigation={this.props.navigation} loggedInUser={this.props.loggedInUser}></AddUserForm>
       </View>
     )
   }
@@ -66,4 +56,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default GroupPage;
+export default AddUserToGroup;

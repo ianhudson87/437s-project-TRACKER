@@ -32,7 +32,8 @@ class UserHome extends Component {
         console.log(group.name);
         this.props.navigation.navigate("GroupPage", {
             itemId: 86,
-            group: group
+            group: group,
+            loggedInUser: this.state.user
         });
     }
 

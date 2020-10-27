@@ -60,3 +60,38 @@ export const getGroupByID = async (input) =>{
     console.log(data);
     return data
 }
+
+export const getUser = async (name) =>{
+    const res = await fetch("http://localhost:3000/api/getUser",{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: name
+        })
+    })
+    const data = await res.json();
+    console.log(data);
+    return data
+}
+
+//submits a request to the API to add user to group
+export const joinGroup = async (user_id, group_id) =>{
+    console.log("User: " + user_id)
+    console.log("Group: " + group_id)
+    const res = await fetch("http://localhost:3000/api/joinGroup",{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            user_id: user_id,
+            group_id: group_id
+        })
+    })
+    const data = await res.json();
+    return data
+}

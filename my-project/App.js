@@ -11,6 +11,7 @@ import Login from './Login';
 import Home from './Home';
 import UserHome from './UserHome'
 import GroupPage from './GroupPage'
+import AddUserToGroup from './AddUserToGroup'
 import LoginForm from './LoginForm'
 
 // docs: https://reactnavigation.org/docs/hello-react-navigation
@@ -46,6 +47,7 @@ class App extends Component {
                     <Stack.Screen name="Home" component={Home} />
                     <Stack.Screen name="UserHome" component={UserHome} />
                     <Stack.Screen name="GroupPage" component={GroupPage} />
+                    <Stack.Screen name="AddUserToGroup" component={AddUserToGroup} />
                 </Stack.Navigator>
             </NavigationContainer>
         )
