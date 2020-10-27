@@ -92,7 +92,7 @@ export const getGroupByID = async (req, res) => {
     try{
         let group_with_given_id = await Models.GroupModel.find({ '_id': group_id})
         if(group_with_given_id.length == 0){
-            // there doesn't exist a user with the given id
+            // there doesn't exist a group with the given id
             console.log("Group ID: " + group_id)
             return res.status(200).json({ group: null, error: false, group_exists: false, message: "group_id DNE"})
         }
@@ -104,9 +104,29 @@ export const getGroupByID = async (req, res) => {
     }
 }
 
+export const getUser = async (req, res) => {
+    // no requirements for req.body
+    console.log("GETTING USER FROM ID")
+    
+    const name = req.body.name;
+    
+    try{
+        let user_with_given_name = await Models.UserModel.find({ 'name': name})
+        if(user_with_given_name.length == 0){
+            // there doesn't exist a user with the given name
+            return res.status(200).json({ user: null, error: false, user_exists: false, message: "username DNE"})
+        }
+        else{
+            return res.status(201).json({ user: user_with_given_name, error: false, user_exists: true, message: "User Found"})
+        }
+    } catch(e) {
+        return res.status(500).json({ error:true, message: "error with getting user"})
+    }
+}
+
 export const joinGroup = async (req, res) => {
     // req.body requires the id of the user and the id of the group
-    const {user_id, join_group_id} = req.body;
+    const {user_id, group_id} = req.body;
 
     try{
         // check to make sure that user is valid
@@ -118,14 +138,14 @@ export const joinGroup = async (req, res) => {
         else{
             // user_id is valid
             // check to make sure that user isn't already in the group
-            let group_contains_user = await Models.GroupModel.find({ '_id': join_group_id, 'users': user_id })
+            let group_contains_user = await Models.GroupModel.find({ '_id': group_id, 'users': user_id })
             if(group_contains_user.length == 1){
                 // group that user is trying to join already contains the user
                 return res.status(200).json({ error: false, joined_group: false, message: "user_id is already in group"})
             }
             else{
                 // push the user id to the list of users in the group with the correct group id
-                await Models.GroupModel.updateOne({ '_id': join_group_id }, { '$push': { users: user_id } })
+                await Models.GroupModel.updateOne({ '_id': group_id }, { '$push': { users: user_id } })
                 return res.status(200).json({ error: false, joined_group: true, message: "joined group!"})
             }
         }
