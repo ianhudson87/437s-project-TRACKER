@@ -32,14 +32,13 @@ class AddUserForm extends Component {
     handleSubmit(navigation, event) {
         // handler for when add user button gets pressed
         getUser(this.state.username).then((userData)=>{
-            if(userData.user_exists){
+            if(userData.user_exists){ // username found in database
                 //join group
-                console.log("GGGG")
                 console.log(userData)
                 console.log(userData.user[0]._id)
                 joinGroup(userData.user[0]._id, this.props.group._id).then((groupData)=>{
                     this.setState({response: groupData});
-                    if(groupData.joined_group){ // user exists and password correct
+                    if(groupData.joined_group){ // user joined group successfully
                         console.log("User was added");
                         this.props.navigation.navigate("GroupPage", {
                             itemId: 86,
@@ -48,21 +47,17 @@ class AddUserForm extends Component {
                             navigation: this.props.navigation
                         });
                     }
-                    else{ // user not added
+                    else{ // user not added to group
                         console.log("User could not be added");
                         console.log(groupData)
                     }
-                    
                 })
             }
-            else{
+            else{ // username not found in database
                 console.log("User does not exist")
             }
-        
         })
 
-        
-        
         this.setState({username: ''});
         this.setState({password: ''});
         event.preventDefault();
