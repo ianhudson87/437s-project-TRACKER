@@ -41,9 +41,11 @@ class AddUserForm extends Component {
                     this.setState({response: groupData});
                     if(groupData.joined_group){ // user exists and password correct
                         console.log("User was added");
-                        this.props.navigation.navigate("UserHome", {
+                        this.props.navigation.navigate("GroupPage", {
                             itemId: 86,
-                            user: this.props.loggedInUser
+                            user: this.props.loggedInUser,
+                            group: this.state.group,
+                            navigation: this.props.navigation
                         });
                     }
                     else{ // user not added
