@@ -95,3 +95,19 @@ export const joinGroup = async (user_id, group_id) =>{
     const data = await res.json();
     return data
 }
+
+//submits a request to the API to create new group with specified name
+export const createGroup = async (name) =>{
+    const res = await fetch("http://localhost:3000/api/groups",{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: name
+        })
+    })
+    const data = await res.json();
+    return data
+}
