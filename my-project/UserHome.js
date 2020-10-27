@@ -13,7 +13,8 @@ class UserHome extends Component {
     constructor(props) {
         super(props);
         this.state = {groups: ["hi"], user: {'name': "default"}}
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.navigateToGroup = this.navigateToGroup.bind(this);
+        this.createNewGroup = this.createNewGroup.bind(this);
     }
 
     componentDidMount(){
@@ -28,7 +29,7 @@ class UserHome extends Component {
         }
     }
 
-    handleSubmit(group, event) {
+    navigateToGroup(group, event) {
         console.log(group.name);
         this.props.navigation.navigate("GroupPage", {
             itemId: 86,
@@ -37,6 +38,12 @@ class UserHome extends Component {
         });
     }
 
+    createNewGroup(group, event) {
+        this.props.navigation.navigate("CreateNewGroup", {
+            itemId: 86,
+            loggedInUser: this.state.user
+        });
+    }
   
 render() {
     return (
@@ -50,9 +57,10 @@ render() {
         <Text>
         {
             this.state.groups.map((group, key)=> (<Button title={group.name} key={key} 
-                onPress={(e) => this.handleSubmit(group, e)}/>))
+                onPress={(e) => this.navigateToGroup(group, e)}/>))
         }
         </Text>
+        <Button title='Create New Group' onPress={(e) => this.createNewGroup(e)}/>
       </View>
     )
   }
