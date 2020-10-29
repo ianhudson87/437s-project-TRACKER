@@ -17,3 +17,9 @@ POST localhost:3000/api/users
 in order to run the react-native app. go to the my-project folder and do npm start
 
 in oder to run the server. go to backend and do npm run dev
+
+
+in order to push backend to heroku
+go to main folder
+git push heroku master
+check logs using "heroku logs --tail"
