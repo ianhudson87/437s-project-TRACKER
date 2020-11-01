@@ -46,7 +46,7 @@ export const getAllUsers = async (req, res) => {
     try{
         return res.status(200).json({ users: await Models.UserModel.find() })
     } catch(e) {
-        return res.status(e.status).json({ error:true, message: "error with getAllUsers"})
+        return res.status(400).json({ error:true, message: "error with getAllUsers"})
     }
 }
 
@@ -82,7 +82,7 @@ export const getAllGroups = async (req, res) => {
     try{
         return res.status(200).json({ groups: await Models.GroupModel.find() })
     } catch(e) {
-        return res.status(e.status).json({ error:true, message: "error with getAllUsers"})
+        return res.status(400).json({ error:true, message: "error with getAllUsers"})
     }
 }
 
@@ -205,6 +205,7 @@ export const joinGroup = async (req, res) => {
 export const loginUser = async (req, res) => {
     console.log("LOGGING IN USER");
     const {name, password} = req.body;
+    console.log("name:", name, "password", password)
     const bcrypt = require('bcrypt');
 
     try{
@@ -299,7 +300,7 @@ export const getAllGames = async (req, res) => {
     try{
         return res.status(200).json({ users: await Models.GameModel.find() })
     } catch(e) {
-        return res.status(e.status).json({ error:true, message: "error with getAllGames"})
+        return res.status(400).json({ error:true, message: "error with getAllGames"})
     }
 }
 
@@ -311,27 +312,19 @@ export const changeScore = async (req, res) => {
     if(type == "delta"){
         // change score by amount
         try{
-            console.log('here1')
             // get index of player that we want to change
             let game = await Models.GameModel.findOne({ '_id': game_id })
-            
             let user_ids = game.users
-            console.log('here2')
-            console.log(game)
             let user_index = user_ids.indexOf(user_id)
-            console.log('here3')
+
             // change the score of the scores array at that index
-            console.log('scores.'+user_index.toString())
-            // let score_index = 'scores.'+user_index.toString()
             let score_object = {}
-            score_object['scores.'+user_index.toString()] = 1 // tels which index of scores to change and by how much
-            console.log('here4')
-            let response = await Models.GameModel.updateOne({ '_id': game_id}, { '$inc': score_object })
-            console.log('here5')
-            console.log(response)
-            return res.status(200).json({ users: await Models.GameModel.find() })
+            score_object['scores.'+user_index.toString()] = parseInt(amount) // tels which index of scores to change and by how much
+            await Models.GameModel.updateOne({ '_id': game_id}, { '$inc': score_object })
+            let updated_game = await Models.GameModel.findOne({ '_id': game_id })
+            return res.status(200).json({ error: false, updated_game: updated_game, game_updated: true, message: "game successfully updated" })
         } catch(e) {
-            return res.status(e.status).json({ error:true, message: "error with changeScore"})
+            return res.status(400).json({ error:true, game_updated: false, message: "error with changeScore", err_msg: e})
         }
     }
     else if(type == "set"){

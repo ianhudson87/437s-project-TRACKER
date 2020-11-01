@@ -20,10 +20,16 @@ class Game extends Component {
       users: [{name: "asdjf"}] // stores user objects of users in the game (because the game object only stores user ids)
     }
     
+    this.populateUsersArray = this.populateUsersArray.bind(this)
     this.handleIncrement = this.handleIncrement.bind(this)
   }
 
   componentDidMount(){
+    this.populateUsersArray()
+    console.log("data: game:", this.state.game)
+  }
+
+  populateUsersArray(){
     // populate the this.state.users array
     let user_object_list = []
     this.state.game.users.forEach((user_id) => {
@@ -36,9 +42,6 @@ class Game extends Component {
         console.log("user_object_list", this.state.users)
       })
     })
-    
-
-    console.log("data: game:", this.state.game)
   }
 
   handleIncrement(game_id, user_id){
@@ -53,6 +56,14 @@ class Game extends Component {
     }
     changeScore(scoreData).then((response)=>{
       console.log("CHANGE SCORE RESPONSE", response)
+      if(response.game_updated){
+        // game is updated on server. display updated game
+        this.setState({game: response.updated_game})
+        this.populateUsersArray() // update the list of user just in case
+      }
+      else{
+        // game failed to update
+      }
     })
   }
 
@@ -69,7 +80,7 @@ class Game extends Component {
           Scores in the game:
           { this.state.game.scores.map((score, key) => (<Text key={key}>{score}</Text>)) }
           Add scores:
-          { this.state.users.map((user, key) => (<Button key={key} title={'Increment ' + user.name + "'s score"} onPress={this.handleIncrement(this.state.game._id, user._id)}/>))}
+          { this.state.users.map((user, key) => (<Button key={key} title={'Increment ' + user.name + "'s score"} onPress={ () => {this.handleIncrement(this.state.game._id, user._id)} }/>))}
         </Text>
 
       </View>
