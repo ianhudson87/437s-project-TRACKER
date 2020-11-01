@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import NewUserForm from './NewUserForm'
+import NewUserForm from '../components/NewUserForm'
 import {
   StyleSheet,
   TouchableOpacity,
@@ -7,7 +7,7 @@ import {
   View,
   Button
 } from 'react-native'
-import { fetchUsers, createUser } from "./constants/api"
+import { fetchUsers, createUser } from "../constants/api"
 
 class Register extends Component {
   static defaultProps = {

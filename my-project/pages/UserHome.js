@@ -6,7 +6,7 @@ import {
   Button,
   View,
 } from 'react-native'
-import { getObjectByID } from "./constants/api"
+import { getObjectByID } from "../constants/api"
 
 class UserHome extends Component {
     constructor(props) {

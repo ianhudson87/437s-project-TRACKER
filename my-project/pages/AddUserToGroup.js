@@ -6,20 +6,19 @@ import {
   Button,
   View,
 } from 'react-native'
-import { getGroupByID } from "./constants/api"
-import AddUserForm from './AddUserForm'
+import AddUserForm from '../components/AddUserForm'
 
 class AddUserToGroup extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {group: {'name': "default", 'users': []}}
-    }
+constructor(props) {
+    super(props);
+    this.state = {group: {'name': "default", 'users': []}}
+}
 
-    componentDidMount(){
-        const group = this.props.route.params.group;
-        this.setState({group: group});
-        console.log(this.props.route.params.group)
-    }
+componentDidMount(){
+    const group = this.props.route.params.group;
+    this.setState({group: group});
+    console.log(this.props.route.params.group)
+}
 
   
 render() {

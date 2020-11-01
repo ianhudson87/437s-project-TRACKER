@@ -146,6 +146,33 @@ export const createGame = async (name, user_ids, group_id) =>{
     return data
 }
 
+//submits a request to the API to change score of certain user
+export const changeScore = async (scoreData) =>{
+    /*
+    scoreData = {
+        game_id:  // game that you want to change the score of
+        user_id:  // user you want to change the score of
+        type:  // how to want to change score. "delta"=>change current score by some amount. "set"=>set score to some amount
+        amount:  // that amount that you want to change/set
+    }
+    */
+    const res = await fetch(API_PATH + "changeScore",{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            game_id: scoreData.game_id,
+            user_id: scoreData.user_id,
+            type: scoreData.type,
+            amount: scoreData.amount
+        })
+    })
+    const data = await res.json();
+    return data
+}
+
 // CAUTION!!!!!!!!!!!!!!!!!!!
 // CAUTION!!!!!!!!!!!!!!!!!!!
 // CAUTION!!!!!!!!!!!!!!!!!!!

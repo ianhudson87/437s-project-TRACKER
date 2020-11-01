@@ -6,7 +6,8 @@ import {
   Button,
   View,
 } from 'react-native'
-import { getObjectByID } from "./constants/api"
+import { getObjectByID } from "../constants/api"
+import GameThumbnail from "../components/GameThumbnail"
 
 class GroupPage extends Component {
 constructor(props) {
@@ -37,6 +38,7 @@ componentDidMount(){
 
         this.setState({usersInGroup: users_info_list})
         console.log(this.state.usersInGroup)
+        console.log("gamesInGroup", this.state.gamesInGroup)
       })
       
     })
@@ -93,9 +95,8 @@ render() {
             this.state.usersInGroup.map((user, key)=> (<Text key={key}>{user.name}</Text>))
         }
         Games in the group:
-        {
-            this.state.gamesInGroup.map((game, key)=> (<Text key={key}>{game.name}</Text>))
-        }
+        {/* this.state.gamesInGroup.map((game, key)=> (<Text key={key}>{game.name}</Text>)) */}
+        { this.state.gamesInGroup.map((game, key)=> (<GameThumbnail key={key} game={game} navigation={this.props.navigation}/>)) }
         </Text>
         <Button title='Create new game' onPress={() => this.handleNewGame()} />
       </View>

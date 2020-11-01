@@ -8,7 +8,7 @@ import {
   Button,
   View,
 } from 'react-native'
-import { createGame } from "./constants/api"
+import { createGame } from "../constants/api"
 
 class CreateNewGame extends Component {
   // need to know the user who wants to create the game. Need to know the group that the user is creating the game in

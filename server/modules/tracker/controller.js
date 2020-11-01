@@ -46,7 +46,7 @@ export const getAllUsers = async (req, res) => {
     try{
         return res.status(200).json({ users: await Models.UserModel.find() })
     } catch(e) {
-        return res.status(e.status).json({ error:true, message: "error with getAllUsers"})
+        return res.status(400).json({ error:true, message: "error with getAllUsers"})
     }
 }
 
@@ -82,7 +82,7 @@ export const getAllGroups = async (req, res) => {
     try{
         return res.status(200).json({ groups: await Models.GroupModel.find() })
     } catch(e) {
-        return res.status(e.status).json({ error:true, message: "error with getAllUsers"})
+        return res.status(400).json({ error:true, message: "error with getAllUsers"})
     }
 }
 
@@ -205,6 +205,7 @@ export const joinGroup = async (req, res) => {
 export const loginUser = async (req, res) => {
     console.log("LOGGING IN USER");
     const {name, password} = req.body;
+    console.log("name:", name, "password", password)
     const bcrypt = require('bcrypt');
 
     try{
@@ -248,7 +249,7 @@ export const createGame = async (req, res) => {
     //  list of user_ids in the game
     //  group_id of group that the game is being created for
     const {name, user_ids, group_id} = req.body;
-    let scores = []
+    let scores = Array(user_ids.length).fill(0)
     let users = user_ids
     const newGame = new Models.GameModel( {name, users, scores} );
     
@@ -299,6 +300,37 @@ export const getAllGames = async (req, res) => {
     try{
         return res.status(200).json({ users: await Models.GameModel.find() })
     } catch(e) {
-        return res.status(e.status).json({ error:true, message: "error with getAllGames"})
+        return res.status(400).json({ error:true, message: "error with getAllGames"})
+    }
+}
+
+// changes score for some user
+export const changeScore = async (req, res) => {
+    // game_id, user_id, type, amount required for req.body
+    console.log("Changing Score")
+    const {game_id, user_id, type, amount} = req.body;
+    if(type == "delta"){
+        // change score by amount
+        try{
+            // get index of player that we want to change
+            let game = await Models.GameModel.findOne({ '_id': game_id })
+            let user_ids = game.users
+            let user_index = user_ids.indexOf(user_id)
+
+            // change the score of the scores array at that index
+            let score_object = {}
+            score_object['scores.'+user_index.toString()] = parseInt(amount) // tels which index of scores to change and by how much
+            await Models.GameModel.updateOne({ '_id': game_id}, { '$inc': score_object })
+            let updated_game = await Models.GameModel.findOne({ '_id': game_id })
+            return res.status(200).json({ error: false, updated_game: updated_game, game_updated: true, message: "game successfully updated" })
+        } catch(e) {
+            return res.status(400).json({ error:true, game_updated: false, message: "error with changeScore", err_msg: e})
+        }
+    }
+    else if(type == "set"){
+        // TODO: set score to amount
+    }
+    else{
+        return res.status(200).json({ error:false, game_updated: false, message: "error with changeScore: not valid type"})
     }
 }

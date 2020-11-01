@@ -1,13 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, Button, StyleSheet} from 'react-native'
-import { createGroup } from "./constants/api"
+import { createGroup } from "../constants/api"
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-
-import UserHome from './UserHome'
-
-const Stack = createStackNavigator();
 
 class CreateNewGroupForm extends Component {
     static defaultProps = {
