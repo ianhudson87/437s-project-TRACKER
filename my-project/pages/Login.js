@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import LoginForm from './components/LoginForm'
+import LoginForm from '../components/LoginForm'
 
 
 import {
@@ -9,7 +9,7 @@ import {
     View,
     Button
   } from 'react-native'
-  import { fetchUsers, createUser, loginUser } from "./constants/api"
+  import { fetchUsers, createUser, loginUser } from "../constants/api"
 
 
   class Login extends Component {

@@ -6,7 +6,7 @@ import {
   Button,
   View,
 } from 'react-native'
-import CreateNewGroupForm from './components/CreateNewGroupForm'
+import CreateNewGroupForm from '../components/CreateNewGroupForm'
 
 class CreateNewGroup extends Component {
     constructor(props) {
@@ -18,7 +18,6 @@ class CreateNewGroup extends Component {
         
     }
 
-  
 render() {
     return (
       <View style={styles.container}>

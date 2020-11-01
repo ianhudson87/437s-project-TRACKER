@@ -248,7 +248,7 @@ export const createGame = async (req, res) => {
     //  list of user_ids in the game
     //  group_id of group that the game is being created for
     const {name, user_ids, group_id} = req.body;
-    let scores = []
+    let scores = Array(user_ids.length).fill(0)
     let users = user_ids
     const newGame = new Models.GameModel( {name, users, scores} );
     
