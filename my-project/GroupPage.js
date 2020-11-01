@@ -42,17 +42,16 @@ componentDidMount(){
     })
 
     // populate the gamesInGroup list
-    let game_info_list = []
+    let games_info_list = []
     let game_ids_in_group = this.state.group.games
     game_ids_in_group.forEach((game_id) => {
       // push game info into list
-      getGameByID(game_id).then((response)=>{
-        if(response.user_exists){
-          users_info_list.push(response.user)
+      getObjectByID({id: game_id, type: "game"}).then((response)=>{
+        if(response.object_exists){
+          games_info_list.push(response.object)
         }
 
-        this.setState({usersInGroup: users_info_list})
-        console.log(this.state.usersInGroup)
+        this.setState({gamesInGroup: games_info_list})
       })
       
     })
@@ -92,6 +91,10 @@ render() {
         Users in the group:
         {
             this.state.usersInGroup.map((user, key)=> (<Text key={key}>{user.name}</Text>))
+        }
+        Games in the group:
+        {
+            this.state.gamesInGroup.map((game, key)=> (<Text key={key}>{game.name}</Text>))
         }
         </Text>
         <Button title='Create new game' onPress={() => this.handleNewGame()} />
