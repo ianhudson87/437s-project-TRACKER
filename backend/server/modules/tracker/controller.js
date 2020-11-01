@@ -125,15 +125,22 @@ export const getUser = async (req, res) => {
 }
 
 export const joinGroup = async (req, res) => {
+    console.log("HERE")
     // req.body requires the id of the user and the id of the group
     const {user_id, group_id} = req.body;
+    console.log(group_id)
 
     try{
         // check to make sure that user is valid
         let user_with_given_id = await Models.UserModel.find({ '_id': user_id})
+        let group_with_given_id = await Models.GroupModel.find({ '_id': group_id})
         if(user_with_given_id.length == 0){
             // there doesn't exist a user with the given id
             return res.status(200).json({ error: false, joined_group: false, message: "user_id DNE"})
+        }
+        else if(group_with_given_id.length == 0){
+            // check to make sure the the group_id is valid
+            return res.status(200).json({ error: false, joined_group: false, message: "group_id DNE"})
         }
         else{
             // user_id is valid
@@ -146,6 +153,8 @@ export const joinGroup = async (req, res) => {
             else{
                 // push the user id to the list of users in the group with the correct group id
                 await Models.GroupModel.updateOne({ '_id': group_id }, { '$push': { users: user_id } })
+                // push group id to the list of groups for the user
+                await Models.UserModel.updateOne({ '_id': user_id }, { '$push': { users: group_id } })
                 return res.status(200).json({ error: false, joined_group: true, message: "joined group!"})
             }
         }
