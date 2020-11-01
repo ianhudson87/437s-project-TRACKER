@@ -19,4 +19,6 @@ routes.post('/getUser', TrackerController.getUser)
 routes.post('/createGame', TrackerController.createGame)
 routes.get('/games', TrackerController.getAllGames)
 
+routes.post('/changeScore', TrackerController.changeScore)
+
 export default routes;

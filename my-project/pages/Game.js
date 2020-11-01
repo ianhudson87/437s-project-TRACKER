@@ -7,7 +7,7 @@ import {
   Button,
   View,
 } from 'react-native'
-import { getObjectByID } from '../constants/api'
+import { getObjectByID, changeScore } from '../constants/api'
 
 class Game extends Component {
   // need to have the game object passed as a prop
@@ -41,8 +41,19 @@ class Game extends Component {
     console.log("data: game:", this.state.game)
   }
 
-  handleIncrement(user_id){
-    // send api request to increment score of user with the id
+  handleIncrement(game_id, user_id){
+    console.log("INCREMENT SCORE: game_id:", game_id, "user_id", user_id)
+    // send api request to increment score of user with the id, for a specific game_id
+    let scoreData = {
+      // info about how to change the score
+      game_id: game_id,
+      user_id: user_id,
+      type: "delta",
+      amount: 1
+    }
+    changeScore(scoreData).then((response)=>{
+      console.log("CHANGE SCORE RESPONSE", response)
+    })
   }
 
   render() {
@@ -58,7 +69,7 @@ class Game extends Component {
           Scores in the game:
           { this.state.game.scores.map((score, key) => (<Text key={key}>{score}</Text>)) }
           Add scores:
-          { this.state.users.map((user, key) => (<Button key={key} title={'Increment ' + user.name + "'s score"} onPress={}/>))}
+          { this.state.users.map((user, key) => (<Button key={key} title={'Increment ' + user.name + "'s score"} onPress={this.handleIncrement(this.state.game._id, user._id)}/>))}
         </Text>
 
       </View>
