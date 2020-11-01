@@ -6,8 +6,7 @@ import {
   Button,
   View,
 } from 'react-native'
-import { getGroupByID } from "./constants/api"
-import AddUserForm from './AddUserForm'
+import AddUserForm from './components/AddUserForm'
 
 class AddUserToGroup extends Component {
     constructor(props) {

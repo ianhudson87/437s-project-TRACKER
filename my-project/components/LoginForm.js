@@ -1,13 +1,6 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, Button, StyleSheet} from 'react-native'
-import { createUser, loginUser } from "./constants/api"
-
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-
-import UserHome from './UserHome'
-
-const Stack = createStackNavigator();
+import { createUser, loginUser } from "../constants/api"
 
 class LoginForm extends Component {
     static defaultProps = {
