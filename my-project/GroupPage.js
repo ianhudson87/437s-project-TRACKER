@@ -6,30 +6,76 @@ import {
   Button,
   View,
 } from 'react-native'
-import { getGroupByID } from "./constants/api"
-import LoginForm from './LoginForm'
+import { getUserByID } from "./constants/api"
 
 class GroupPage extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {group: {'name': "default", 'users': []}}
-    }
+constructor(props) {
+  super(props);
+  this.state = { 
+    group: this.props.route.params.group, // contains group "object"
+    loggedInUser: this.props.route.params.loggedInUser, // contains user "oject"
+    usersInGroup: [], // contains list of user objects
+    gamesInGroup: [], // contains list of game objects
+  }
 
-    componentDidMount(){
-        const group = this.props.route.params.group;
-        this.setState({group: group});
-        
-        this.handleNewUser = this.handleNewUser.bind(this);
-    }
+  this.handleNewUser = this.handleNewUser.bind(this);
+  this.handleNewGame = this.handleNewGame.bind(this);
+}
 
-    handleNewUser(){
-        this.props.navigation.navigate("AddUserToGroup", {
-            itemId: 86,
-            group: this.state.group,
-            navigation: this.props.navigation,
-            loggedInUser: this.props.loggedInUser
-        });
-    }
+componentDidMount(){
+    console.log("data: group:", this.state.group, "user", this.state.loggedInUser)
+
+    // populate the usersInGroup list
+    let users_info_list = []
+    let user_ids_in_group = this.state.group.users
+    user_ids_in_group.forEach((user_id) => {
+      // push user info into list
+      getUserByID(user_id).then((response)=>{
+        if(response.user_exists){
+          users_info_list.push(response.user)
+        }
+
+        this.setState({usersInGroup: users_info_list})
+        console.log(this.state.usersInGroup)
+      })
+      
+    })
+
+    // populate the gamesInGroup list
+    let game_info_list = []
+    let game_ids_in_group = this.state.group.games
+    game_ids_in_group.forEach((game_id) => {
+      // push game info into list
+      getGameByID(game_id).then((response)=>{
+        if(response.user_exists){
+          users_info_list.push(response.user)
+        }
+
+        this.setState({usersInGroup: users_info_list})
+        console.log(this.state.usersInGroup)
+      })
+      
+    })
+}
+
+handleNewUser(){
+    this.props.navigation.navigate("AddUserToGroup", {
+        itemId: 86,
+        group: this.state.group,
+        navigation: this.props.navigation,
+        loggedInUser: this.state.loggedInUser
+    });
+}
+
+// function for handling "create new game" button click
+handleNewGame(){
+  // redirect to create new game page
+  // need to pass group and user that clicked the button
+  this.props.navigation.navigate("CreateNewGame", {
+    group: this.state.group,
+    loggedInUser: this.state.loggedInUser
+  });
+}
 
   
 render() {
@@ -39,14 +85,16 @@ render() {
           Group Page
         </Text>
         <Text>
-            Group: {this.state.group.name}
+            Group NAME: {this.state.group.name}
         </Text>
         <Button title='Add User' onPress={(e) => this.handleNewUser(e)}/>
         <Text>
+        Users in the group:
         {
-            this.state.group.users.map((user, key)=> (<Text key={key}>{user}</Text>))
+            this.state.usersInGroup.map((user, key)=> (<Text key={key}>{user.name}</Text>))
         }
         </Text>
+        <Button title='Create new game' onPress={() => this.handleNewGame()} />
       </View>
     )
   }

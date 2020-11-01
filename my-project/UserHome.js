@@ -7,25 +7,34 @@ import {
   View,
 } from 'react-native'
 import { getGroupByID } from "./constants/api"
-import LoginForm from './LoginForm'
 
 class UserHome extends Component {
     constructor(props) {
         super(props);
-        this.state = {groups: ["hi"], user: {'name': "default"}}
+        this.state = {groups: [], user: this.props.route.params.user}
         this.navigateToGroup = this.navigateToGroup.bind(this);
         this.createNewGroup = this.createNewGroup.bind(this);
     }
 
     componentDidMount(){
-        const user = this.props.route.params.user;
-        this.setState({user: user})
-        const groupIDs = user.groups;
+        const groupIDs = this.state.user.groups;
+        console.log('IDS', groupIDs)
+        let groups_list = []
         
+        // get information about groups based on id
+        // used for displaying groups that user is in
         for(let i=0; i<groupIDs.length; i++){
-            getGroupByID({'id': groupIDs[i]}).then((data)=>{
-                this.setState({groups: data.group})
-            })
+          // get info about group by id
+          getObjectByID({'id': groupIDs[i]}).then((data)=>{
+            console.log("data", data)
+            if(data.object_exists){
+              // console.log("GROUP", data.group[0])
+              groups_list.push(data.object)
+            }
+            this.setState({groups: groups_list})
+            // console.log(this.state.groups[0])
+          })
+
         }
     }
 
@@ -55,10 +64,11 @@ render() {
             Logged in user: {this.state.user.name}
         </Text>
         <Text>
-        {
-            this.state.groups.map((group, key)=> (<Button title={group.name} key={key} 
-                onPress={(e) => this.navigateToGroup(group, e)}/>))
-        }
+          Groups that user is in:
+          {
+              this.state.groups.map((group, key)=> (<Button title={group.name} key={key} 
+                  onPress={(e) => this.navigateToGroup(group, e)}/>))
+          }
         </Text>
         <Button title='Create New Group' onPress={(e) => this.createNewGroup(e)}/>
       </View>

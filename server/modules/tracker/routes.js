@@ -10,11 +10,14 @@ routes.post('/groups', TrackerController.createGroup)
 routes.get('/groups', TrackerController.getAllGroups)
 
 routes.post('/getGroupByID', TrackerController.getGroupByID)
+routes.post('/getUserByID', TrackerController.getUserByID)
 
 routes.post('/joinGroup', TrackerController.joinGroup)
 
 routes.post('/loginUser', TrackerController.loginUser)
 
 routes.post('/getUser', TrackerController.getUser)
+routes.post('/createGame', TrackerController.createGame)
+routes.get('/games', TrackerController.getAllGames)
 
 export default routes;

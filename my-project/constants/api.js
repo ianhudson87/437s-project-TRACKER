@@ -1,3 +1,12 @@
+// CAUTION!!!!!!!!!!!!!!!!!!!
+// CAUTION!!!!!!!!!!!!!!!!!!!
+// CAUTION!!!!!!!!!!!!!!!!!!!
+// use API_PATH + "route" instead of localhost:3000/api/... LOOK AT  below
+// CAUTION!!!!!!!!!!!!!!!!!!!
+// CAUTION!!!!!!!!!!!!!!!!!!!
+// CAUTION!!!!!!!!!!!!!!!!!!!
+
+
 let API_PATH;
 if(__DEV__){
     // if build is in development mode, use localhost server
@@ -67,6 +76,22 @@ export const getGroupByID = async (input) =>{
     return data
 }
 
+// export const getUserByID = async (user_id) =>{
+//     const res = await fetch(API_PATH + "getUserByID",{
+//         method: 'POST',
+//         headers: {
+//             'Accept': 'application/json',
+//             'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify({
+//             user_id: user_id
+//         })
+//     })
+//     const data = await res.json();
+//     console.log(data);
+//     return data
+}
+
 export const getUser = async (name) =>{
     const res = await fetch(API_PATH + "getUser",{
         method: 'POST',
@@ -117,3 +142,30 @@ export const createGroup = async (name) =>{
     const data = await res.json();
     return data
 }
+
+//submits a request to the API to create new game with certain parameters
+export const createGame = async (name, user_ids, group_id) =>{
+    console.log('send api')
+    const res = await fetch(API_PATH + "createGame",{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: name,
+            user_ids: user_ids,
+            group_id: group_id
+        })
+    })
+    const data = await res.json();
+    return data
+}
+
+// CAUTION!!!!!!!!!!!!!!!!!!!
+// CAUTION!!!!!!!!!!!!!!!!!!!
+// CAUTION!!!!!!!!!!!!!!!!!!!
+// use API_PATH + "route" instead of localhost:3000/api/... LOOK AT  above
+// CAUTION!!!!!!!!!!!!!!!!!!!
+// CAUTION!!!!!!!!!!!!!!!!!!!
+// CAUTION!!!!!!!!!!!!!!!!!!!
