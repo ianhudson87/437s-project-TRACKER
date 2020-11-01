@@ -6,7 +6,7 @@ import {
   Button,
   View,
 } from 'react-native'
-import { getGroupByID } from "./constants/api"
+import { getObjectByID } from "./constants/api"
 
 class UserHome extends Component {
     constructor(props) {
@@ -25,7 +25,7 @@ class UserHome extends Component {
         // used for displaying groups that user is in
         for(let i=0; i<groupIDs.length; i++){
           // get info about group by id
-          getObjectByID({'id': groupIDs[i]}).then((data)=>{
+          getObjectByID({id: groupIDs[i], type: "group"}).then((data)=>{
             console.log("data", data)
             if(data.object_exists){
               // console.log("GROUP", data.group[0])

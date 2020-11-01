@@ -9,8 +9,7 @@ routes.get('/users', TrackerController.getAllUsers)
 routes.post('/groups', TrackerController.createGroup)
 routes.get('/groups', TrackerController.getAllGroups)
 
-routes.post('/getGroupByID', TrackerController.getGroupByID)
-routes.post('/getUserByID', TrackerController.getUserByID)
+routes.post('/getObjectByID', TrackerController.getObjectByID)
 
 routes.post('/joinGroup', TrackerController.joinGroup)
 

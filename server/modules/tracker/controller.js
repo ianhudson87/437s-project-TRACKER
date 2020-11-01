@@ -86,44 +86,59 @@ export const getAllGroups = async (req, res) => {
     }
 }
 
-export const getGroupByID = async (req, res) => {
-    // group_id required in req.body
+export const getObjectByID = async (req, res) => {
+    // id and type required in req.body
     console.log("GETTING GROUP FROM ID")
-    const {id} = req.body;
-    let group_id = id
+    const {id, type} = req.body;
+
+    // determine which type of object is being wanted
+    let model_type
+    switch(type){
+        case "group":
+            model_type = Models.GroupModel
+            break
+        case "game":
+            model_type = Models.GameModel
+            break
+        case "user":
+            model_type = Models.UserModel
+        default:
+            model_type = Models.UserModel
+    }
+
     try{
-        let group_with_given_id = await Models.GroupModel.find({ '_id': group_id})
-        if(group_with_given_id.length == 0){
+        let object_with_given_id = await model_type.find({ '_id': id})
+        if(object_with_given_id.length == 0){
             // there doesn't exist a group with the given id
-            console.log("Group ID: " + group_id)
-            return res.status(200).json({ group: null, error: false, group_exists: false, message: "group_id DNE"})
+            console.log("Object ID: " + id)
+            return res.status(200).json({ object: null, error: false, object_exists: false, message: "object_id DNE"})
         }
         else{
-            return res.status(201).json({ group: group_with_given_id[0], error: false, group_exists: true, message: "Group Found"})
+            return res.status(201).json({ object: object_with_given_id[0], error: false, object_exists: true, message: "object Found"})
         }
     } catch(e) {
-        return res.status(500).json({ error:true, message: "error with getting group"})
+        return res.status(500).json({ error:true, message: "error with getting object by ID"})
     }
 }
 
-export const getUserByID = async (req, res) => {
-    // user_id required in req.body
-    console.log("GETTING User FROM ID")
-    const {user_id} = req.body;
-    try{
-        let users_with_given_id = await Models.UserModel.find({ '_id': user_id})
-        if(users_with_given_id.length == 0){
-            // there doesn't exist a user with the user_id
-            console.log("User ID: " + user_id)
-            return res.status(200).json({ user: null, error: false, user_exists: false, message: "user_id DNE"})
-        }
-        else{
-            return res.status(201).json({ user: users_with_given_id[0], error: false, user_exists: true, message: "User Found"})
-        }
-    } catch(e) {
-        return res.status(500).json({ error:true, message: "error with getting group"})
-    }
-}
+// export const getUserByID = async (req, res) => {
+//     // user_id required in req.body
+//     console.log("GETTING User FROM ID")
+//     const {user_id} = req.body;
+//     try{
+//         let users_with_given_id = await Models.UserModel.find({ '_id': user_id})
+//         if(users_with_given_id.length == 0){
+//             // there doesn't exist a user with the user_id
+//             console.log("User ID: " + user_id)
+//             return res.status(200).json({ user: null, error: false, user_exists: false, message: "user_id DNE"})
+//         }
+//         else{
+//             return res.status(201).json({ user: users_with_given_id[0], error: false, user_exists: true, message: "User Found"})
+//         }
+//     } catch(e) {
+//         return res.status(500).json({ error:true, message: "error with getting group"})
+//     }
+// }
 
 export const getUser = async (req, res) => {
     // no requirements for req.body

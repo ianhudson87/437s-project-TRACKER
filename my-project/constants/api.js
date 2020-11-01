@@ -59,37 +59,21 @@ export const loginUser = async (name, password) =>{
     return data
 }
 
-export const getGroupByID = async (input) =>{
-    console.log(input.id)
-    const res = await fetch(API_PATH + "getGroupByID",{
+export const getObjectByID = async (input) =>{
+    const res = await fetch(API_PATH + "getObjectByID",{
         method: 'POST',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            id: input.id
+            id: input.id,
+            type: input.type
         })
     })
     const data = await res.json();
     console.log(data);
     return data
-}
-
-// export const getUserByID = async (user_id) =>{
-//     const res = await fetch(API_PATH + "getUserByID",{
-//         method: 'POST',
-//         headers: {
-//             'Accept': 'application/json',
-//             'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify({
-//             user_id: user_id
-//         })
-//     })
-//     const data = await res.json();
-//     console.log(data);
-//     return data
 }
 
 export const getUser = async (name) =>{

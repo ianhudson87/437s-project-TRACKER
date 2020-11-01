@@ -6,7 +6,7 @@ import {
   Button,
   View,
 } from 'react-native'
-import { getUserByID } from "./constants/api"
+import { getObjectByID } from "./constants/api"
 
 class GroupPage extends Component {
 constructor(props) {
@@ -30,9 +30,9 @@ componentDidMount(){
     let user_ids_in_group = this.state.group.users
     user_ids_in_group.forEach((user_id) => {
       // push user info into list
-      getUserByID(user_id).then((response)=>{
-        if(response.user_exists){
-          users_info_list.push(response.user)
+      getObjectByID({id: user_id, type: "user"}).then((response)=>{
+        if(response.object_exists){
+          users_info_list.push(response.object)
         }
 
         this.setState({usersInGroup: users_info_list})
