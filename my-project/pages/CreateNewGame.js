@@ -34,14 +34,14 @@ class CreateNewGame extends Component {
     console.log("data: group:", this.state.group, "user", this.state.loggedInUser)
   }
 
-  handleOpponentChange(event) {
+  handleOpponentChange(text) {
     // handler for opponent box change
-    this.setState({opponent_id: event.target.value});
+    this.setState({opponent_id: text});
   }
 
-  handleGameNameChange(event) {
+  handleGameNameChange(text) {
     // handler for game name box change
-    this.setState({game_name: event.target.value});
+    this.setState({game_name: text});
   }
 
   handleNewGame(event) {
@@ -66,10 +66,10 @@ render() {
       </Text>
 
       <Text>Opponent User ID:</Text>
-      <TextInput value={this.state.opponent_id} onChange={this.handleOpponentChange} style={styles.text}/>
+      <TextInput value={this.state.opponent_id} onChangeText={(text)=>{this.handleOpponentChange(text)}} style={styles.text}/>
       
       <Text>game Name:</Text>
-      <TextInput value={this.state.game_name} onChange={this.handleGameNameChange} style={styles.text}/>
+      <TextInput value={this.state.game_name} onChangeText={(text)=>this.handleGameNameChange(text)} style={styles.text}/>
       <Button title='Create Game' onPress={this.handleNewGame}/>
       <Text>{}</Text>
     </View>

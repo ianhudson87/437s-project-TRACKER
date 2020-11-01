@@ -18,9 +18,9 @@ class AddUserForm extends Component {
         this.setState({group: group})
     }
 
-    handleChangeName(event) {
+    handleChangeName(text) {
         // handler for name box change
-        this.setState({username: event.target.value});
+        this.setState({username: text});
     }
 
     handleSubmit(navigation, event) {
@@ -62,7 +62,7 @@ class AddUserForm extends Component {
         return (
             <View>
                 <Text>User to add:</Text>
-                <TextInput value={this.state.username} onChange={this.handleChangeName} style={styles.text}/>
+                <TextInput value={this.state.username} onChangeText={(text)=>{this.handleChangeName(text)}} style={styles.text}/>
                 <Button title="Add User" onPress={(e) => this.handleSubmit(navigation, e)} />
             </View>
            

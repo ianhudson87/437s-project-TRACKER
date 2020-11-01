@@ -15,9 +15,9 @@ class CreateNewGroupForm extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChange(event) {
+    handleChange(text) {
         // handler for name box change
-        this.setState({group_name: event.target.value});
+        this.setState({group_name: text});
     }
 
     handleSubmit(navigation, event) {
@@ -48,7 +48,7 @@ class CreateNewGroupForm extends Component {
         const navigation = this.props.navigation;
         return (
             <View>
-                <TextInput value={this.state.group_name} onChange={this.handleChange} style={styles.text}/>
+                <TextInput value={this.state.group_name} onChangeText={(text) => {this.handleChange(text)}} style={styles.text}/>
                 
                 <Button title="Create Group" onPress={(e) => this.handleSubmit(navigation, e)} />
             </View>
