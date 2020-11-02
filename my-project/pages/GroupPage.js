@@ -28,6 +28,7 @@ constructor(props) {
 }
 
 refreshInfo(){
+  // refresh all the information about the group
   console.log('REFRESH')
   AsyncStorage.getItem('loggedInUserID').then((value)=>{
     // get the id of the logged in user

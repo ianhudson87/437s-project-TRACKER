@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react'
 import AsyncStorage from '@react-native-community/async-storage'
+import { CommonActions } from '@react-navigation/native'
 import {
   StyleSheet,
   Text,
@@ -55,6 +56,26 @@ class CreateNewGame extends Component {
     let user_ids = [this.state.loggedInUserID, this.state.opponent_id] // hard coded for 2 players
     createGame(this.state.game_name, user_ids, this.state.group).then((data)=>{
       console.log("repsonse", data)
+      if(data.error){
+        // error in creating game
+        alert("error in creating game")
+      }
+      else if(data.game_created==false){
+        // no error, but game not created
+        alert("game was not created")
+      }
+      else{
+        // game was created
+        let game = data.game_info
+        alert("game " + game.name + " was created")
+
+        this.props.navigation.dispatch(
+          // reset the navigation so that you can't navigate back from the userhome page
+          CommonActions.goBack()
+      );
+
+      }
+
     })
   }
 

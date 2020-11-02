@@ -66,7 +66,6 @@ class LoginForm extends Component {
     }
 
     render() {
-        const navigation = this.props.navigation;
         return (
             <View>
                 <Text>Username:</Text>
