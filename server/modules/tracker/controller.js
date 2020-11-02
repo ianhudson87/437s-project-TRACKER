@@ -9,35 +9,34 @@ export const createUser = async (req, res) => {
     const groups = []
     const games = []
     const saltRounds = 6;
+    const newUser = new Models.UserModel( {name, password, groups, games});
 
 
     // hashes and salts the entered password for storage in database
-    await bcrypt.hash(password, saltRounds, function(err, hash){
-        newUser.password = hash;
-        const newUser = new Models.UserModel( {name, password, groups, games});
+    let hash = bcrypt.hashSync(password, saltRounds)
+    newUser.password = hash
     
-        try{
+    
+    try{
 
-            // iterates through users from database to check whether the requested 
-            //  username already exists
-            let existingUsers  = await Models.UserModel.find();
-            // determine if username is taken already
+        // iterates through users from database to check whether the requested 
+        //  username already exists
+        let existingUsers  = await Models.UserModel.find();
+        // determine if username is taken already
 
-            for(let i=0; i<existingUsers.length; i++){
-                if(newUser.name == existingUsers[i].name){
-                
-                    //does not create user if the username already exists
-                    return res.status(202).json({ error:false, repeatedUser:true, message: "user is taken"})
-                }
+        for(let i=0; i<existingUsers.length; i++){
+            if(newUser.name == existingUsers[i].name){
+              
+                //does not create user if the username already exists
+                return res.status(202).json({ error:false, repeatedUser:true, message: "user is taken"})
             }
-            // // creates user if username does not already exist
-            console.log("newUser:", newUser)
-            return res.status(202).json({ user: await newUser.save(), error:false, repeatedUser:false })
-
-        } catch(e) {
-            return res.status(400).json({ error:true, message: "error with creating user"})
         }
-    })
+        // // creates user if username does not already exist
+        return res.status(202).json({ user: await newUser.save(), error:false, repeatedUser:false })
+
+    } catch(e) {
+        return res.status(400).json({ error:true, message: "error with creating user"})
+    }
 }
 
 // retrieves a list of all users in the database
