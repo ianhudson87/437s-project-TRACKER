@@ -39,6 +39,7 @@ class Game extends Component {
           user_object_list.push(response.object)
         }
   
+        user_object_list.sort((a,b)=>{console.log('here'); return (a._id < b._id) ? 1 : -1})
         this.setState({users: user_object_list})
         console.log("user_object_list", this.state.users)
       })

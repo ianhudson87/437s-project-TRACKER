@@ -57,6 +57,7 @@ class UserHome extends Component {
                     // console.log("GROUP", data.group[0])
                     groups_list.push(data.object)
                   }
+                  groups_list.sort((a,b)=>{return (a._id < b._id) ? 1 : -1}) // keep order of groups
                   this.setState({groups: groups_list})
                   // console.log(this.state.groups[0])
                 })
