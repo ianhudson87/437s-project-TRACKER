@@ -9,6 +9,7 @@
     "production": "expo start --no-dev --minify"
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.12.1",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-navigation/native": "^5.7.6",
     "@react-navigation/stack": "^5.9.3",
@@ -20,7 +21,6 @@
     "react-native-gesture-handler": "^1.8.0",
     "react-native-screens": "^2.11.0",
     "react-native-web": "~0.13.12",
-    "react-navigation": "^4.4.2",
     "webpack": "^5.1.3"
   },
   "devDependencies": {

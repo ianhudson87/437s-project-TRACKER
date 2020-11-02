@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput, Button, StyleSheet} from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage'
+import { View, Text, TextInput, Button, StyleSheet, Alert} from 'react-native'
 import { createUser, loginUser } from "../constants/api"
 
 class LoginForm extends Component {
@@ -34,16 +35,17 @@ class LoginForm extends Component {
             this.setState({response: data});
             if(data.userExists && data.correctPassword){ // user exists and password correct
                 console.log(data.user.name + " logged in");
-                this.props.navigation.navigate("UserHome", {
-                    itemId: 86,
-                    user: data.user
-                });
+                console.log("THIS IS WHAT I WANT", data.user._id)
+                AsyncStorage.setItem( 'loggedInUserID', data.user._id )// save user_id as session variable. tutorial: https://www.tutorialspoint.com/react_native/react_native_asyncstorage.htm
+                this.props.navigation.navigate("UserHome");
             }
             else if(data.userExists){ // user exists but password is incorrect
                 console.log("Wrong password");
+                alert("Wrong password")
             }
             else{ // user does not exist
                 console.log("User does not exist");
+                alert("User does not exist")
             }
             
         })
