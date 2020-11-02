@@ -17,6 +17,8 @@ class UserHome extends Component {
     }
 
     componentDidMount(){
+      console.log("USERUSER:", this.state.user)
+      // FIX THIS
         const groupIDs = this.state.user.groups;
         console.log('IDS', groupIDs)
         let groups_list = []
@@ -41,7 +43,6 @@ class UserHome extends Component {
     navigateToGroup(group, event) {
         console.log(group.name);
         this.props.navigation.navigate("GroupPage", {
-            itemId: 86,
             group: group,
             loggedInUser: this.state.user
         });
@@ -49,14 +50,12 @@ class UserHome extends Component {
 
     createNewGroup(group, event) {
         this.props.navigation.navigate("CreateNewGroup", {
-            itemId: 86,
             loggedInUser: this.state.user
         });
     }
 
     joinGroup(group, event) {
       this.props.navigation.navigate("JoinGroup", {
-          itemId: 86,
           loggedInUser: this.state.user
       });
   }

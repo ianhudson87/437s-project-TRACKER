@@ -147,18 +147,9 @@ export const joinGame = async (user_id, game_id) =>{
     return data
 }
 
-export const getAllGroups = async () =>{
-    const res = await fetch("http://localhost:3000/api/groups",{
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-        })
-    })
-    const data = await res.json();
-    console.log(data);
+export const fetchGroups = async () =>{
+    const req = await fetch(API_PATH + "groups")
+    const data = await req.json();
     return data
 }
 

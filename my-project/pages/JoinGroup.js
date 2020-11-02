@@ -6,35 +6,28 @@ import {
   Button,
   View,
 } from 'react-native'
-import { getGroupByID } from "./constants/api"
-import { joinGroup } from "./constants/api"
-import { getAllGroups } from "./constants/api"
-
-import LoginForm from './LoginForm'
+import { joinGroup, fetchGroups } from "../constants/api"
 
 class JoinGroup extends Component {
     constructor(props) {
         super(props);
-        this.state = {groups: ["hi"], user: {'name': "default"}}
+        this.state = {groups: [], loggedInUser: this.props.route.params.loggedInUser}
     }
 
     componentDidMount(){
-        const user = this.props.route.params.user;
-        this.setState({user: user})
-        const groupIDs = getAllGroups();
+      console.log("USERUSER:", this.state.loggedInUser)
+      let group_list = []
+      fetchGroups().then((response)=>{
+        let groups = response.groups
+        groups.forEach((group)=>{group_list.push(group)})
+        this.setState({groups: group_list})
+      })
 
-        console.log(groupIDs.length);
-        
-        for(let i=0; i<groupIDs.length; i++){
-            getGroupByID({'id': groupIDs[i]}).then((data)=>{
-                this.setState({groups: data.group})
-            })
-        }
     }
 
     handleGroupPress(group, event)
     {    
-      joinGroup(group.id, this.state.user).then((data)=>{console.log("Joined Group")})
+      joinGroup(this.state.loggedInUser._id, group._id).then((data)=>{console.log("Joined Group")})
     }
 
   
@@ -47,7 +40,7 @@ render() {
 
         <Text>
         {
-            this.state.groups.map((group, key)=> (<Button title={group} key={key} 
+            this.state.groups.map((group, key)=> (<Button title={group.name} key={key} 
                 onPress={(e) => this.handleGroupPress(group, e)}/>))
         }
         </Text>

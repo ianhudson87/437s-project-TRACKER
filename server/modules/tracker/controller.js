@@ -76,30 +76,6 @@ export const createGroup = async (req, res) => {
     }
 }
 
-export const createGame = async (req, res) => {
-    // req.body requires the name of the group that you are creating
-    const {name} = req.body;
-    const users = []
-    const newGame = new Models.GameModel( {name, users} );
-    
-    try{
-        let existingGames  = await Models.GameModel.find();
-        // determine if group name is taken already
-        for(let i=0; i<existingGames.length; i++){
-            console.log("New game name" + newGame.name)
-            console.log("Existing game name" + existingGames[i].name)
-            if(newGame.name == existingGames[i].name){
-                return res.status(203).json({ error:false, repeatedGroup:true, message: "game name is taken is taken"})
-            }
-        }
-        // name not taken yet
-        console.log('here')
-        return res.status(203).json({ group: await newGame.save(), error:false, repeatedGroup:false })
-    } catch(e) {
-        return res.status(400).json({ error:true, message: "error with creating user", error_msg:e})
-    }
-}
-
 export const getAllGroups = async (req, res) => {
     // no requirements for req.body
     console.log("REQUESTING GROUPS")
@@ -110,15 +86,6 @@ export const getAllGroups = async (req, res) => {
     }
 }
 
-export const getAllGames = async (req, res) => {
-    // no requirements for req.body
-    console.log("REQUESTING GAMES")
-    try{
-        return res.status(200).json({ groups: await Models.GameModel.find({}) })
-    } catch(e) {
-        return res.status(400).json({ error:true, message: "error with getAllUsers"})
-    }
-}
 
 export const getObjectByID = async (req, res) => {
     // id and type required in req.body
@@ -382,7 +349,7 @@ export const getAllGames = async (req, res) => {
     // no requirements for req.body
     console.log("REQUESTING Games")
     try{
-        return res.status(200).json({ users: await Models.GameModel.find() })
+        return res.status(200).json({ games: await Models.GameModel.find() })
     } catch(e) {
         return res.status(400).json({ error:true, message: "error with getAllGames"})
     }

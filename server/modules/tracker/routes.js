@@ -17,7 +17,7 @@ routes.get('/groups', TrackerController.getAllGroups)
 
 routes.post('/getObjectByID', TrackerController.getObjectByID)
 
-routes.post('/groups', TrackerController.joinGroup)
+routes.post('/joinGroup', TrackerController.joinGroup)
 
 //Games
 routes.post('/games', TrackerController.createGame)
