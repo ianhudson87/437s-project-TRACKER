@@ -8,6 +8,7 @@ import {
   View,
 } from 'react-native'
 import { getObjectByID } from "../constants/api"
+import LogoutButton from "../components/LogoutButton"
 
 class UserHome extends Component {
 
@@ -93,6 +94,8 @@ class UserHome extends Component {
   }
   
 render() {
+  const navigation = this.props.navigation;
+  const loggedInUser = this.state.loggedInUser;
     return (
       <View style={styles.container}>
         <Text>
@@ -117,6 +120,7 @@ render() {
 
         <Button title='Join Group' onPress={(e) => this.joinGroup(e)}/>
 
+        <LogoutButton navigation={navigation} loggedInUser={loggedInUser}></LogoutButton>
       </View>
     )
   }
