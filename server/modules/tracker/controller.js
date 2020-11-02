@@ -32,6 +32,7 @@ export const createUser = async (req, res) => {
             }
         }
         // // creates user if username does not already exist
+        console.log("newUser:", newUser)
         return res.status(202).json({ user: await newUser.save(), error:false, repeatedUser:false })
 
     } catch(e) {
