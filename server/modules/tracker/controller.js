@@ -4,18 +4,19 @@ const bcrypt = require('bcrypt');
 // checks whether a valid username was entered and if so, creates a new user
 export const createUser = async (req, res) => {
     // req body requires name and password of user you're creating
-    const {name, password} = req.body;
+    let {name, password} = req.body;
     console.log(req.body);
     const groups = []
     const games = []
     const saltRounds = 6;
-    const newUser = new Models.UserModel( {name, password, groups, games});
 
 
     // hashes and salts the entered password for storage in database
     await bcrypt.hash(password, saltRounds, function(err, hash){
-        newUser.password = hash;
+        password = hash;
     })
+
+    const newUser = new Models.UserModel( {name, password, groups, games});
     
     try{
 
