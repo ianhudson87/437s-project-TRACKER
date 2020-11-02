@@ -1,13 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, Button, StyleSheet} from 'react-native'
-import { createGroup, joinGroup } from "./constants/api"
+import { createGroup, joinGroup } from "../constants/api"
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-
-import UserHome from './UserHome'
-
-const Stack = createStackNavigator();
 
 class CreateNewGroupForm extends Component {
     static defaultProps = {
@@ -21,9 +15,9 @@ class CreateNewGroupForm extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChange(event) {
+    handleChange(text) {
         // handler for name box change
-        this.setState({group_name: event.target.value});
+        this.setState({group_name: text});
     }
 
     handleSubmit(navigation, event) {
@@ -60,7 +54,7 @@ class CreateNewGroupForm extends Component {
         const navigation = this.props.navigation;
         return (
             <View>
-                <TextInput value={this.state.group_name} onChange={this.handleChange} style={styles.text}/>
+                <TextInput value={this.state.group_name} onChangeText={(text) => {this.handleChange(text)}} style={styles.text}/>
                 
                 <Button title="Create Group" onPress={(e) => this.handleSubmit(navigation, e)} />
             </View>

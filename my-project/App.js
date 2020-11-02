@@ -6,18 +6,17 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 // need to make sure to import all pages
-import Register from './Register';
-import Login from './Login';
-import Home from './Home';
-import UserHome from './UserHome'
-import GroupPage from './GroupPage'
-import AddUserToGroup from './AddUserToGroup'
-import CreateNewGroup from './CreateNewGroup'
-import JoinGroup from './JoinGroup'
-import GamePage from './GamePage'
-import AddUserToGame from './AddUserToGame'
-import CreateNewGame from './CreateNewGame'
-import LoginForm from './LoginForm'
+
+import Register from './pages/Register';
+import Login from './pages/Login';
+import Home from './pages/Home';
+import UserHome from './pages/UserHome'
+import GroupPage from './pages/GroupPage'
+import AddUserToGroup from './pages/AddUserToGroup'
+import CreateNewGroup from './pages/CreateNewGroup'
+import CreateNewGame from './pages/CreateNewGame'
+import Game from "./pages/Game"
+
 
 // docs: https://reactnavigation.org/docs/hello-react-navigation
 
@@ -58,6 +57,7 @@ class App extends Component {
                     <Stack.Screen name="GamePage" component={GamePage} />
                     <Stack.Screen name="AddUserToGame" component={AddUserToGame} />
                     <Stack.Screen name="CreateNewGame" component={CreateNewGame} />
+                    <Stack.Screen name="Game" component={Game} />
                 </Stack.Navigator>
             </NavigationContainer>
         )

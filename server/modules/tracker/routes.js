@@ -15,7 +15,7 @@ routes.post('/getUser', TrackerController.getUser)
 routes.post('/groups', TrackerController.createGroup)
 routes.get('/groups', TrackerController.getAllGroups)
 
-routes.post('/getGroupByID', TrackerController.getGroupByID)
+routes.post('/getObjectByID', TrackerController.getObjectByID)
 
 routes.post('/groups', TrackerController.joinGroup)
 
@@ -23,8 +23,16 @@ routes.post('/groups', TrackerController.joinGroup)
 routes.post('/games', TrackerController.createGame)
 routes.get('/games', TrackerController.getAllGames)
 
+
 routes.post('/getGameByID', TrackerController.getGameByID)
 
 routes.post('/games', TrackerController.joinGame)
+
+routes.post('/getUser', TrackerController.getUser)
+routes.post('/createGame', TrackerController.createGame)
+routes.get('/games', TrackerController.getAllGames)
+
+routes.post('/changeScore', TrackerController.changeScore)
+
 
 export default routes;

@@ -7,13 +7,27 @@ import {
 } from 'react-native'
 
 class Home extends Component {
+
+constructor(props){
+    super(props);
+}
+
+componentDidMount(){
+    console.log("HERE")
+    if(__DEV__){
+        console.log("THIS IS DEV")
+    }
+    else{
+        console.log("THIS IS PPRODUCTION")
+    }
+}
   
 
 render() {
     return (
       <View style={styles.container}>
         <Text>
-          THIS IS THE HOME PAGE!
+            THIS IS THE HOME PAGE!hi
         </Text>
       </View>
     )

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, Button, StyleSheet} from 'react-native'
-import { createUser } from "./constants/api"
+import { createUser } from "../constants/api"
 
 class NewUserForm extends Component {
     static defaultProps = {

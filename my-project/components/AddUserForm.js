@@ -1,13 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, Button, StyleSheet} from 'react-native'
-import { getUser, joinGroup } from "./constants/api"
+import { getUser, joinGroup } from "../constants/api"
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-
-import UserHome from './UserHome'
-
-const Stack = createStackNavigator();
 
 class AddUserForm extends Component {
     static defaultProps = { }
@@ -24,9 +18,9 @@ class AddUserForm extends Component {
         this.setState({group: group})
     }
 
-    handleChangeName(event) {
+    handleChangeName(text) {
         // handler for name box change
-        this.setState({username: event.target.value});
+        this.setState({username: text});
     }
 
     handleSubmit(navigation, event) {
@@ -68,7 +62,7 @@ class AddUserForm extends Component {
         return (
             <View>
                 <Text>User to add:</Text>
-                <TextInput value={this.state.username} onChange={this.handleChangeName} style={styles.text}/>
+                <TextInput value={this.state.username} onChangeText={(text)=>{this.handleChangeName(text)}} style={styles.text}/>
                 <Button title="Add User" onPress={(e) => this.handleSubmit(navigation, e)} />
             </View>
            

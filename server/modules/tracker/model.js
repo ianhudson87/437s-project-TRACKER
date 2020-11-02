@@ -13,6 +13,11 @@ const UserSchema = new Schema({
         // contains ids of Groups that User is in
         type: Array,
         required: true
+    },
+    games: {
+        // contains game ids that the users created 
+        type: Array,
+        required: true
     }
 })
 
@@ -27,9 +32,9 @@ const GroupSchema = new Schema({
         required: true
     },
     games: {
-        // contains ids of Games in the Group
+        // contains game ids that the users created 
         type: Array,
-        required: false
+        required: true
     }
 })
 
@@ -39,13 +44,14 @@ const GameSchema = new Schema({
         required: true
     },
     users: {
-        // contains ids of Users in the Game
+        // contains ids of Users in the Group
         type: Array,
         required: true
     },
-    score: {
-        type: Number,
-        required: false
+    scores: {
+        // contains scores of Users. Indices of this array and users array match up
+        type: Array,
+        required: true
     }
 })
 

@@ -1,13 +1,6 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, Button, StyleSheet} from 'react-native'
-import { createUser, loginUser } from "./constants/api"
-
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-
-import UserHome from './UserHome'
-
-const Stack = createStackNavigator();
+import { createUser, loginUser } from "../constants/api"
 
 class LoginForm extends Component {
     static defaultProps = {
@@ -23,14 +16,14 @@ class LoginForm extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChangeName(event) {
+    handleChangeName(text) {
         // handler for name box change
-        this.setState({username: event.target.value});
+        this.setState({username: text});
     }
 
-    handleChangePass(event) {
+    handleChangePass(text) {
         // handler for password box change
-        this.setState({password: event.target.value});
+        this.setState({password: text});
     }
 
     handleSubmit(navigation, event) {
@@ -65,9 +58,9 @@ class LoginForm extends Component {
         return (
             <View>
                 <Text>Username:</Text>
-                <TextInput value={this.state.username} onChange={this.handleChangeName} style={styles.text}/>
+                <TextInput value={this.state.username} onChangeText={(text) => {this.handleChangeName(text)}} style={styles.text}/>
                 <Text>Password:</Text>
-                <TextInput secureTextEntry={true} value={this.state.password} onChange={this.handleChangePass} style={styles.text} />
+                <TextInput secureTextEntry={true} value={this.state.password} onChangeText={(text) => {this.handleChangePass(text)}} style={styles.text} />
                 <Button title="Login" onPress={(e) => this.handleSubmit(navigation, e)} />
             </View>
            

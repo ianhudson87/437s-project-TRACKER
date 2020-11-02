@@ -7,7 +7,7 @@ get the repo
 go to backend folder
 do npm install
 
-the mongodb server is under the account ihudson@wustl.edu password is Oooofers1!
+the mongodb server is good
 
 current routes are:
 GET localhost:3000/api/users
