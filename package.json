@@ -1,6 +1,9 @@
 {
   "name": "437s-project-tracker",
   "version": "1.0.0",
+  "engines": { 
+    "node": "12.19.0" 
+  },
   "description": "",
   "main": "index.js",
   "scripts": {

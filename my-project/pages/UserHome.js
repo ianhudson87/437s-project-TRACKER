@@ -11,13 +11,15 @@ import { getObjectByID } from "../constants/api"
 class UserHome extends Component {
     constructor(props) {
         super(props);
-        this.state = {groups: [], user: this.props.route.params.user}
+        this.state = {groups: [], loggedInUser: this.props.route.params.user}
         this.navigateToGroup = this.navigateToGroup.bind(this);
         this.createNewGroup = this.createNewGroup.bind(this);
     }
 
     componentDidMount(){
-        const groupIDs = this.state.user.groups;
+      console.log("USERUSER:", this.state.loggedInUser)
+      // FIX THIS
+        const groupIDs = this.state.loggedInUser.groups;
         console.log('IDS', groupIDs)
         let groups_list = []
         
@@ -43,16 +45,21 @@ class UserHome extends Component {
         this.props.navigation.navigate("GroupPage", {
             itemId: 86,
             group: group,
-            loggedInUser: this.state.user
+            loggedInUser: this.state.loggedInUser
         });
     }
 
     createNewGroup(group, event) {
         this.props.navigation.navigate("CreateNewGroup", {
-            itemId: 86,
-            loggedInUser: this.state.user
+            loggedInUser: this.state.loggedInUser
         });
     }
+
+    joinGroup(group, event) {
+      this.props.navigation.navigate("JoinGroup", {
+          loggedInUser: this.state.loggedInUser
+      });
+  }
   
 render() {
     return (
@@ -61,7 +68,11 @@ render() {
           User Home Page
         </Text>
         <Text>
-            Logged in user: {this.state.user.name}
+            Logged in user: {this.state.loggedInUser.name}
+
+        </Text>
+        <Text>
+            Groups:
         </Text>
         <Text>
           Groups that user is in:
