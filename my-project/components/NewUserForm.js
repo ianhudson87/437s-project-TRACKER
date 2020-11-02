@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, Button, StyleSheet} from 'react-native'
+import { CommonActions } from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage'
 import { createUser } from "../constants/api"
 
