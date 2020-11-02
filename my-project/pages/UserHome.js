@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import AsyncStorage from '@react-native-community/async-storage'
 import {
   StyleSheet,
   TouchableOpacity,
@@ -9,35 +10,66 @@ import {
 import { getObjectByID } from "../constants/api"
 
 class UserHome extends Component {
+
     constructor(props) {
         super(props);
-        this.state = {groups: [], loggedInUser: this.props.route.params.user}
+        this.state = {groups: [], loggedInUserID: null, loggedInUser: {name: "default"}};
         this.navigateToGroup = this.navigateToGroup.bind(this);
         this.createNewGroup = this.createNewGroup.bind(this);
+        this.refreshUserInfo = this.refreshUserInfo.bind(this);
     }
 
     componentDidMount(){
+      // this.refreshUserInfo()
+      this.props.navigation.addListener('focus', ()=>{this.refreshUserInfo()}); // THIS REFRESHES THE PAGE EVERY TIME YOU GO BACK TO IT. 0.0
+    }
+
+    refreshUserInfo(){
+      console.log("REFRESH")
+      // get loggedInUserID from "local storage"
+      AsyncStorage.getItem('loggedInUserID').then((loggedInUserID)=>{
+        alert(loggedInUserID)
+        console.log("USERID FROM STORAGE:", loggedInUserID)
+        // update loggedInUserID in the state
+        this.setState({loggedInUserID: loggedInUserID})
+        return loggedInUserID
+      }).then((loggedInUserID)=>{
+        // get info about loggedInUserID
+        getObjectByID({id: loggedInUserID, type: "user"}).then((response)=>{
+          return response}).then((response)=>{
+
+            if(response.object_exists){
+              // if user exists
+              let user = response.object
+              this.setState({loggedInUser: user}) // update loggedInUser
+  
+              let groupIDs = user.groups; // ids of groups that user is in
+              console.log('IDS', groupIDs)
+  
+              let groups_list = []
+              // get information about groups based on id
+              // used for displaying groups that user is in
+              for(let i=0; i<groupIDs.length; i++){
+                // get info about group by id
+                getObjectByID({id: groupIDs[i], type: "group"}).then((data)=>{
+                  console.log("data", data)
+                  if(data.object_exists){
+                    // console.log("GROUP", data.group[0])
+                    groups_list.push(data.object)
+                  }
+                  this.setState({groups: groups_list})
+                  // console.log(this.state.groups[0])
+                })
+              }
+            }
+            
+          })
+      })
+
+
       console.log("USERUSER:", this.state.loggedInUser)
       // FIX THIS
-        const groupIDs = this.state.loggedInUser.groups;
-        console.log('IDS', groupIDs)
-        let groups_list = []
         
-        // get information about groups based on id
-        // used for displaying groups that user is in
-        for(let i=0; i<groupIDs.length; i++){
-          // get info about group by id
-          getObjectByID({id: groupIDs[i], type: "group"}).then((data)=>{
-            console.log("data", data)
-            if(data.object_exists){
-              // console.log("GROUP", data.group[0])
-              groups_list.push(data.object)
-            }
-            this.setState({groups: groups_list})
-            // console.log(this.state.groups[0])
-          })
-
-        }
     }
 
     navigateToGroup(group, event) {

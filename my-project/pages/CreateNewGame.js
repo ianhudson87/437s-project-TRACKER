@@ -1,6 +1,8 @@
 // Page for creating a new game
 
 import React, { Component } from 'react'
+import AsyncStorage from '@react-native-community/async-storage'
+import { CommonActions } from '@react-navigation/native'
 import {
   StyleSheet,
   Text,
@@ -19,7 +21,7 @@ class CreateNewGame extends Component {
     // info about the group and user that the game is being create for
     this.state = {
       group: this.props.route.params.group,
-      loggedInUser: this.props.route.params.loggedInUser,
+      loggedInUserID: null,
       opponent_id: "",
       game_name: "",
       error_msg: "",
@@ -31,7 +33,11 @@ class CreateNewGame extends Component {
   }
 
   componentDidMount(){
-    console.log("data: group:", this.state.group, "user", this.state.loggedInUser)
+    AsyncStorage.getItem('loggedInUserID').then((value)=>{
+      this.setState({ loggedInUserID: value})
+    }).then(()=>{
+      console.log("data: group:", this.state.group, "user", this.state.loggedInUserID)
+    })
   }
 
   handleOpponentChange(text) {
@@ -47,9 +53,29 @@ class CreateNewGame extends Component {
   handleNewGame(event) {
     console.log('button click')
     // handler for create new game button press
-    let user_ids = [this.state.loggedInUser._id, this.state.opponent_id] // hard coded for 2 players
+    let user_ids = [this.state.loggedInUserID, this.state.opponent_id] // hard coded for 2 players
     createGame(this.state.game_name, user_ids, this.state.group).then((data)=>{
       console.log("repsonse", data)
+      if(data.error){
+        // error in creating game
+        alert("error in creating game")
+      }
+      else if(data.game_created==false){
+        // no error, but game not created
+        alert("game was not created")
+      }
+      else{
+        // game was created
+        let game = data.game_info
+        alert("game " + game.name + " was created")
+
+        this.props.navigation.dispatch(
+          // reset the navigation so that you can't navigate back from the userhome page
+          CommonActions.goBack()
+      );
+
+      }
+
     })
   }
 

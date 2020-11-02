@@ -44,7 +44,7 @@ class Register extends Component {
             this.state.users.map((user, key)=> (<Text key={key}>{user.name}</Text>))
           }
         </Text>
-        <NewUserForm></NewUserForm>
+        <NewUserForm navigation={this.props.navigation} />
         <TouchableOpacity
          style={styles.button}
          onPress={this.onPress}

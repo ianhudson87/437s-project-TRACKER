@@ -1,13 +1,11 @@
 import React, { Component } from 'react'
 import LoginForm from '../components/LoginForm'
-
-
 import {
     StyleSheet,
     TouchableOpacity,
     Text,
     View,
-    Button
+    Button,
   } from 'react-native'
   import { fetchUsers, createUser, loginUser } from "../constants/api"
 
