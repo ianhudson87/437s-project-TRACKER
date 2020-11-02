@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import AsyncStorage from '@react-native-community/async-storage'
+import { CommonActions } from '@react-navigation/native'
 import {
   StyleSheet,
   TouchableOpacity,
@@ -11,11 +13,14 @@ import { joinGroup, fetchGroups } from "../constants/api"
 class JoinGroup extends Component {
     constructor(props) {
         super(props);
-        this.state = {groups: [], loggedInUser: this.props.route.params.loggedInUser}
+        this.state = {groups: [], loggedInUserID: null}
     }
 
     componentDidMount(){
-      console.log("USERUSER:", this.state.loggedInUser)
+      AsyncStorage.getItem('loggedInUserID').then((value)=>{
+        this.setState({loggedInUserID: value})
+      })
+      // console.log("USERUSER:", this.state.loggedInUser)
       let group_list = []
       fetchGroups().then((response)=>{
         let groups = response.groups
@@ -27,7 +32,19 @@ class JoinGroup extends Component {
 
     handleGroupPress(group, event)
     {    
-      joinGroup(this.state.loggedInUser._id, group._id).then((data)=>{console.log("Joined Group")})
+      joinGroup(this.state.loggedInUserID, group._id).then((data)=>{
+        console.log('reponse', data)
+        if(data.error){
+          alert('error in joining group')
+        }
+        else if(data.joined_group==false){
+          alert('You are already in this group')
+        }
+        else{
+          alert('joined group:'+ group.name + 'successfully')
+          this.props.navigation.dispatch(CommonActions.goBack())
+        }
+      })
     }
 
   
