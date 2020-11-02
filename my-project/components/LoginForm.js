@@ -28,7 +28,7 @@ class LoginForm extends Component {
         this.setState({password: text});
     }
 
-    handleSubmit(navigation, event) {
+    handleSubmit(event) {
         // handler for when submit button gets pressed
 
         loginUser(this.state.username, this.state.password).then((data)=>{
@@ -38,7 +38,7 @@ class LoginForm extends Component {
                 console.log("THIS IS WHAT I WANT", data.user._id)
                 AsyncStorage.setItem( 'loggedInUserID', data.user._id )// save user_id as session variable. tutorial: https://www.tutorialspoint.com/react_native/react_native_asyncstorage.htm
                 
-                navigation.dispatch(
+                this.props.navigation.dispatch(
                     // reset the navigation so that you can't navigate back from the userhome page
                     CommonActions.reset({
                         index: 1,
@@ -73,7 +73,7 @@ class LoginForm extends Component {
                 <TextInput value={this.state.username} onChangeText={(text) => {this.handleChangeName(text)}} style={styles.text}/>
                 <Text>Password:</Text>
                 <TextInput secureTextEntry={true} value={this.state.password} onChangeText={(text) => {this.handleChangePass(text)}} style={styles.text} />
-                <Button title="Login" onPress={(e) => this.handleSubmit(navigation, e)} />
+                <Button title="Login" onPress={(e) => this.handleSubmit(e)} />
             </View>
            
         )
