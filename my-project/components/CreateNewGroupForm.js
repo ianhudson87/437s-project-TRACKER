@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, Button, StyleSheet} from 'react-native'
-import { createGroup } from "../constants/api"
+import { createGroup, joinGroup } from "../constants/api"
 
 
 class CreateNewGroupForm extends Component {
@@ -9,7 +9,7 @@ class CreateNewGroupForm extends Component {
       }
     constructor(props) {
         super(props);
-        this.state = {group_name: ''};
+        this.state = {group_name: '', user: this.props.loggedInUser};
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -28,6 +28,11 @@ class CreateNewGroupForm extends Component {
             this.setState({response: data});
             if(data.repeatedGroup == false){ // group successfully created
                 console.log("Group created");
+                console.log("Data: " + data.group);
+
+
+                joinGroup(this.state.user._id, data.group._id)
+
                 // this.props.navigation.navigate("UserHome", {
                 //     itemId: 86,
                 //     user: data.user
@@ -38,6 +43,7 @@ class CreateNewGroupForm extends Component {
             }
             
         })
+
         
         this.setState({username: ''});
         this.setState({password: ''});

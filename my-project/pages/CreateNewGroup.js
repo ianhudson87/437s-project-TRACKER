@@ -11,11 +11,11 @@ import CreateNewGroupForm from '../components/CreateNewGroupForm'
 class CreateNewGroup extends Component {
     constructor(props) {
         super(props);
-        this.state = {group: {'name': "default", 'users': []}}
+        this.state = {user: this.props.route.params.loggedInUser, group: {'name': "default", 'users': [], 'games': []}}
     }
 
     componentDidMount(){
-        
+      console.log(this.state.user);
     }
 
 render() {
@@ -25,7 +25,7 @@ render() {
           New group
         </Text>
        
-        <CreateNewGroupForm navigation={this.props.navigation} loggedInUser={this.props.loggedInUser}></CreateNewGroupForm>
+        <CreateNewGroupForm navigation={this.props.navigation} loggedInUser={this.state.user}></CreateNewGroupForm>
       </View>
     )
   }

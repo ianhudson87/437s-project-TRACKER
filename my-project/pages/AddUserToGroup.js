@@ -32,7 +32,7 @@ render() {
         </Text>
         <Text>
         {
-            this.state.group.users.map((user, key)=> (<Text key={key}>{user}</Text>))
+            this.state.group.users.map((user, key)=> (<Text key={key}>{user.name}</Text>))
         }
         </Text>
         <AddUserForm group={this.state.group} navigation={this.props.navigation} loggedInUser={this.props.loggedInUser}></AddUserForm>

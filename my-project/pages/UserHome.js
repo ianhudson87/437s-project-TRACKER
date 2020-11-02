@@ -43,7 +43,6 @@ class UserHome extends Component {
     navigateToGroup(group, event) {
         console.log(group.name);
         this.props.navigation.navigate("GroupPage", {
-            itemId: 86,
             group: group,
             loggedInUser: this.state.loggedInUser
         });
@@ -81,7 +80,11 @@ render() {
                   onPress={(e) => this.navigateToGroup(group, e)}/>))
           }
         </Text>
+
         <Button title='Create New Group' onPress={(e) => this.createNewGroup(e)}/>
+
+        <Button title='Join Group' onPress={(e) => this.joinGroup(e)}/>
+
       </View>
     )
   }
