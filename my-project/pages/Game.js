@@ -6,6 +6,7 @@ import {
   TextInput,
   Button,
   View,
+  ScrollView
 } from 'react-native'
 import { getObjectByID, changeScore } from '../constants/api'
 
@@ -70,13 +71,20 @@ class Game extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>
-          THIS IS THE PAGE FOR A SINGLE GAME
+        <Text style={styles.nameContainer}>
+          Game: {this.state.game.name}
         </Text>
 
+      <View style={styles.usersContainer}>
+        <Text>Players:</Text>
+        <ScrollView style={styles.usersListContainer}>
+          {this.state.users.map((user, key)=> (<Text key={key}>{user.name}</Text>))}
+        </ScrollView>
+      </View>
+
+
+  
         <Text>
-          Users in the game:
-          { this.state.users.map((user, key) => (<Text key={key}>{user.name}</Text>)) }
           Scores in the game:
           { this.state.game.scores.map((score, key) => (<Text key={key}>{score}</Text>)) }
           Add scores:
@@ -104,7 +112,27 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderStyle: 'solid',
     borderWidth: 2,
-  }
+  },
+  nameContainer: {
+    //flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontSize: "30px",
+    fontWeight: "bold",
+  },
+  usersContainer: {
+    //flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: "20%",
+  },
+  usersListContainer: {
+    flex: 1,
+    backgroundColor: 'lightblue',
+    marginHorizontal: 0,
+    //height: "30%",
+    width: "80%"
+  },
 })
 
 export default Game;
