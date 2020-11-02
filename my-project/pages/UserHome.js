@@ -28,7 +28,6 @@ class UserHome extends Component {
       console.log("REFRESH")
       // get loggedInUserID from "local storage"
       AsyncStorage.getItem('loggedInUserID').then((loggedInUserID)=>{
-        alert(loggedInUserID)
         console.log("USERID FROM STORAGE:", loggedInUserID)
         // update loggedInUserID in the state
         this.setState({loggedInUserID: loggedInUserID})

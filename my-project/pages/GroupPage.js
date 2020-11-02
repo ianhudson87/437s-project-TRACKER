@@ -32,7 +32,6 @@ refreshInfo(){
   console.log('REFRESH')
   AsyncStorage.getItem('loggedInUserID').then((value)=>{
     // get the id of the logged in user
-    alert(value)
     this.setState({loggedInUserID: value})
   }).then(()=>{console.log("data: group:", this.state.groupID, "user", this.state.loggedInUser)})
 

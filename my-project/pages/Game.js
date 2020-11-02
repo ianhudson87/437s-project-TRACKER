@@ -86,8 +86,6 @@ class Game extends Component {
 
   
         <Text>
-          Scores in the game:
-          { this.state.game.scores.map((score, key) => (<Text key={key}>{score}</Text>)) }
           Add scores:
           { this.state.users.map((user, key) => (<Button key={key} title={'Increment ' + user.name + "'s score"} onPress={ () => {this.handleIncrement(this.state.game._id, user._id)} }/>))}
         </Text>
