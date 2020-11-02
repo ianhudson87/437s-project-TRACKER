@@ -5,6 +5,7 @@ import {
   Text,
   Button,
   View,
+  ScrollView,
 } from 'react-native'
 import { getObjectByID } from "../constants/api"
 import GameThumbnail from "../components/GameThumbnail"
@@ -82,29 +83,52 @@ handleNewGame(){
 render() {
     return (
       <View style={styles.container}>
-        <Text>
-          Group Page
-        </Text>
-        <Text>
+        <View>
+          <Text>
+            Group Page
+          </Text>
+          <Text>
             Group NAME: {this.state.group.name}
-        </Text>
-        <Button title='Add User' onPress={(e) => this.handleNewUser(e)}/>
-        <Text>
-        Users in the group:
-        {
-            this.state.usersInGroup.map((user, key)=> (<Text key={key}>{user.name}</Text>))
-        }
-        Games in the group:
-        {/* this.state.gamesInGroup.map((game, key)=> (<Text key={key}>{game.name}</Text>)) */}
-        { this.state.gamesInGroup.map((game, key)=> (<GameThumbnail key={key} game={game} navigation={this.props.navigation}/>)) }
-        </Text>
-        <Button title='Create new game' onPress={() => this.handleNewGame()} />
+          </Text>
+          <Button title='Add User' onPress={(e) => this.handleNewUser(e)}/>
+        </View>
+        
+        <View style={styles.usersContainer}>
+          <Text>Users in the groups:</Text>
+          <ScrollView style={styles.scrollView}>
+            {this.state.usersInGroup.map((user, key)=> (<Text key={key}>{user.name}</Text>))}
+          </ScrollView>
+        </View>
+          
+        <View style={styles.gamesContainer}>
+          <Text>Games in the group:</Text>
+          <ScrollView style={styles.scrollView}>
+            { this.state.gamesInGroup.map((game, key)=> (<GameThumbnail key={key} game={game} navigation={this.props.navigation}/>)) }
+          </ScrollView>
+          <Button title='Create new game' onPress={() => this.handleNewGame()} />
+        </View>
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+    backgroundColor: 'pink',
+    marginHorizontal: 0,
+  },
+  usersContainer: {
+    width: 100,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  gamesContainer: {
+    flex: 3,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
