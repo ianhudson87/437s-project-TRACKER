@@ -79,7 +79,7 @@ class Game extends Component {
       <View style={styles.usersContainer}>
         <Text>Players:</Text>
         <ScrollView style={styles.usersListContainer}>
-          {this.state.users.map((user, key)=> (<Text key={key}>{user.name}</Text>))}
+        {this.state.users.map((user, key)=> (<Text key={key}> { user.name } { this.state.game.scores[key] } </Text>))}
         </ScrollView>
       </View>
 
