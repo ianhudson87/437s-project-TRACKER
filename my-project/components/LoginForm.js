@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import AsyncStorage from '@react-native-community/async-storage'
+import { CommonActions } from '@react-navigation/native';
 import { View, Text, TextInput, Button, StyleSheet, Alert} from 'react-native'
 import { createUser, loginUser } from "../constants/api"
 
@@ -29,7 +30,6 @@ class LoginForm extends Component {
 
     handleSubmit(navigation, event) {
         // handler for when submit button gets pressed
-        console.log(navigation);
 
         loginUser(this.state.username, this.state.password).then((data)=>{
             this.setState({response: data});
@@ -37,7 +37,17 @@ class LoginForm extends Component {
                 console.log(data.user.name + " logged in");
                 console.log("THIS IS WHAT I WANT", data.user._id)
                 AsyncStorage.setItem( 'loggedInUserID', data.user._id )// save user_id as session variable. tutorial: https://www.tutorialspoint.com/react_native/react_native_asyncstorage.htm
-                this.props.navigation.navigate("UserHome");
+                
+                navigation.dispatch(
+                    // reset the navigation so that you can't navigate back from the userhome page
+                    CommonActions.reset({
+                        index: 1,
+                        routes: [
+                            { name: 'UserHome' }
+                        ]
+                    })
+                );
+                //this.props.navigation.navigate("UserHome");
             }
             else if(data.userExists){ // user exists but password is incorrect
                 console.log("Wrong password");

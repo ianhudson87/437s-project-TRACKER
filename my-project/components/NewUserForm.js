@@ -46,7 +46,17 @@ class NewUserForm extends Component {
                 alert('Successfully registered')
                 console.log('NEW USER NAME:', data.user.name)
                 AsyncStorage.setItem( 'loggedInUserID', data.user._id ) // set local storage var for userID
-                this.props.navigation.navigate('UserHome')
+
+                navigation.dispatch(
+                    // reset the navigation so that you can't navigate back from the userhome page
+                    CommonActions.reset({
+                        index: 1,
+                        routes: [
+                            { name: 'UserHome' }
+                        ]
+                    })
+                );
+                //this.props.navigation.navigate('UserHome')
             }
         })
         

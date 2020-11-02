@@ -10,6 +10,7 @@ import {
 import { getObjectByID } from "../constants/api"
 
 class UserHome extends Component {
+
     constructor(props) {
         super(props);
         this.state = {groups: [], loggedInUserID: null, loggedInUser: {name: "default"}};
