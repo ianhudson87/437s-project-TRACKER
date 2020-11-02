@@ -44,7 +44,9 @@ class NewUserForm extends Component {
             else{
                 // good registration. go to user home page
                 alert('Successfully registered')
-                this.props.navigation.navigate('UserHome', {userID: data.user._id})
+                console.log('NEW USER NAME:', data.user.name)
+                AsyncStorage.setItem( 'loggedInUserID', data.user._id ) // set local storage var for userID
+                this.props.navigation.navigate('UserHome')
             }
         })
         

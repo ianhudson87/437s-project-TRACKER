@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import AsyncStorage from '@react-native-community/async-storage'
 import {
   StyleSheet,
   TouchableOpacity,
@@ -14,50 +15,73 @@ class GroupPage extends Component {
 constructor(props) {
   super(props);
   this.state = { 
-    group: this.props.route.params.group, // contains group "object"
-    loggedInUser: this.props.route.params.loggedInUser, // contains user "oject"
+    groupID: this.props.route.params.group._id,
+    group: {name: "default"}, // contains group "object". get this from api
+    loggedInUserID: null, // contains userID. get this from local storage
     usersInGroup: [], // contains list of user objects
     gamesInGroup: [], // contains list of game objects
   }
 
   this.handleNewUser = this.handleNewUser.bind(this);
   this.handleNewGame = this.handleNewGame.bind(this);
+  this.refreshInfo = this.refreshInfo.bind(this);
 }
 
-componentDidMount(){
-    console.log("data: group:", this.state.group, "user", this.state.loggedInUser)
+refreshInfo(){
+  console.log('REFRESH')
+  AsyncStorage.getItem('loggedInUserID').then((value)=>{
+    // get the id of the logged in user
+    alert(value)
+    this.setState({loggedInUserID: value})
+  }).then(()=>{console.log("data: group:", this.state.groupID, "user", this.state.loggedInUser)})
 
-    // populate the usersInGroup list
+  // populate the usersInGroup list
+  getObjectByID({id: this.state.groupID, type: "group"}).then((response)=>{
+    // get the group object
+    if(response.object_exists){
+      this.setState({group: response.object})
+      return response.object
+    }
+    else{
+      return null
+    }
+  }).then((group)=>{
+    console.log("GROUP:", group)
+
     let users_info_list = []
-    let user_ids_in_group = this.state.group.users
+    let user_ids_in_group = group.users
     user_ids_in_group.forEach((user_id) => {
       // push user info into list
       getObjectByID({id: user_id, type: "user"}).then((response)=>{
         if(response.object_exists){
           users_info_list.push(response.object)
         }
-
         this.setState({usersInGroup: users_info_list})
         console.log(this.state.usersInGroup)
         console.log("gamesInGroup", this.state.gamesInGroup)
       })
-      
     })
 
-    // populate the gamesInGroup list
     let games_info_list = []
-    let game_ids_in_group = this.state.group.games
+    let game_ids_in_group = group.games
     game_ids_in_group.forEach((game_id) => {
       // push game info into list
       getObjectByID({id: game_id, type: "game"}).then((response)=>{
+        console.log("RESPONSE", response)
         if(response.object_exists){
+          console.log("RESPONSE OBJECT", response.object)
           games_info_list.push(response.object)
         }
-
         this.setState({gamesInGroup: games_info_list})
+        console.log(this.state.gamesInGroup)
+        console.log("gamesInGroup", this.state.gamesInGroup)
       })
-      
     })
+  })
+}
+
+componentDidMount(){
+  this.props.navigation.addListener('focus', ()=>{this.refreshInfo()}); // THIS REFRESHES THE PAGE EVERY TIME YOU GO BACK TO IT. 0.0
 }
 
 handleNewUser(){
