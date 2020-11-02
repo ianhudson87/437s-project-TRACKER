@@ -76,6 +76,23 @@ export const getObjectByID = async (input) =>{
     return data
 }
 
+export const getGameByID = async (input) =>{
+    console.log(input.id)
+    const res = await fetch("http://localhost:3000/api/getGameByID",{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id: input.id
+        })
+    })
+    const data = await res.json();
+    console.log(data);
+    return data
+}
+
 export const getUser = async (name) =>{
     const res = await fetch(API_PATH + "getUser",{
         method: 'POST',
@@ -111,6 +128,31 @@ export const joinGroup = async (user_id, group_id) =>{
     return data
 }
 
+//submits a request to the API to add user to game
+export const joinGame = async (user_id, game_id) =>{
+    console.log("User: " + user_id)
+    console.log("Game: " + game_id)
+    const res = await fetch("http://localhost:3000/api/games",{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            user_id: user_id,
+            game_id: game_id
+        })
+    })
+    const data = await res.json();
+    return data
+}
+
+export const fetchGroups = async () =>{
+    const req = await fetch(API_PATH + "groups")
+    const data = await req.json();
+    return data
+}
+
 //submits a request to the API to create new group with specified name
 export const createGroup = async (name) =>{
     const res = await fetch(API_PATH + "groups",{
@@ -126,6 +168,7 @@ export const createGroup = async (name) =>{
     const data = await res.json();
     return data
 }
+
 
 //submits a request to the API to create new game with certain parameters
 export const createGame = async (name, user_ids, group_id) =>{
