@@ -7,14 +7,14 @@ export const createUser = async (req, res) => {
     let {name, password} = req.body;
     const groups = []
     const games = []
+    let newUser
 
     // hashes and salts the entered password for storage in database
     const saltRounds = 6;
     bcrypt.hash(password, saltRounds, function(err, hash){
         password = hash;
+        newUser = new Models.UserModel( {name, password, groups, games});
     })
-    
-    const newUser = new Models.UserModel( {name, password, groups, games});
 
 
 
