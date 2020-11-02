@@ -7,20 +7,23 @@ import {
   View,
 } from 'react-native'
 import { getGroupByID } from "./constants/api"
+import { joinGroup } from "./constants/api"
+import { getAllGroups } from "./constants/api"
+
 import LoginForm from './LoginForm'
 
-class UserHome extends Component {
+class JoinGroup extends Component {
     constructor(props) {
         super(props);
         this.state = {groups: ["hi"], user: {'name': "default"}}
-        this.navigateToGroup = this.navigateToGroup.bind(this);
-        this.createNewGroup = this.createNewGroup.bind(this);
     }
 
     componentDidMount(){
         const user = this.props.route.params.user;
         this.setState({user: user})
-        const groupIDs = user.groups;
+        const groupIDs = getAllGroups();
+
+        console.log(groupIDs.length);
         
         for(let i=0; i<groupIDs.length; i++){
             getGroupByID({'id': groupIDs[i]}).then((data)=>{
@@ -29,53 +32,26 @@ class UserHome extends Component {
         }
     }
 
-    navigateToGroup(group, event) {
-        console.log(group.name);
-        this.props.navigation.navigate("GroupPage", {
-            itemId: 86,
-            group: group,
-            loggedInUser: this.state.user
-        });
+    handleGroupPress(group, event)
+    {    
+      joinGroup(group.id, this.state.user).then((data)=>{console.log("Joined Group")})
     }
 
-    createNewGroup(group, event) {
-        this.props.navigation.navigate("CreateNewGroup", {
-            itemId: 86,
-            loggedInUser: this.state.user
-        });
-    }
-
-    joinGroup(group, event) {
-      this.props.navigation.navigate("JoinGroup", {
-          itemId: 86,
-          loggedInUser: this.state.user
-      });
-  }
   
 render() {
     return (
       <View style={styles.container}>
         <Text>
-          User Home Page
-        </Text>
-        <Text>
-            Logged in user: {this.state.user.name}
-
-        </Text>
-        <Text>
             Groups:
         </Text>
+
         <Text>
         {
             this.state.groups.map((group, key)=> (<Button title={group} key={key} 
-                onPress={(e) => this.navigateToGroup(group, e)}/>))
+                onPress={(e) => this.handleGroupPress(group, e)}/>))
         }
         </Text>
-
-        <Button title='Create New Group' onPress={(e) => this.createNewGroup(e)}/>
-
-        <Button title='Join Group' onPress={(e) => this.joinGroup(e)}/>
-
+        
       </View>
     )
   }
@@ -95,4 +71,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default UserHome;
+export default JoinGroup;

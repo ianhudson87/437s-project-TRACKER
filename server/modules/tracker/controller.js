@@ -54,10 +54,11 @@ export const createGroup = async (req, res) => {
     // req.body requires the name of the group that you are creating
     const {name} = req.body;
     const users = []
-    const newGroup = new Models.GroupModel( {name, users} );
+    const games = []
+    const newGroup = new Models.GroupModel( {name, users, games} );
     
     try{
-        let existingGroups  = await Models.GroupModel.find();
+        let existingGroups  = await Models.GroupModel.find({});
         // determine if group name is taken already
         for(let i=0; i<existingGroups.length; i++){
             console.log("New group name" + newGroup.name)
@@ -74,13 +75,47 @@ export const createGroup = async (req, res) => {
     }
 }
 
+export const createGame = async (req, res) => {
+    // req.body requires the name of the group that you are creating
+    const {name} = req.body;
+    const users = []
+    const newGame = new Models.GameModel( {name, users} );
+    
+    try{
+        let existingGames  = await Models.GameModel.find();
+        // determine if group name is taken already
+        for(let i=0; i<existingGames.length; i++){
+            console.log("New game name" + newGame.name)
+            console.log("Existing game name" + existingGames[i].name)
+            if(newGame.name == existingGames[i].name){
+                return res.status(203).json({ error:false, repeatedGroup:true, message: "game name is taken is taken"})
+            }
+        }
+        // name not taken yet
+        console.log('here')
+        return res.status(203).json({ group: await newGame.save(), error:false, repeatedGroup:false })
+    } catch(e) {
+        return res.status(400).json({ error:true, message: "error with creating user", error_msg:e})
+    }
+}
+
 export const getAllGroups = async (req, res) => {
     // no requirements for req.body
     console.log("REQUESTING GROUPS")
     try{
         return res.status(200).json({ groups: await Models.GroupModel.find() })
     } catch(e) {
-        return res.status(e.status).json({ error:true, message: "error with getAllUsers"})
+        return res.status(e.status).json({ error:true, message: "error with getAllGroups"})
+    }
+}
+
+export const getAllGames = async (req, res) => {
+    // no requirements for req.body
+    console.log("REQUESTING GAMES")
+    try{
+        return res.status(200).json({ groups: await Models.GameModel.find({}) })
+    } catch(e) {
+        return res.status(e.status).json({ error:true, message: "error with getAllGames"})
     }
 }
 
@@ -101,6 +136,26 @@ export const getGroupByID = async (req, res) => {
         }
     } catch(e) {
         return res.status(500).json({ error:true, message: "error with getting group"})
+    }
+}
+
+export const getGameByID = async (req, res) => {
+    // no requirements for req.body
+    console.log("GETTING GAME FROM ID")
+    const {id} = req.body;
+    let game_id = id
+    try{
+        let game_with_given_id = await Models.GameModel.find({ '_id': game_id})
+        if(game_with_given_id.length == 0){
+            // there doesn't exist a group with the given id
+            console.log("Game ID: " + game_id)
+            return res.status(200).json({ group: null, error: false, group_exists: false, message: "game_id DNE"})
+        }
+        else{
+            return res.status(201).json({ group: game_with_given_id, error: false, game_exists: false, message: "Game Found"})
+        }
+    } catch(e) {
+        return res.status(500).json({ error:true, message: "error with getting game"})
     }
 }
 
@@ -147,6 +202,37 @@ export const joinGroup = async (req, res) => {
                 // push the user id to the list of users in the group with the correct group id
                 await Models.GroupModel.updateOne({ '_id': group_id }, { '$push': { users: user_id } })
                 return res.status(200).json({ error: false, joined_group: true, message: "joined group!"})
+            }
+        }
+        
+    } catch(e) {
+        return res.status(400).json({ error:true, error_message: "error with joining group"})
+    }
+}
+
+export const joinGame = async (req, res) => {
+    // req.body requires the id of the user and the id of the game
+    const {user_id, game_id} = req.body;
+
+    try{
+        // check to make sure that user is valid
+        let user_with_given_id = await Models.UserModel.find({ '_id': user_id})
+        if(user_with_given_id.length == 0){
+            // there doesn't exist a user with the given id
+            return res.status(200).json({ error: false, joined_game: false, message: "user_id DNE"})
+        }
+        else{
+            // user_id is valid
+            // check to make sure that user isn't already in the game
+            let game_contains_user = await Models.GameModel.find({ '_id': game_id, 'users': user_id })
+            if(game_contains_user.length == 1){
+                // game that user is trying to join already contains the user
+                return res.status(200).json({ error: false, joined_game: false, message: "user_id is already in game"})
+            }
+            else{
+                // push the user id to the list of users in the game with the correct game id
+                await Models.GameModel.updateOne({ '_id': game_id }, { '$push': { users: user_id } })
+                return res.status(200).json({ error: false, joined_game: true, message: "joined game!"})
             }
         }
         

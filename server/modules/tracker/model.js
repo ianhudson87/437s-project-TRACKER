@@ -25,8 +25,30 @@ const GroupSchema = new Schema({
         // contains ids of Users in the Group
         type: Array,
         required: true
+    },
+    games: {
+        // contains ids of Games in the Group
+        type: Array,
+        required: false
+    }
+})
+
+const GameSchema = new Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    users: {
+        // contains ids of Users in the Game
+        type: Array,
+        required: true
+    },
+    score: {
+        type: Number,
+        required: false
     }
 })
 
 export const UserModel =  mongoose.model('users', UserSchema)
 export const GroupModel = mongoose.model('groups', GroupSchema)
+export const GameModel = mongoose.model('games', GameSchema)

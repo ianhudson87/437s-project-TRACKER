@@ -6,13 +6,13 @@ import {
   Button,
   View,
 } from 'react-native'
-import { getGroupByID } from "./constants/api"
+import { getGroupByID, getGameByID } from "./constants/api"
 import LoginForm from './LoginForm'
 
 class GroupPage extends Component {
     constructor(props) {
         super(props);
-        this.state = {group: {'name': "default", 'users': []}}
+        this.state = {group: {'name': "default", 'users': [], 'games': []}}
     }
 
     componentDidMount(){
@@ -21,6 +21,22 @@ class GroupPage extends Component {
         
         this.handleNewUser = this.handleNewUser.bind(this);
     }
+
+    navigateToGame(game, event) {
+      console.log(game.name);
+      this.props.navigation.navigate("GamePage", {
+          itemId: 91,
+          game: game,
+          loggedInUser: this.state.user
+      });
+  }
+
+  createNewGame(game, event) {
+      this.props.navigation.navigate("CreateNewGame", {
+          itemId: 91,
+          loggedInUser: this.state.user
+      });
+  }
 
     handleNewUser(){
         this.props.navigation.navigate("AddUserToGroup", {
@@ -41,12 +57,28 @@ render() {
         <Text>
             Group: {this.state.group.name}
         </Text>
-        <Button title='Add User' onPress={(e) => this.handleNewUser(e)}/>
+        <Text>
+            Users:
+        </Text>
         <Text>
         {
-            this.state.group.users.map((user, key)=> (<Text key={key}>{user}</Text>))
+            this.state.group.users.map((user, key)=> (
+            <Text key={key}>
+              {user.name}
+            </Text>))
         }
         </Text>
+        <Button title='Add User' onPress={(e) => this.handleNewUser(e)}/>
+        <Text>
+            Games:
+        </Text>
+        <Text>
+        {
+            this.state.group.games.map((game, key)=> (<Button title={game.name} key={key} 
+                onPress={(e) => this.navigateToGame(game, e)}/>))
+        }
+        </Text>
+        <Button title='Create New Game' onPress={(e) => this.createNewGame(e)}/>
       </View>
     )
   }

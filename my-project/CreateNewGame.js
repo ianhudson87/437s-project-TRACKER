@@ -6,17 +6,17 @@ import {
   Button,
   View,
 } from 'react-native'
-import { getGroupByID } from "./constants/api"
-import CreateNewGroupForm from './CreateNewGroupForm'
+import { getGameByID } from "./constants/api"
+import CreateNewGameForm from './CreateNewGameForm'
 
-class CreateNewGroup extends Component {
+class CreateNewGame extends Component {
     constructor(props) {
         super(props);
-        this.state = {user: this.props.route.params.loggedInUser, group: {'name': "default", 'users': [], 'games': []}}
+        this.state = {game: {'name': "default", 'users': [], 'score': 0}}
     }
 
     componentDidMount(){
-      console.log(this.state.user);
+        
     }
 
   
@@ -24,10 +24,10 @@ render() {
     return (
       <View style={styles.container}>
         <Text>
-          New group
+          New Game
         </Text>
        
-        <CreateNewGroupForm navigation={this.props.navigation} loggedInUser={this.state.user}></CreateNewGroupForm>
+        <CreateNewGameForm navigation={this.props.navigation} loggedInUser={this.props.loggedInUser}></CreateNewGameForm>
       </View>
     )
   }
@@ -47,4 +47,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default CreateNewGroup;
+export default CreateNewGame;

@@ -13,6 +13,10 @@ import UserHome from './UserHome'
 import GroupPage from './GroupPage'
 import AddUserToGroup from './AddUserToGroup'
 import CreateNewGroup from './CreateNewGroup'
+import JoinGroup from './JoinGroup'
+import GamePage from './GamePage'
+import AddUserToGame from './AddUserToGame'
+import CreateNewGame from './CreateNewGame'
 import LoginForm from './LoginForm'
 
 // docs: https://reactnavigation.org/docs/hello-react-navigation
@@ -50,6 +54,10 @@ class App extends Component {
                     <Stack.Screen name="GroupPage" component={GroupPage} />
                     <Stack.Screen name="AddUserToGroup" component={AddUserToGroup} />
                     <Stack.Screen name="CreateNewGroup" component={CreateNewGroup} />
+                    <Stack.Screen name="JoinGroup" component={JoinGroup} />
+                    <Stack.Screen name="GamePage" component={GamePage} />
+                    <Stack.Screen name="AddUserToGame" component={AddUserToGame} />
+                    <Stack.Screen name="CreateNewGame" component={CreateNewGame} />
                 </Stack.Navigator>
             </NavigationContainer>
         )
