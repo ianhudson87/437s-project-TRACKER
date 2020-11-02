@@ -116,28 +116,30 @@ const styles = StyleSheet.create({
     marginHorizontal: 0,
   },
   nameContainer: {
-    flex: 1,
+    //flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     fontSize: "30px",
     fontWeight: "bold",
   },
   usersContainer: {
-    flex: 1,
+    //flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    height: "20%",
   },
   usersListContainer: {
     flex: 1,
     backgroundColor: 'lightblue',
     marginHorizontal: 0,
-    height: "30%",
+    //height: "30%",
     width: "80%"
   },
   gamesContainer: {
-    flex: 3,
+    //flex: 3,
     justifyContent: 'center',
     alignItems: 'center',
+    height: "20%",
   },
   gamesListContainer: {
     flex: 1,
@@ -154,7 +156,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#DDDDDD',
     padding: 10,
-    marginBottom: 10
+    marginTop: 20
   }
 })
 
