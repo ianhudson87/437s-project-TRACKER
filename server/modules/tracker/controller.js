@@ -9,7 +9,7 @@ export const createUser = async (req, res) => {
     const games = []
 
     // hashes and salts the entered password for storage in database
-    let hashedPassword;
+    let hashedPassword="hi";
     const saltRounds = 6;
     bcrypt.hash(password, saltRounds, function(err, hash){
         hashedPassword = hash;
