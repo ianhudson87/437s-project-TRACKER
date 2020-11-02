@@ -83,26 +83,23 @@ handleNewGame(){
 render() {
     return (
       <View style={styles.container}>
-        <View>
-          <Text>
-            Group Page
-          </Text>
-          <Text>
-            Group NAME: {this.state.group.name}
+        <View style={styles.nameContainer}>
+          <Text style={styles.nameContainer}>
+            {this.state.group.name}
           </Text>
           <Button title='Add User' onPress={(e) => this.handleNewUser(e)}/>
         </View>
         
         <View style={styles.usersContainer}>
-          <Text>Users in the groups:</Text>
-          <ScrollView style={styles.scrollView}>
+          <Text>Players:</Text>
+          <ScrollView style={styles.usersListContainer}>
             {this.state.usersInGroup.map((user, key)=> (<Text key={key}>{user.name}</Text>))}
           </ScrollView>
         </View>
           
         <View style={styles.gamesContainer}>
           <Text>Games in the group:</Text>
-          <ScrollView style={styles.scrollView}>
+          <ScrollView style={styles.gamesListContainer}>
             { this.state.gamesInGroup.map((game, key)=> (<GameThumbnail key={key} game={game} navigation={this.props.navigation}/>)) }
           </ScrollView>
           <Button title='Create new game' onPress={() => this.handleNewGame()} />
@@ -115,19 +112,38 @@ render() {
 const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
-    backgroundColor: 'pink',
+    backgroundColor: 'lightblue',
     marginHorizontal: 0,
   },
-  usersContainer: {
-    width: 100,
+  nameContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    fontSize: "30px",
+    fontWeight: "bold",
+  },
+  usersContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  usersListContainer: {
+    flex: 1,
+    backgroundColor: 'lightblue',
+    marginHorizontal: 0,
+    height: "30%",
+    width: "80%"
   },
   gamesContainer: {
     flex: 3,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  gamesListContainer: {
+    flex: 1,
+    backgroundColor: 'lightblue',
+    marginHorizontal: 0,
+    height: "20%",
   },
   container: {
     flex: 1,
