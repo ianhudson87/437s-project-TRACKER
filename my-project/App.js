@@ -46,7 +46,7 @@ class App extends Component {
             <NavigationContainer>
                 <Stack.Navigator initialRouteName="Test">
                     {/* All the screens that can be routed to need to be here*/}
-                    <Stack.Screen name="Test" component={Test} options={{ title: 'TITLE' }}/>
+                    <Stack.Screen name="Test" component={Test} options={{ title: 'new TITLE' }}/>
                     <Stack.Screen name="Login" component={Login} />
                     <Stack.Screen name="Register" component={Register} />
                     <Stack.Screen name="Home" component={Home} />
