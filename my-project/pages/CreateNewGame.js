@@ -132,11 +132,12 @@ const styles = StyleSheet.create({
   view1:{
     flex:1,
     backgroundColor: 'lightblue',
+    height:50
   },
   view2:{
     flex:2,
     backgroundColor: 'lightgreen',
-    height:200
+    height:150
   },
   view3:{
     flex:1
