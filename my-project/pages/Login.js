@@ -50,7 +50,7 @@ import {
           
           <View>
             
-            <Button title="go to HOME" onPress={ () => navigation.navigate("Home") }></Button>
+            <Button title="Home Page" onPress={ () => navigation.navigate("Home") }></Button>
           </View>
         </View>
       )
