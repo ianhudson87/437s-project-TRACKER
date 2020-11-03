@@ -124,7 +124,6 @@ render() {
         <View style={styles.usersContainer}>
           <Text>Players:</Text>
           <ScrollView style={styles.usersListContainer}>
-            {this.state.usersInGroup.map((user, key)=> (<Text key={key}>{user.name}</Text>))}
             {this.state.usersInGroup.map((user, key)=> (<Button title={user.name} key={key} 
                   onPress={(e) => this.navigateToUserProfile(user, e)}/>))}
           </ScrollView>
@@ -166,7 +165,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightblue',
     marginHorizontal: 0,
     //height: "30%",
-    width: "80%"
+    width: "120%"
   },
   gamesContainer: {
     //flex: 3,
