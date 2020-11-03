@@ -14,7 +14,15 @@ class LogoutButton extends Component {
 
     handleClick() {
         // handler for logout button change
-        this.props.navigation.navigate("Test");
+        this.props.navigation.dispatch(
+            // reset the navigation so that you can't navigate back from the userhome page
+            CommonActions.reset({
+                index: 1,
+                routes: [
+                    { name: 'Test' }
+                ]
+            })
+        )
     }
 
     render() {
