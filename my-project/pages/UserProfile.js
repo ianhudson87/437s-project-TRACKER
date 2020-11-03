@@ -11,60 +11,54 @@ import {
 import { getObjectByID } from "../constants/api"
 import GameThumbnail from "../components/GameThumbnail"
 
-class GroupPage extends Component {
+class UserProfile extends Component {
 constructor(props) {
   super(props);
   this.state = { 
-    groupID: this.props.route.params.group._id,
-    group: {name: "default"}, // contains group "object". get this from api
+    userID: this.props.route.params.userID,
+    user: {name: "default"}, // contains user "object". get this from api
     loggedInUserID: null, // contains userID. get this from local storage
-    usersInGroup: [], // contains list of user objects
-    gamesInGroup: [], // contains list of game objects
+    userGroups: [], // contains list of group objects
+    userGames: [], // contains list of game objects
   }
 
-  this.handleNewUser = this.handleNewUser.bind(this);
-  this.handleNewGame = this.handleNewGame.bind(this);
   this.refreshInfo = this.refreshInfo.bind(this);
 }
 
 refreshInfo(){
   // refresh all the information about the group
   console.log('REFRESH')
-  AsyncStorage.getItem('loggedInUserID').then((value)=>{
-    // get the id of the logged in user
-    this.setState({loggedInUserID: value})
-  }).then(()=>{console.log("data: group:", this.state.groupID, "user", this.state.loggedInUser)})
+  console.log('DDDDDDDDDDDDDD')
 
   // populate the usersInGroup list
-  getObjectByID({id: this.state.groupID, type: "group"}).then((response)=>{
+  getObjectByID({id: this.state.userID, type: "user"}).then((response)=>{
     // get the group object
     if(response.object_exists){
-      this.setState({group: response.object})
+      this.setState({user: response.object})
       return response.object
     }
     else{
       return null
     }
-  }).then((group)=>{
-    console.log("GROUP:", group)
+  }).then((user)=>{
+    console.log("USER:", user)
 
-    let users_info_list = []
-    let user_ids_in_group = group.users
-    user_ids_in_group.forEach((user_id) => {
+    let groups_info_list = []
+    let group_ids_for_user = user.groups
+    group_ids_for_user.forEach((group_id) => {
       // push user info into list
-      getObjectByID({id: user_id, type: "user"}).then((response)=>{
+      getObjectByID({id: group_id, type: "group"}).then((response)=>{
         if(response.object_exists){
-          users_info_list.push(response.object)
+          groups_info_list.push(response.object)
         }
-        this.setState({usersInGroup: users_info_list})
-        console.log(this.state.usersInGroup)
-        console.log("gamesInGroup", this.state.gamesInGroup)
+        this.setState({userGroups: groups_info_list})
+        console.log(this.state.userGroups)
       })
     })
 
     let games_info_list = []
-    let game_ids_in_group = group.games
-    game_ids_in_group.forEach((game_id) => {
+    let game_ids_for_user = user.games
+    game_ids_for_user.forEach((game_id) => {
       // push game info into list
       getObjectByID({id: game_id, type: "game"}).then((response)=>{
         console.log("RESPONSE", response)
@@ -72,9 +66,8 @@ refreshInfo(){
           console.log("RESPONSE OBJECT", response.object)
           games_info_list.push(response.object)
         }
-        this.setState({gamesInGroup: games_info_list})
-        console.log(this.state.gamesInGroup)
-        console.log("gamesInGroup", this.state.gamesInGroup)
+        this.setState({userGames: games_info_list})
+        console.log("userGames", this.state.userGames)
       })
     })
   })
@@ -83,58 +76,28 @@ refreshInfo(){
 componentDidMount(){
   this.props.navigation.addListener('focus', ()=>{this.refreshInfo()}); // THIS REFRESHES THE PAGE EVERY TIME YOU GO BACK TO IT. 0.0
 }
-
-handleNewUser(){
-    this.props.navigation.navigate("AddUserToGroup", {
-        itemId: 86,
-        group: this.state.group,
-        navigation: this.props.navigation,
-        loggedInUser: this.state.loggedInUser
-    });
-}
-
-// function for handling "create new game" button click
-handleNewGame(){
-  // redirect to create new game page
-  // need to pass group and user that clicked the button
-  this.props.navigation.navigate("CreateNewGame", {
-    group: this.state.group,
-    loggedInUser: this.state.loggedInUser
-  });
-}
-
-navigateToUserProfile(user, event) {
-  console.log(user.name);
-  this.props.navigation.navigate("UserProfile", {
-      userID: user._id,
-  });
-}
-
   
 render() {
     return (
       <View style={styles.container}>
         <View style={styles.nameContainer}>
           <Text style={styles.nameContainer}>
-            {this.state.group.name}
+            {this.state.user.name}
           </Text>
-          <Button title='Add User' onPress={(e) => this.handleNewUser(e)}/>
         </View>
         
         <View style={styles.usersContainer}>
-          <Text>Players:</Text>
+          <Text>{this.state.user.name}'s Groups:</Text>
           <ScrollView style={styles.usersListContainer}>
-            {this.state.usersInGroup.map((user, key)=> (<Button title={user.name} key={key} 
-                  onPress={(e) => this.navigateToUserProfile(user, e)}/>))}
+            {this.state.userGroups.map((group, key)=> (<Text key={key}>{group.name}</Text>))}
           </ScrollView>
         </View>
           
         <View style={styles.gamesContainer}>
-          <Text>Games in the group:</Text>
+          <Text>{this.state.user.name}'s Games:</Text>
           <ScrollView style={styles.gamesListContainer}>
-            { this.state.gamesInGroup.map((game, key)=> (<GameThumbnail key={key} game={game} navigation={this.props.navigation}/>)) }
+            { this.state.userGames.map((game, key)=> (<GameThumbnail key={key} game={game} navigation={this.props.navigation}/>)) }
           </ScrollView>
-          <Button title='Create new game' onPress={() => this.handleNewGame()} />
         </View>
       </View>
     )
@@ -165,7 +128,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightblue',
     marginHorizontal: 0,
     //height: "30%",
-    width: "120%"
+    width: "80%"
   },
   gamesContainer: {
     //flex: 3,
@@ -192,4 +155,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default GroupPage;
+export default UserProfile;

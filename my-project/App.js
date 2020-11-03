@@ -17,6 +17,7 @@ import CreateNewGroup from './pages/CreateNewGroup'
 import CreateNewGame from './pages/CreateNewGame'
 import Game from "./pages/Game"
 import JoinGroup from './pages/JoinGroup'
+import UserProfile from './pages/UserProfile'
 
 
 // docs: https://reactnavigation.org/docs/hello-react-navigation
@@ -27,10 +28,10 @@ class Test extends Component {
         const navigation = this.props.navigation;
         return(
             <View>
-                <Text>THIS IS THE TEST SCREEn</Text>
+                <Text>LOGIN/REGISTER SCREEN</Text>
                 {/* use the navigation prop to go to other screens */}
-                <Button title="go to login" onPress={ () => navigation.navigate("Login") }></Button>
-                <Button title="go to registration" onPress={ () => navigation.navigate("Register") }></Button>
+                <Button title="Login" onPress={ () => navigation.navigate("Login") }></Button>
+                <Button title="Register" onPress={ () => navigation.navigate("Register") }></Button>
                 
             </View>
             
@@ -46,7 +47,7 @@ class App extends Component {
             <NavigationContainer>
                 <Stack.Navigator initialRouteName="Test">
                     {/* All the screens that can be routed to need to be here*/}
-                    <Stack.Screen name="Test" component={Test} options={{ title: 'new TITLE' }}/>
+                    <Stack.Screen name="Test" component={Test} options={{ title: 'Login/Register' }}/>
                     <Stack.Screen name="Login" component={Login} />
                     <Stack.Screen name="Register" component={Register} />
                     <Stack.Screen name="Home" component={Home} />
@@ -57,6 +58,7 @@ class App extends Component {
                     <Stack.Screen name="JoinGroup" component={JoinGroup} />
                     <Stack.Screen name="CreateNewGame" component={CreateNewGame} />
                     <Stack.Screen name="Game" component={Game} />
+                    <Stack.Screen name="UserProfile" component={UserProfile} />
                 </Stack.Navigator>
             </NavigationContainer>
         )
