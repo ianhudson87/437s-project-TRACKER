@@ -5,12 +5,13 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { CommonActions } from '@react-navigation/native'
 import {
   StyleSheet,
+  ScrollView,
   Text,
   TextInput,
   Button,
   View,
 } from 'react-native'
-import { createGame } from "../constants/api"
+import { createGame, fetchUsers} from "../constants/api"
 
 class CreateNewGame extends Component {
   // need to know the user who wants to create the game. Need to know the group that the user is creating the game in
@@ -23,31 +24,43 @@ class CreateNewGame extends Component {
       group: this.props.route.params.group,
       loggedInUserID: null,
       opponent_id: "",
+      opponent_name: "",
       game_name: "",
       error_msg: "",
+      users: [], // contains user objects
     }
 
-    this.handleOpponentChange = this.handleOpponentChange.bind(this);
+    this.handleSelectOpponent = this.handleSelectOpponent.bind(this);
     this.handleGameNameChange = this.handleGameNameChange.bind(this);
     this.handleNewGame = this.handleNewGame.bind(this);
   }
 
   componentDidMount(){
+    // get id of logged in user
     AsyncStorage.getItem('loggedInUserID').then((value)=>{
       this.setState({ loggedInUserID: value})
     }).then(()=>{
       console.log("data: group:", this.state.group, "user", this.state.loggedInUserID)
     })
-  }
 
-  handleOpponentChange(text) {
-    // handler for opponent box change
-    this.setState({opponent_id: text});
+    // populate this.state.users
+    fetchUsers().then((data)=>{
+      console.log("response from fetchUsers", data)
+      this.setState({users: data.users})
+    }).then(()=>{
+      console.log("this.state.users", this.state.users)
+    })
+
   }
 
   handleGameNameChange(text) {
     // handler for game name box change
     this.setState({game_name: text});
+  }
+
+  handleSelectOpponent(user){
+    // handler for when user clicks on user to be opponent
+    this.setState({opponent_id: user._id, opponent_name: user.name})
   }
 
   handleNewGame(event) {
@@ -83,42 +96,59 @@ class CreateNewGame extends Component {
 render() {
   return (
     <View style={styles.container}>
-      <Text>
-        Create New Game Page
-      </Text>
+      <View style={styles.view1}>
+        <Text>
+          Create New Game Page
+        </Text>
 
-      <Text>
-          For Group: {this.state.group.name}
-      </Text>
-
-      <Text>Opponent User ID:</Text>
-      <TextInput value={this.state.opponent_id} onChangeText={(text)=>{this.handleOpponentChange(text)}} style={styles.text}/>
+        <Text>
+            For Group: {this.state.group.name}
+        </Text>
+      </View>
       
-      <Text>game Name:</Text>
-      <TextInput value={this.state.game_name} onChangeText={(text)=>this.handleGameNameChange(text)} style={styles.text}/>
-      <Button title='Create Game' onPress={this.handleNewGame}/>
-      <Text>{}</Text>
+      <View style={styles.view2}>
+        <Text>Select Opponent:</Text>
+        <ScrollView style={styles.scrollView}>
+          {/* buttons that show each user */}
+          {this.state.users.map((user, key)=> (<Button title={user.name} key={key} onPress={()=>{this.handleSelectOpponent(user)}} />))}
+        </ScrollView>
+      </View>
+      
+      <View style={styles.view3}>
+        <Text>Opponent User ID: {this.state.opponent_id}</Text>
+        <Text>Opponent User ID: {this.state.opponent_name}</Text>
+
+        <Text>game Name:</Text>
+        <TextInput style={styles.view2} value={this.state.game_name} onChangeText={(text)=>this.handleGameNameChange(text)} style={styles.textInput}/>
+        <Button title='Create Game' onPress={this.handleNewGame}/>
+      </View>
+      
     </View>
   )
 }
 }
 
 const styles = StyleSheet.create({
+  view1:{
+    flex:1,
+    backgroundColor: 'lightblue',
+  },
+  view2:{
+    flex:2,
+    backgroundColor: 'lightgreen',
+    height:200
+  },
+  view3:{
+    flex:1
+  },
   container: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  button: {
-    alignItems: 'center',
-    backgroundColor: '#DDDDDD',
-    padding: 10,
-    marginBottom: 10
-  },
-  text: {
+  textInput: {
     borderColor: 'black',
     borderStyle: 'solid',
-    borderWidth: 2,
+    borderWidth: 1,
   }
 })
 

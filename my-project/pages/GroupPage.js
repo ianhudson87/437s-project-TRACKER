@@ -134,11 +134,11 @@ render() {
 }
 
 const styles = StyleSheet.create({
-  scrollView: {
-    flex: 1,
-    backgroundColor: 'lightblue',
-    marginHorizontal: 0,
-  },
+  // scrollView: {
+  //   flex: 1,
+  //   backgroundColor: 'lightblue',
+  //   marginHorizontal: 0,
+  // },
   nameContainer: {
     //flex: 1,
     justifyContent: 'center',
