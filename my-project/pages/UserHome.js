@@ -98,18 +98,13 @@ render() {
   const loggedInUser = this.state.loggedInUser;
     return (
       <View style={styles.container}>
+        <View style={styles.welcomeMessage}>
+          <Text>
+            Welcome, {this.state.loggedInUser.name}!
+          </Text>
+        </View>
         <Text>
-          User Home Page
-        </Text>
-        <Text>
-            Logged in user: {this.state.loggedInUser.name}
-
-        </Text>
-        <Text>
-            Groups:
-        </Text>
-        <Text>
-          Groups that user is in:
+          My Groups:
           {
               this.state.groups.map((group, key)=> (<Button title={group.name} key={key} 
                   onPress={(e) => this.navigateToGroup(group, e)}/>))
@@ -137,6 +132,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#DDDDDD',
     padding: 10,
     marginBottom: 10
+  },
+  welcomeMessage: {
+    borderColor: 'black',
+    borderStyle: 'solid',
+    borderWidth: 1,
   }
 })
 

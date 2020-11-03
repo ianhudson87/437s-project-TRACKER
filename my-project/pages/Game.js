@@ -87,7 +87,7 @@ class Game extends Component {
   
         <Text>
           Add scores:
-          { this.state.users.map((user, key) => (<Button key={key} title={'Increment ' + user.name + "'s score"} onPress={ () => {this.handleIncrement(this.state.game._id, user._id)} }/>))}
+          { this.state.users.map((user, key) => (<Button key={key} title={user.name} onPress={ () => {this.handleIncrement(this.state.game._id, user._id)} }/>))}
         </Text>
 
       </View>
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#DDDDDD',
     padding: 10,
-    marginBottom: 10
+    marginBottom: 10,
   },
   text: {
     borderColor: 'black',
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightblue',
     marginHorizontal: 0,
     //height: "30%",
-    width: "80%"
+    width: "120%"
   },
 })
 
