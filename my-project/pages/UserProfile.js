@@ -8,14 +8,14 @@ import {
   View,
   ScrollView,
 } from 'react-native'
-import { getObjectByID } from "../constants/api"
+import { getObjectByID, addFriend } from "../constants/api"
 import GameThumbnail from "../components/GameThumbnail"
 
 class UserProfile extends Component {
 constructor(props) {
   super(props);
   this.state = { 
-    userID: this.props.route.params.userID,
+    profileUserID: this.props.route.params.profileUserID,
     user: {name: "default"}, // contains user "object". get this from api
     loggedInUserID: null, // contains userID. get this from local storage
     userGroups: [], // contains list of group objects
@@ -26,13 +26,17 @@ constructor(props) {
 }
 
 refreshInfo(){
-  // refresh all the information about the group
+  // refresh all the information for the profile
   console.log('REFRESH')
   console.log('DDDDDDDDDDDDDD')
 
-  // populate the usersInGroup list
-  getObjectByID({id: this.state.userID, type: "user"}).then((response)=>{
-    // get the group object
+  AsyncStorage.getItem('loggedInUserID').then((value)=>{
+    // get the id of the logged in user
+    this.setState({loggedInUserID: value})
+  }).then(()=>{console.log("user", this.state.loggedInUser)})
+
+ 
+  getObjectByID({id: this.state.profileUserID, type: "user"}).then((response)=>{
     if(response.object_exists){
       this.setState({user: response.object})
       return response.object
@@ -76,6 +80,22 @@ refreshInfo(){
 componentDidMount(){
   this.props.navigation.addListener('focus', ()=>{this.refreshInfo()}); // THIS REFRESHES THE PAGE EVERY TIME YOU GO BACK TO IT. 0.0
 }
+
+handleFriend(){
+    console.log("FRIEND")
+    console.log(this.state.loggedInUserID)
+    console.log(this.state.profileUserID)
+
+    addFriend({user_friending_id: this.state.loggedInUserID, user_being_friended_id: this.state.profileUserID})
+        .then((response)=> function(response){
+            if(response.friend_added == true){
+                console.log("Friend added")
+            }
+            else{
+                console.log("Friend not added")
+            }
+        })
+}
   
 render() {
     return (
@@ -85,6 +105,8 @@ render() {
             {this.state.user.name}
           </Text>
         </View>
+
+        <Button title='Add friend' onPress={() => this.handleFriend()} />
         
         <View style={styles.usersContainer}>
           <Text>{this.state.user.name}'s Groups:</Text>
