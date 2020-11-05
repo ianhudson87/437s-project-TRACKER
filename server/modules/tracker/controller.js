@@ -386,6 +386,7 @@ export const changeScore = async (req, res) => {
     }
 }
 
+// add users to each other's list of friends
 export const addFriend = async (req, res) => {
     // req.body requires the id of the user and the id of the game
     const {user_friending_id, user_being_friended_id} = req.body;
@@ -418,5 +419,39 @@ export const addFriend = async (req, res) => {
         
     } catch(e) {
         return res.status(400).json({ error:true, error_message: "error with friending"})
+    }
+}
+
+//check whether two users are friends
+export const checkFriends = async (req, res) => {
+    // req.body requires the id of the user and the id of the game
+    const {user1_id, user2_id} = req.body;
+
+    try{
+        // check to make sure that users are valid
+        let user1 = await Models.UserModel.findOne({ '_id': user1_id})
+        let user2 = await Models.UserModel.findOne({ '_id': user2_id})
+    
+        if(user1.length == 0 || user2.length == 0){
+            // one of the given id's does not match any user
+            return res.status(200).json({ error: false, friends: false, message: "(at least one) user_id DNE"})
+        }
+        else{
+            // both id's are valid
+            // check whether users are friends
+            if(user1.friends.length > 0){
+                for(let i = 0; i < user1.friends.length; i++){
+                    if(user1.friends[i] == user2_id){
+                        // friend list already contains user
+                        return res.status(200).json({ error: false, friends: true, message: "users are friends"})
+                    }
+                }
+            }
+            // friend list does not contain user
+            return res.status(200).json({ error: false, friends: false, message: "users are not friends"})
+        }
+        
+    } catch(e) {
+        return res.status(400).json({ error:true, error_message: "error with checking friends"})
     }
 }

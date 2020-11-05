@@ -8,7 +8,7 @@ import {
   View,
   ScrollView,
 } from 'react-native'
-import { getObjectByID, addFriend } from "../constants/api"
+import { getObjectByID, addFriend, checkFriends } from "../constants/api"
 import GameThumbnail from "../components/GameThumbnail"
 
 class UserProfile extends Component {
@@ -20,6 +20,7 @@ constructor(props) {
     loggedInUserID: null, // contains userID. get this from local storage
     userGroups: [], // contains list of group objects
     userGames: [], // contains list of game objects
+    isFriend: false, // friend status of logged in user and user whose profile is displayed
   }
 
   this.refreshInfo = this.refreshInfo.bind(this);
@@ -30,10 +31,26 @@ refreshInfo(){
   console.log('REFRESH')
   console.log('DDDDDDDDDDDDDD')
 
+//   AsyncStorage.getItem('loggedInUserID').then((value)=>{
+//     // get the id of the logged in user
+//     this.setState({loggedInUserID: value})
+//   }).then(()=>{console.log("user", this.state.loggedInUser)})
+
+
+
   AsyncStorage.getItem('loggedInUserID').then((value)=>{
     // get the id of the logged in user
     this.setState({loggedInUserID: value})
-  }).then(()=>{console.log("user", this.state.loggedInUser)})
+  }).then(()=> {
+    console.log("user", this.state.loggedInUserID)
+    checkFriends({user1_id: this.state.loggedInUserID, user2_id: this.state.profileUserID}).then((response)=>{
+        if(response.friends == true){
+            this.setState({isFriend: true});
+            console.log("FRIENDDDD")
+            console.log(this.state.isFriend)
+        }
+    })
+  })
 
  
   getObjectByID({id: this.state.profileUserID, type: "user"}).then((response)=>{
