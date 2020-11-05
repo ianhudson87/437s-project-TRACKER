@@ -41,22 +41,10 @@ class Register extends Component {
         <Text>
           {
             // print out all users
-            this.state.users.map((user, key)=> (<Text key={key}>{user.name}</Text>))
+            // this.state.users.map((user, key)=> (<Text key={key}>{user.name}</Text>))
           }
         </Text>
         <NewUserForm navigation={this.props.navigation} />
-        <TouchableOpacity
-         style={styles.button}
-         onPress={this.onPress}
-        >
-         <Text>Click me</Text>
-        </TouchableOpacity>
-        <View>
-          <Text>
-            You clicked { this.state.count } times
-          </Text>
-          <Button title="go to HOME" onPress={ () => navigation.navigate("Home") }></Button>
-        </View>
       </View>
     )
   }

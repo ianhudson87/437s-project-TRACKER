@@ -43,15 +43,11 @@ import {
           <Text>
             {
               // print out all users
-              this.state.users.map((user, key)=> (<Text key={key}>{user.name}</Text>))
+              // this.state.users.map((user, key)=> (<Text key={key}>{user.name}</Text>))
             }
           </Text>
           <LoginForm navigation={navigation}></LoginForm>
           
-          <View>
-            
-            <Button title="Home Page" onPress={ () => navigation.navigate("Home") }></Button>
-          </View>
         </View>
       )
     }
