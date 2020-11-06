@@ -216,6 +216,52 @@ export const changeScore = async (scoreData) =>{
     return data
 }
 
+//submits a request to the API to add a friend
+export const addFriend = async (friendData) =>{
+    /*
+    friendData = {
+        user_friending_id:       // id of user who is sending friend request
+        user_being_friended_id:  // id of user who the friend request is sent to
+    }
+    */
+    const res = await fetch(API_PATH + "addFriend",{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            user_friending_id: friendData.user_friending_id,
+            user_being_friended_id: friendData.user_being_friended_id,
+        })
+    })
+    const data = await res.json();
+    return data
+}
+
+//submits a request to the API to add a friend
+export const checkFriends = async (checkFriendsData) =>{
+    /*
+    checkFriendsData = {
+        user1_id:  // id of user who is sending friend request
+        user2_id:  // id of user who the friend request is sent to
+    }
+    */
+    const res = await fetch(API_PATH + "checkFriends",{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            user1_id: checkFriendsData.user1_id,
+            user2_id: checkFriendsData.user2_id,
+        })
+    })
+    const data = await res.json();
+    return data
+}
+
 // CAUTION!!!!!!!!!!!!!!!!!!!
 // CAUTION!!!!!!!!!!!!!!!!!!!
 // CAUTION!!!!!!!!!!!!!!!!!!!

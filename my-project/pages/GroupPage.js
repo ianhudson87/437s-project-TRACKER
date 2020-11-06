@@ -105,7 +105,7 @@ handleNewGame(){
 navigateToUserProfile(user, event) {
   console.log(user.name);
   this.props.navigation.navigate("UserProfile", {
-      userID: user._id,
+      profileUserID: user._id
   });
 }
 

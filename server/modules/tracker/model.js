@@ -18,6 +18,11 @@ const UserSchema = new Schema({
         // contains game ids that the users created 
         type: Array,
         required: true
+    },
+    friends: {
+        //contains id's of user's friends
+        type: Array,
+        required: true
     }
 })
 

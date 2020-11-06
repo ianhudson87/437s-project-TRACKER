@@ -34,5 +34,9 @@ routes.get('/games', TrackerController.getAllGames)
 
 routes.post('/changeScore', TrackerController.changeScore)
 
+routes.post('/addFriend', TrackerController.addFriend)
+
+routes.post('/checkFriends', TrackerController.checkFriends)
+
 
 export default routes;
