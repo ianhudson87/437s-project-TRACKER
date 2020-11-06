@@ -86,7 +86,6 @@ componentDidMount(){
 
 handleNewUser(){
     this.props.navigation.navigate("AddUserToGroup", {
-        itemId: 86,
         group: this.state.group,
         navigation: this.props.navigation,
         loggedInUser: this.state.loggedInUser
