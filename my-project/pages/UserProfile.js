@@ -23,13 +23,12 @@ constructor(props) {
     isFriend: false, // friend status of logged in user and user whose profile is displayed
   }
 
+  this.handleFriend = this.handleFriend.bind(this);
   this.refreshInfo = this.refreshInfo.bind(this);
 }
 
 refreshInfo(){
   // refresh all the information for the profile
-  console.log('REFRESH')
-  console.log('DDDDDDDDDDDDDD')
 
 //   AsyncStorage.getItem('loggedInUserID').then((value)=>{
 //     // get the id of the logged in user
@@ -42,12 +41,9 @@ refreshInfo(){
     // get the id of the logged in user
     this.setState({loggedInUserID: value})
   }).then(()=> {
-    console.log("user", this.state.loggedInUserID)
     checkFriends({user1_id: this.state.loggedInUserID, user2_id: this.state.profileUserID}).then((response)=>{
         if(response.friends == true){
             this.setState({isFriend: true});
-            console.log("FRIENDDDD")
-            console.log(this.state.isFriend)
         }
     })
   })
@@ -82,13 +78,10 @@ refreshInfo(){
     game_ids_for_user.forEach((game_id) => {
       // push game info into list
       getObjectByID({id: game_id, type: "game"}).then((response)=>{
-        console.log("RESPONSE", response)
         if(response.object_exists){
-          console.log("RESPONSE OBJECT", response.object)
           games_info_list.push(response.object)
         }
         this.setState({userGames: games_info_list})
-        console.log("userGames", this.state.userGames)
       })
     })
   })
@@ -104,9 +97,12 @@ handleFriend(){
     console.log(this.state.profileUserID)
 
     addFriend({user_friending_id: this.state.loggedInUserID, user_being_friended_id: this.state.profileUserID})
-        .then((response)=> function(response){
+        .then((response)=> {
+            console.log("HHHHHHHHH")
+            console.log(response)
             if(response.friend_added == true){
                 console.log("Friend added")
+                this.refreshInfo()
             }
             else{
                 console.log("Friend not added")
@@ -115,6 +111,7 @@ handleFriend(){
 }
   
 render() {
+    if(this.state.isFriend==false){
     return (
       <View style={styles.container}>
         <View style={styles.nameContainer}>
@@ -140,6 +137,34 @@ render() {
         </View>
       </View>
     )
+    }
+    else{
+        return (
+            <View style={styles.container}>
+              <View style={styles.nameContainer}>
+                <Text style={styles.nameContainer}>
+                  {this.state.user.name}
+                </Text>
+              </View>
+      
+              <Text style={styles.friendMessage}>You are friends with {this.state.user.name}</Text>
+              
+              <View style={styles.usersContainer}>
+                <Text>{this.state.user.name}'s Groups:</Text>
+                <ScrollView style={styles.usersListContainer}>
+                  {this.state.userGroups.map((group, key)=> (<Text key={key}>{group.name}</Text>))}
+                </ScrollView>
+              </View>
+                
+              <View style={styles.gamesContainer}>
+                <Text>{this.state.user.name}'s Games:</Text>
+                <ScrollView style={styles.gamesListContainer}>
+                  { this.state.userGames.map((game, key)=> (<GameThumbnail key={key} game={game} navigation={this.props.navigation}/>)) }
+                </ScrollView>
+              </View>
+            </View>
+          )
+    }
   }
 }
 
@@ -191,6 +216,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#DDDDDD',
     padding: 10,
     marginTop: 20
+  },
+  friendMessage: {
+    borderColor: 'black',
+    borderStyle: 'solid',
+    borderWidth: 1,
   }
 })
 
