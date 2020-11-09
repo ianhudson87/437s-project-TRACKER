@@ -62,14 +62,11 @@ export const createGroup = async (req, res) => {
         let existingGroups  = await Models.GroupModel.find({});
         // determine if group name is taken already
         for(let i=0; i<existingGroups.length; i++){
-            console.log("New group name" + newGroup.name)
-            console.log("Existing group name" + existingGroups[i].name)
             if(newGroup.name == existingGroups[i].name){
                 return res.status(203).json({ error:false, repeatedGroup:true, message: "group is taken is taken"})
             }
         }
         // name not taken yet
-        console.log('here')
         return res.status(203).json({ group: await newGroup.save(), error:false, repeatedGroup:false })
     } catch(e) {
         return res.status(400).json({ error:true, message: "error with creating user", error_msg:e})
@@ -299,15 +296,47 @@ export const createGame = async (req, res) => {
     //  name of the game that you are creating
     //  list of user_ids in the game
     //  group_id of group that the game is being created for
-    const {name, user_ids, group_id} = req.body;
-    let scores = Array(user_ids.length).fill(0)
-    let users = user_ids
-    const newGame = new Models.GameModel( {name, users, scores} );
-    
-    try{
+    const {name, user_ids, group_id, game_type} = req.body;
+    let newGame;
+    if(game_type == "tournament"){
+        if(user_ids.length < 4 || user_ids > 32){
+            return res.status(200).json({ error: false, game_created: false, message: "invalid number of users"})
+        }
+        // initialize results as an empty array of the correct size
+        let results;
+        if(user_ids.length == 4){
+            results = Array(7).fill(0)
+        }
+        else if(user_ids.length < 8){
+            results = Array(15).fill(0)
+        }
+        else if(user_ids.length < 16){
+            results = Array(31).fill(0)
+        }
+        else{
+            results = Array(63).fill(0)
+        }
+        // assign first round positions
+        for(let i=0; i<user_ids.length; i++){
+            results[i] = user_ids[i];
+        }
+        console.log(name)
+        console.log(user_ids)
+        console.log(results)    
+        newGame = new Models.TournamentModel( {name, user_ids, results} );
+    }
+    else if(game_type == "standard"){
+        let scores = Array(user_ids.length).fill(0)
+        newGame = new Models.GameModel( {name, user_ids, scores} );
+    }
+    else{
+        return res.status(200).json({ error: false, game_created: false, message: "invalid game type"})
+    }
 
+    try{
         // check to make sure that user_ids are valid
         let valid_user_ids = true
+        console.log("HI")
         for(let i=0; i<user_ids.length; i++){
             let user_with_given_id = await Models.UserModel.find({ '_id': user_ids[i]})
 
@@ -317,19 +346,31 @@ export const createGame = async (req, res) => {
                 break
             }
         }
+        console.log("HI")
         if(!valid_user_ids){
             return res.status(200).json({ error: false, game_created: false, message: "some user_id DNE"})
         }
         else{
             // check to make sure that group_id is valid
+            console.log("HI")
             let group_with_given_id = await Models.GroupModel.find({ '_id': group_id})
             if(group_with_given_id.length == 0){
-                return res.status(200).json({ error: false, game_created: false, message: "some group_id DNE"})
+                return res.status(200).json({ error: false, game_created: false, message: "group_id DNE"})
             }
             else{
                 // all user_ids and group_id are valid
                 // create the game and get the id of the game
-                let game = await newGame.save()
+                console.log("HI")
+                let game;
+                if(game_type == "tournament"){
+                    console.log("HI")
+                    game = await newGame.save()
+                    console.log("HI")
+                }
+                else{
+                    game = await newGame.save()
+                }
+                
                 let game_id = game._id
 
                 // add the game_id to the user and group
@@ -343,6 +384,7 @@ export const createGame = async (req, res) => {
         return res.status(400).json({ error:true, game_created: false, message: "error with creating game", error_msg: e})
     }
 }
+
 
 // retrieves a list of all games in the database
 export const getAllGames = async (req, res) => {
@@ -455,3 +497,4 @@ export const checkFriends = async (req, res) => {
         return res.status(400).json({ error:true, error_message: "error with checking friends"})
     }
 }
+

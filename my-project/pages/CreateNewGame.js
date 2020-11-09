@@ -26,6 +26,7 @@ class CreateNewGame extends Component {
       opponent_id: "",
       opponent_name: "",
       game_name: "",
+      game_type:"standard",
       error_msg: "",
       users: [], // contains user objects
     }
@@ -65,31 +66,66 @@ class CreateNewGame extends Component {
 
   handleNewGame(event) {
     console.log('button click')
-    // handler for create new game button press
-    let user_ids = [this.state.loggedInUserID, this.state.opponent_id] // hard coded for 2 players
-    createGame(this.state.game_name, user_ids, this.state.group).then((data)=>{
-      console.log("repsonse", data)
-      if(data.error){
-        // error in creating game
-        alert("error in creating game")
-      }
-      else if(data.game_created==false){
-        // no error, but game not created
-        alert("game was not created")
-      }
-      else{
-        // game was created
-        let game = data.game_info
-        alert("game " + game.name + " was created")
+    if(this.state.game_type == "tournament"){ // for now I'm adding all group members to tournament
+        let user_ids = []
+        for(let i=0; i<this.state.users.length; i++){
+          user_ids.push(this.state.users[i]._id)
+        }
+        createGame(this.state.game_name, user_ids, this.state.group, "tournament").then((data)=>{
+        console.log("response", data)
+        if(data.error){
+          // error in creating game
+          alert("error in creating tournament")
+        }
+        else if(data.game_created==false){
+          // no error, but game not created
+          alert("tournament was not created")
+        }
+        else{
+          // game was created
+          let game = data.game_info
+          alert("tournament " + game.name + " was created")
 
-        this.props.navigation.dispatch(
-          // reset the navigation so that you can't navigate back from the userhome page
-          CommonActions.goBack()
-      );
+          this.props.navigation.dispatch(
+            // reset the navigation so that you can't navigate back from the userhome page
+            CommonActions.goBack()
+        );
 
-      }
+        }
 
-    })
+      })
+    }
+    else{
+      // handler for create new game button press
+      let user_ids = [this.state.loggedInUserID, this.state.opponent_id] // hard coded for 2 players
+      createGame(this.state.game_name, user_ids, this.state.group, "standard").then((data)=>{
+        console.log("response", data)
+        if(data.error){
+          // error in creating game
+          alert("error in creating game")
+        }
+        else if(data.game_created==false){
+          // no error, but game not created
+          alert("game was not created")
+        }
+        else{
+          // game was created
+          let game = data.game_info
+          alert("game " + game.name + " was created")
+
+          this.props.navigation.dispatch(
+            // reset the navigation so that you can't navigate back from the userhome page
+            CommonActions.goBack()
+        );
+
+        }
+
+      })
+      
+    }
+
+
+    
   }
 
   
@@ -104,6 +140,15 @@ render() {
         <Text>
             For Group: {this.state.group.name}
         </Text>
+      </View>
+
+      <View style={styles.view2}>
+        <Text>Select Game Type:</Text>
+        <ScrollView style={styles.scrollView}>
+          {/* buttons that show each game type */}
+          <Button title="Counter" onPress={()=>{this.setState({game_type: "standard"})}} />
+          <Button title="Tournament" onPress={()=>{this.setState({game_type: "tournament"})}} />
+        </ScrollView>
       </View>
       
       <View style={styles.view2}>
