@@ -16,6 +16,7 @@ import AddUserToGroup from './pages/AddUserToGroup'
 import CreateNewGroup from './pages/CreateNewGroup'
 import CreateNewGame from './pages/CreateNewGame'
 import Game from "./pages/Game"
+import Tournament from "./pages/Tournament"
 import JoinGroup from './pages/JoinGroup'
 import UserProfile from './pages/UserProfile'
 
@@ -58,6 +59,7 @@ class App extends Component {
                     <Stack.Screen name="JoinGroup" component={JoinGroup} />
                     <Stack.Screen name="CreateNewGame" component={CreateNewGame} />
                     <Stack.Screen name="Game" component={Game} />
+                    <Stack.Screen name="Tournament" component={Tournament} />
                     <Stack.Screen name="UserProfile" component={UserProfile} />
                 </Stack.Navigator>
             </NavigationContainer>

@@ -56,7 +56,8 @@ export const createGroup = async (req, res) => {
     const {name} = req.body;
     const users = []
     const games = []
-    const newGroup = new Models.GroupModel( {name, users, games} );
+    const tournaments = []
+    const newGroup = new Models.GroupModel( {name, users, games, tournaments} );
     
     try{
         let existingGroups  = await Models.GroupModel.find({});
@@ -97,6 +98,9 @@ export const getObjectByID = async (req, res) => {
             break
         case "game":
             model_type = Models.GameModel
+            break
+        case "tournament":
+            model_type = Models.TournamentModel
             break
         case "user":
             model_type = Models.UserModel
@@ -374,8 +378,15 @@ export const createGame = async (req, res) => {
                 let game_id = game._id
 
                 // add the game_id to the user and group
-                await Models.UserModel.updateMany({ '_id': {$in: user_ids} }, { '$push': { games: game_id } })
-                await Models.GroupModel.updateOne({ '_id': group_id }, { '$push': { games: game_id } })
+                if(game_type == "tournament"){
+                    await Models.UserModel.updateMany({ '_id': {$in: user_ids} }, { '$push': { tournaments: game_id } })
+                    await Models.GroupModel.updateOne({ '_id': group_id }, { '$push': { tournaments: game_id } })
+                }
+                else{
+                    await Models.UserModel.updateMany({ '_id': {$in: user_ids} }, { '$push': { games: game_id } })
+                    await Models.GroupModel.updateOne({ '_id': group_id }, { '$push': { games: game_id } })
+                }
+                
 
                 return res.status(200).json({ error:false, game_created: true, game_info: game, message: "game created!"})
             }

@@ -18,7 +18,8 @@ class GameThumbnail extends Component {
 
     this.state = {
       game_info: this.props.game,
-      name: this.props.game.name
+      name: this.props.game.name,
+      type: this.props.type
     }
 
     // info about the game
@@ -37,7 +38,13 @@ class GameThumbnail extends Component {
     console.log('button click')
     // handler for user clicks on the game
     const navigation = this.props.navigation;
-    navigation.navigate("Game", {game: this.state.game_info})
+    if(this.state.type == "standard"){
+      navigation.navigate("Game", {game: this.state.game_info})
+    }
+    else{
+      navigation.navigate("Tournament", {game: this.state.game_info})
+    }
+    
   }
 
   

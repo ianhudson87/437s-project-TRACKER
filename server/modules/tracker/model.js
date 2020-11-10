@@ -40,6 +40,11 @@ const GroupSchema = new Schema({
         // contains game ids that the users created 
         type: Array,
         required: true
+    },
+    tournaments: {
+        // contains tournament ids that the users created 
+        type: Array,
+        required: true
     }
 })
 
