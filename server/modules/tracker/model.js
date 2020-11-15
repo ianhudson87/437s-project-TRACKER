@@ -14,10 +14,20 @@ const UserSchema = new Schema({
         type: Array,
         required: true
     },
+    group_time_joined: {
+        // contains time stamps of when user join group.
+        type: Array,
+        required: true
+    },
     games: {
         // contains game ids that the users created 
         type: Array,
         required: true
+    },
+    game_time_joined: {
+        // contains time stamps of when user joined game
+        type: Array,
+        required: true,
     },
     friends: {
         //contains id's of user's friends

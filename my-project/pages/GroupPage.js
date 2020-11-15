@@ -15,7 +15,7 @@ class GroupPage extends Component {
 constructor(props) {
   super(props);
   this.state = { 
-    groupID: this.props.route.params.group._id,
+    groupID: this.props.route.params.groupID,
     group: {name: "default"}, // contains group "object". get this from api
     loggedInUserID: null, // contains userID. get this from local storage
     usersInGroup: [], // contains list of user objects
