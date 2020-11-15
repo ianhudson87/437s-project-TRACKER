@@ -35,7 +35,7 @@ class GroupThumbnail extends Component {
 render() {
   return (
     <View style={styles.container}>
-      <Button title={this.state.name} onPress={this.goToGroup}/>
+      <Button color="#00aa00" title={this.state.name} onPress={this.goToGroup}/>
     </View>
   )
 }
@@ -46,17 +46,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  button: {
-    alignItems: 'center',
-    backgroundColor: '#DDDDDD',
-    padding: 10,
-    marginBottom: 10
-  },
-  text: {
-    borderColor: 'black',
-    borderStyle: 'solid',
-    borderWidth: 2,
   }
 })
 

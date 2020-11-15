@@ -10,6 +10,7 @@ import {
 } from 'react-native'
 import { getObjectByID } from "../constants/api"
 import GameThumbnail from "../components/GameThumbnail"
+import UserThumbnail from '../components/UserThumbnail'
 
 class GroupPage extends Component {
 constructor(props) {
@@ -102,12 +103,6 @@ handleNewGame(){
   });
 }
 
-navigateToUserProfile(user, event) {
-  console.log(user.name);
-  this.props.navigation.navigate("UserProfile", {
-      profileUserID: user._id
-  });
-}
 
   
 render() {
@@ -123,8 +118,7 @@ render() {
         <View style={styles.usersContainer}>
           <Text>Players:</Text>
           <ScrollView style={styles.usersListContainer}>
-            {this.state.usersInGroup.map((user, key)=> (<Button title={user.name} key={key} 
-                  onPress={(e) => this.navigateToUserProfile(user, e)}/>))}
+            { this.state.usersInGroup.map((user, key)=> (<UserThumbnail key={key} user={user} navigation={this.props.navigation} />)) }
           </ScrollView>
         </View>
           

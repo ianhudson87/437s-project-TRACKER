@@ -44,7 +44,7 @@ class GameThumbnail extends Component {
 render() {
   return (
     <View style={styles.container}>
-      <Button title={this.state.name} onPress={this.goToGame}/>
+      <Button color="#eedd11" title={this.state.name} onPress={this.goToGame}/>
     </View>
   )
 }
@@ -55,17 +55,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  button: {
-    alignItems: 'center',
-    backgroundColor: '#DDDDDD',
-    padding: 10,
-    marginBottom: 10
-  },
-  text: {
-    borderColor: 'black',
-    borderStyle: 'solid',
-    borderWidth: 2,
   }
 })
 

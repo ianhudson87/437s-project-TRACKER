@@ -10,6 +10,7 @@ import {
 import { getObjectByID, getObjectsByIDs } from "../constants/api"
 import LogoutButton from "../components/LogoutButton"
 import GroupThumbnail from '../components/GroupThumbnail'
+import UserThumbnail from '../components/UserThumbnail'
 
 class UserHome extends Component {
 
@@ -21,7 +22,6 @@ class UserHome extends Component {
           loggedInUser: {name: "default"},
           friends: [],
         };
-        this.navigateToGroup = this.navigateToGroup.bind(this);
         this.createNewGroup = this.createNewGroup.bind(this);
         this.refreshUserInfo = this.refreshUserInfo.bind(this);
         this.processUserInfo = this.processUserInfo.bind(this);
@@ -85,14 +85,6 @@ class UserHome extends Component {
       })
     }
 
-    navigateToGroup(group, event) {
-        console.log(group.name);
-        this.props.navigation.navigate("GroupPage", {
-            group: group,
-            loggedInUser: this.state.loggedInUser
-        });
-    }
-
     createNewGroup(event) {
         this.props.navigation.navigate("CreateNewGroup", {
             loggedInUser: this.state.loggedInUser
@@ -115,16 +107,14 @@ render() {
             Welcome, {this.state.loggedInUser.name}!
           </Text>
         </View>
-        <Text>
-          My Groups:
+        <View>
+          <Text>My Groups:</Text>
           { this.state.groups.map((group, key)=> (<GroupThumbnail group={group} key={key} navigation={this.props.navigation}/>)) }
-          My Friends:
-          {
-              this.state.friends.map((friend, key) => (
-                <Button title={friend.name} key={key} onPress={(e) => this.navigateTo}/>
-              ))
-          }
-        </Text>
+        </View>
+        <View>
+          <Text>My Friends:</Text>
+          { this.state.friends.map((user, key)=> (<UserThumbnail user={user} key={key} navigation={this.props.navigation}/>)) }
+        </View>
 
         <Button title='Create New Group' onPress={(e) => this.createNewGroup(e)}/>
 

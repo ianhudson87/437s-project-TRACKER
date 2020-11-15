@@ -35,7 +35,7 @@ class UserThumbnail extends Component {
 render() {
   return (
     <View style={styles.container}>
-      <Button title={this.state.name} onPress={this.goToUser}/>
+      <Button color="#ff5c5c" title={this.state.name} onPress={this.goToUser}/>
     </View>
   )
 }
@@ -46,18 +46,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  button: {
-    alignItems: 'center',
-    backgroundColor: '#DDDDDD',
-    padding: 10,
-    marginBottom: 10
-  },
-  text: {
-    borderColor: 'black',
-    borderStyle: 'solid',
-    borderWidth: 2,
   }
 })
 
-export default GroupThumbnail;
+export default UserThumbnail;
