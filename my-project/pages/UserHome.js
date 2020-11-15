@@ -11,21 +11,24 @@ import { getObjectByID, getObjectsByIDs } from "../constants/api"
 import LogoutButton from "../components/LogoutButton"
 import GroupThumbnail from '../components/GroupThumbnail'
 import UserThumbnail from '../components/UserThumbnail'
+import FeedObject from '../components/FeedObject'
 
 class UserHome extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-          groups: [],
+          groups: [], // group objects
           loggedInUserID: null,
-          loggedInUser: {name: "default"},
-          friends: [],
+          loggedInUser: {name: "default"}, // user object
+          friends: [], // user objects
+          feed: [] // feed objects {time: 78912, type: 1, data: [object]}
         };
         this.createNewGroup = this.createNewGroup.bind(this);
         this.refreshUserInfo = this.refreshUserInfo.bind(this);
         this.processUserInfo = this.processUserInfo.bind(this);
         this.populateFriendsAndGroupsArrays = this.populateFriendsAndGroupsArrays.bind(this);
+        this.generateFeed = this.generateFeed.bind(this);
     }
 
     componentDidMount(){
@@ -33,24 +36,22 @@ class UserHome extends Component {
       this.props.navigation.addListener('focus', ()=>{this.refreshUserInfo()}); // THIS REFRESHES THE PAGE EVERY TIME YOU GO BACK TO IT. 0.0
     }
 
-    populateFriendsAndGroupsArrays(groupIDs, friendIDs){
-      console.log("groupIDS", groupIDs);
-      // POPULATE GROUPS LIST WITH GROUP OBJECTS
-      // get information about groups based on id. used for displaying groups that user is in
-      getObjectsByIDs({ids: groupIDs, type: "group"}).then((data)=>{
-        console.log(data.objects)
-        if(data.objects_exist){
-          this.setState({groups: data.objects})
-        }
-      })
-
-      // POPULATE FRIENDS LIST WITH FRIEND OBJECTS
-      // get information about friends based on id. used for displaying activity feed
-      getObjectsByIDs({ids: friendIDs, type: "user"}).then((data)=>{
-        console.log(data.objects)
-        if(data.objects_exist){
-          this.setState({friends: data.objects})
-        }
+    refreshUserInfo(){
+      // refreshes the entire page
+      console.log("REFRESH")
+      // get loggedInUserID from "local storage"
+      AsyncStorage.getItem('loggedInUserID').then((loggedInUserID)=>{
+        console.log("USERID FROM STORAGE:", loggedInUserID)
+        // update loggedInUserID in the state
+        this.setState({loggedInUserID: loggedInUserID})
+        return loggedInUserID
+      }).then((loggedInUserID)=>{
+        // get info about loggedInUserID
+        getObjectByID({id: loggedInUserID, type: "user"}).then((response)=>{
+          return response
+        }).then((response)=>{
+          this.processUserInfo(response)
+        })
       })
     }
 
@@ -67,22 +68,51 @@ class UserHome extends Component {
       }
     }
 
-    refreshUserInfo(){
-      console.log("REFRESH")
-      // get loggedInUserID from "local storage"
-      AsyncStorage.getItem('loggedInUserID').then((loggedInUserID)=>{
-        console.log("USERID FROM STORAGE:", loggedInUserID)
-        // update loggedInUserID in the state
-        this.setState({loggedInUserID: loggedInUserID})
-        return loggedInUserID
-      }).then((loggedInUserID)=>{
-        // get info about loggedInUserID
-        getObjectByID({id: loggedInUserID, type: "user"}).then((response)=>{
-          return response
-        }).then((response)=>{
-          this.processUserInfo(response)
+    populateFriendsAndGroupsArrays(groupIDs, friendIDs){
+      console.log("groupIDS", groupIDs);
+      // POPULATE GROUPS LIST WITH GROUP OBJECTS
+      // get information about groups based on id. used for displaying groups that user is in
+      getObjectsByIDs({ids: groupIDs, type: "group"}).then((data)=>{
+        console.log(data.objects)
+        if(data.objects_exist){
+          this.setState({groups: data.objects})
+          this.generateFeed(); // update the feed
+        }
+      })
+
+      // POPULATE FRIENDS LIST WITH FRIEND OBJECTS
+      // get information about friends based on id. used for displaying activity feed
+      getObjectsByIDs({ids: friendIDs, type: "user"}).then((data)=>{
+        console.log(data.objects)
+        if(data.objects_exist){
+          this.setState({friends: data.objects})
+          this.generateFeed(); // update the feed
+        }
+      })
+    }
+
+    generateFeed(){
+      // with the info currently stored, create a feed of the latest things that have happened
+
+      // get all "user joined group" events
+      this.state.friends.forEach((user)=>{
+        // for each user
+        user.groups.forEach((group_id, index) => {
+          // get each group_id they are in and what time they joined the group at
+          console.log("USER", user.group_time_joined)
+          let time_joined_group = user.group_time_joined[index]
+          
+          // create new feed object and push it to this.state.feed
+          let newFeed = []
+          newFeed.push({
+            time: time_joined_group,
+            type: 0, // "user joined group" event
+            data: {group_id: group_id, user: user}
+          });
+          this.setState({ feed: newFeed })
         })
       })
+
     }
 
     createNewGroup(event) {
@@ -107,13 +137,20 @@ render() {
             Welcome, {this.state.loggedInUser.name}!
           </Text>
         </View>
+
         <View>
           <Text>My Groups:</Text>
           { this.state.groups.map((group, key)=> (<GroupThumbnail group={group} key={key} navigation={this.props.navigation}/>)) }
         </View>
+
         <View>
           <Text>My Friends:</Text>
           { this.state.friends.map((user, key)=> (<UserThumbnail user={user} key={key} navigation={this.props.navigation}/>)) }
+        </View>
+
+        <View>
+          <Text>My Feed:</Text>
+          { this.state.feed.map((feed, key)=> (<FeedObject feed={feed} key={key} navigation={this.props.navigation}/>)) }
         </View>
 
         <Button title='Create New Group' onPress={(e) => this.createNewGroup(e)}/>
