@@ -322,7 +322,7 @@ export const createGame = async (req, res) => {
         }
         // assign first round positions
         for(let i=0; i<user_ids.length; i++){
-            results[i] = user_ids[i];
+            results[results.length-1-i] = user_ids[i];
         }
         console.log(name)
         console.log(user_ids)
@@ -340,7 +340,6 @@ export const createGame = async (req, res) => {
     try{
         // check to make sure that user_ids are valid
         let valid_user_ids = true
-        console.log("HI")
         for(let i=0; i<user_ids.length; i++){
             let user_with_given_id = await Models.UserModel.find({ '_id': user_ids[i]})
 
@@ -350,13 +349,11 @@ export const createGame = async (req, res) => {
                 break
             }
         }
-        console.log("HI")
         if(!valid_user_ids){
             return res.status(200).json({ error: false, game_created: false, message: "some user_id DNE"})
         }
         else{
             // check to make sure that group_id is valid
-            console.log("HI")
             let group_with_given_id = await Models.GroupModel.find({ '_id': group_id})
             if(group_with_given_id.length == 0){
                 return res.status(200).json({ error: false, game_created: false, message: "group_id DNE"})
@@ -364,12 +361,9 @@ export const createGame = async (req, res) => {
             else{
                 // all user_ids and group_id are valid
                 // create the game and get the id of the game
-                console.log("HI")
                 let game;
                 if(game_type == "tournament"){
-                    console.log("HI")
                     game = await newGame.save()
-                    console.log("HI")
                 }
                 else{
                     game = await newGame.save()

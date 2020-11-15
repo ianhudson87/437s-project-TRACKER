@@ -20,10 +20,12 @@ class Tournament extends Component {
     this.state = {
       game: this.props.route.params.game, // stores tournament object that we want to display
       users: [], // stores user objects of users in the game (because the game object only stores user ids)
-      results: [] // contains key:value pairs of user_id:score
+      results: [], // contains id of user at each position in tournament
+      results_objects: [], // contains name of user at each position in tournament
     }
     
     this.populateUsersArray = this.populateUsersArray.bind(this)
+    this.handleClick = this.handleClick.bind(this)
   }
 
   componentDidMount(){
@@ -42,14 +44,14 @@ class Tournament extends Component {
         console.log('RESPONSE', response)
         if(response.object_exists){
           this.setState({ game: response.object })
-          this.populateUsersArray() // updates the scores of the players in the display
+          this.populateUsersArray() // updates the tournament results in the display
         }
       })
     })
   }
 
   populateUsersArray(){
-    // populate the this.state.users array. Set the scores of the players
+    // populate the this.state.users array. Set the tournament results
     let user_object_list = []
     let user_scores_dict = {}
     this.state.game.users.forEach((user_id, index) => {
@@ -57,13 +59,39 @@ class Tournament extends Component {
         if(response.object_exists){
           user_object_list.push(response.object)
         }
-  
-        this.setState({users: user_object_list, results: this.state.game.results}) // update state of component
-        console.log("user_object_list", this.state.users)
-        console.log("results", this.state.results)
       })
     })
+    this.setState({users: user_object_list, results: this.state.game.results}) // update state of component
+    console.log("user_object_list", this.state.users)
+    console.log("results", this.state.results)
+
+    let results_object_list = []
+    this.state.game.results.forEach((user_id, index) => {
+        console.log(user_id)
+        if(user_id != 0){
+            getObjectByID({id: user_id, type: 'user'}).then((response) => {
+                if(response.object_exists){  
+                    results_object_list.push(response.object)
+                    console.log(results_object_list)
+                }
+                this.setState({results_objects: results_object_list}) // update state of component
+                console.log("State")
+                console.log(this.state.results_objects)
+              })
+        }
+        else{
+            results_object_list.push({name: ''})
+            this.setState({results_objects: results_object_list}) // update state of component
+            console.log("State")
+            console.log(this.state.results_objects)
+        }
+    })
     
+  }
+
+  handleClick(user){
+    console.log("Handle click")
+    console.log(user)
   }
 
   render() {
@@ -72,7 +100,13 @@ class Tournament extends Component {
         <Text style={styles.nameContainer}>
           Tournament: {this.state.game.name}
         </Text>
+        
+        <View style={styles.usersContainer}>
+          <Text>Bracket:</Text>
+            {this.state.results_objects.map((user, key)=> (<Button title={user.name} key={key} 
+                  onPress={(e) => this.handleClick(user, e)}/>))}
 
+        </View>
       </View>
     )
   }
