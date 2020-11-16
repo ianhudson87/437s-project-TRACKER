@@ -28,7 +28,7 @@ class UserThumbnail extends Component {
     console.log('button click')
     // handler for user clicks on the user
     const navigation = this.props.navigation;
-    navigation.navigate("UserProfile", {profileUserID: this.state.user_info._id})
+    navigation.push("UserProfile", {profileUserID: this.state.user_info._id})
   }
 
   

@@ -8,8 +8,9 @@ import {
   View,
   ScrollView,
 } from 'react-native'
-import { getObjectByID, addFriend, checkFriends } from "../constants/api"
+import { getObjectByID, addFriend, checkFriends, getObjectsByIDs } from "../constants/api"
 import GameThumbnail from "../components/GameThumbnail"
+import UserThumbnail from "../components/UserThumbnail"
 
 class UserProfile extends Component {
 constructor(props) {
@@ -21,21 +22,28 @@ constructor(props) {
     userGroups: [], // contains list of group objects
     userGames: [], // contains list of game objects
     isFriend: false, // friend status of logged in user and user whose profile is displayed
+    friends: [], // contains list of user objects that are friends of the user
   }
 
   this.handleFriend = this.handleFriend.bind(this);
   this.refreshInfo = this.refreshInfo.bind(this);
+  this.populateFriendsArrays = this.populateFriendsArrays.bind(this);
+  this.friendDisplayHandler = this.friendDisplayHandler.bind(this);
+}
+
+populateFriendsArrays(friendIDs){
+  // POPULATE FRIENDS LIST WITH USER OBJECTS
+  // get information about friends based on id. used for displaying activity feed
+  getObjectsByIDs({ids: friendIDs, type: "user"}).then((data)=>{
+    console.log(data.objects)
+    if(data.objects_exist){
+      this.setState({friends: data.objects})
+    }
+  })
 }
 
 refreshInfo(){
   // refresh all the information for the profile
-
-//   AsyncStorage.getItem('loggedInUserID').then((value)=>{
-//     // get the id of the logged in user
-//     this.setState({loggedInUserID: value})
-//   }).then(()=>{console.log("user", this.state.loggedInUser)})
-
-
 
   AsyncStorage.getItem('loggedInUserID').then((value)=>{
     // get the id of the logged in user
@@ -52,6 +60,7 @@ refreshInfo(){
   getObjectByID({id: this.state.profileUserID, type: "user"}).then((response)=>{
     if(response.object_exists){
       this.setState({user: response.object})
+      this.populateFriendsArrays(response.object.friends)
       return response.object
     }
     else{
@@ -109,63 +118,52 @@ handleFriend(){
             }
         })
 }
+
+friendDisplayHandler(isFriend){
+  if(isFriend){
+    return <Text style={styles.friendMessage}>You are friends with {this.state.user.name}</Text>
+  }
+  else{
+    return <Button title='Add friend' onPress={() => this.handleFriend()} />
+  }
+}
   
 render() {
-    if(this.state.isFriend==false){
-    return (
-      <View style={styles.container}>
-        <View style={styles.nameContainer}>
-          <Text style={styles.nameContainer}>
-            {this.state.user.name}
-          </Text>
+  return (
+    <View style={styles.container}>
+      <View style={styles.nameContainer}>
+        <Text style={styles.nameContainer}>
+          {this.state.user.name}
+        </Text>
+      </View>
+
+      {this.friendDisplayHandler(this.state.isFriend)}
+      
+      <View style={styles.usersContainer}>
+        <Text>{this.state.user.name}'s Groups:</Text>
+        <ScrollView style={styles.usersListContainer}>
+          {this.state.userGroups.map((group, key)=> (<Text key={key}>{group.name}</Text>))}
+        </ScrollView>
+      </View>
+
+      <View style={styles.friendsContainer}>
+        <Text> Friends </Text>
+        <View style={styles.friendsContainer}>
+          <Text>My Friends:</Text>
+          { this.state.friends.map((user, key)=> (<UserThumbnail user={user} key={key} navigation={this.props.navigation}/>)) }
         </View>
 
-        <Button title='Add friend' onPress={() => this.handleFriend()} />
-        
-        <View style={styles.usersContainer}>
-          <Text>{this.state.user.name}'s Groups:</Text>
-          <ScrollView style={styles.usersListContainer}>
-            {this.state.userGroups.map((group, key)=> (<Text key={key}>{group.name}</Text>))}
-          </ScrollView>
-        </View>
-          
-        <View style={styles.gamesContainer}>
-          <Text>{this.state.user.name}'s Games:</Text>
-          <ScrollView style={styles.gamesListContainer}>
-            { this.state.userGames.map((game, key)=> (<GameThumbnail key={key} game={game} navigation={this.props.navigation}/>)) }
-          </ScrollView>
-        </View>
       </View>
-    )
-    }
-    else{
-        return (
-            <View style={styles.container}>
-              <View style={styles.nameContainer}>
-                <Text style={styles.nameContainer}>
-                  {this.state.user.name}
-                </Text>
-              </View>
-      
-              <Text style={styles.friendMessage}>You are friends with {this.state.user.name}</Text>
-              
-              <View style={styles.usersContainer}>
-                <Text>{this.state.user.name}'s Groups:</Text>
-                <ScrollView style={styles.usersListContainer}>
-                  {this.state.userGroups.map((group, key)=> (<Text key={key}>{group.name}</Text>))}
-                </ScrollView>
-              </View>
-                
-              <View style={styles.gamesContainer}>
-                <Text>{this.state.user.name}'s Games:</Text>
-                <ScrollView style={styles.gamesListContainer}>
-                  { this.state.userGames.map((game, key)=> (<GameThumbnail key={key} game={game} navigation={this.props.navigation}/>)) }
-                </ScrollView>
-              </View>
-            </View>
-          )
-    }
-  }
+        
+      <View style={styles.gamesContainer}>
+        <Text>{this.state.user.name}'s Games:</Text>
+        <ScrollView style={styles.gamesListContainer}>
+          { this.state.userGames.map((game, key)=> (<GameThumbnail key={key} game={game} navigation={this.props.navigation}/>)) }
+        </ScrollView>
+      </View>
+    </View>
+  )
+}
 }
 
 const styles = StyleSheet.create({

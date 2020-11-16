@@ -10,6 +10,7 @@ import {
   Button,
   View,
 } from 'react-native'
+import { Card, ListItem, Icon } from 'react-native-elements'
 import { getObjectByID } from '../constants/api';
 
 class FeedObject extends Component {
@@ -54,43 +55,47 @@ class FeedObject extends Component {
 
   
   render() {
-    let formatted_date
-    try{
-      formatted_date = formatDistance(new Date(this.state.time), new Date())
-      // formatted_date = format(new Date(this.state.time), "MMMM do, yyyy H:mma")
-    }
-    catch(e){
-      formatted_date = "unknown date"
-    }
-
     switch(this.state.type){
       // depending on the type of the feed object render different things
       case 0:
         if(this.state.generated_data){
-          //console.log(this.state.generated_data)
           // if the data needed to display the feed update has been gotten
+          let formatted_date
+          try{ formatted_date = formatDistance(new Date(this.state.time), new Date()) }
+          catch(e){ formatted_date = "unknown date" }
+          let text = this.state.generated_data.user.name + " joined group " + this.state.generated_data.group.name + " " + formatted_date + " ago."
           return(
-            <View style={styles.container}>
-              <Text style={styles.text}>
-                {
-                  this.state.generated_data.user.name
-                } joined group {
-                  this.state.generated_data.group.name
-                } at {
-                  formatted_date
-                }
+            <Card>
+              <Text style={{marginBottom: 10}}>
+                  {text}
               </Text>
-            </View>
+              <Button
+                  icon={<Icon name='code' color='#ffffff' />}
+                  buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
+                  title='VIEW NOW' />
+            </Card>
+            
+            // <View style={styles.container}>
+            //   <Text style={styles.text}>
+            //     {
+            //       this.state.generated_data.user.name
+            //     } joined group {
+            //       this.state.generated_data.group.name
+            //     } at {
+            //       formatted_date
+            //     }
+            //   </Text>
+            // </View>
           )
         }
         else{
           // necessary data has not been gotten yet
           return(
-            <View>
-              <Text>
-                loading data...
+            <Card>
+              <Text style={{marginBottom: 10}}>
+                  Loading...
               </Text>
-            </View>
+            </Card>
           )
         }
       default:

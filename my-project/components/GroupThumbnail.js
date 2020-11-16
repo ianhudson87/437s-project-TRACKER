@@ -8,6 +8,7 @@ import {
   Button,
   View,
 } from 'react-native'
+import { Card, ListItem, Icon } from 'react-native-elements'
 
 class GroupThumbnail extends Component {
   // need to know the name of the group, and maybe other info
@@ -38,6 +39,7 @@ render() {
       <Button color="#00aa00" title={this.state.name} onPress={this.goToGroup}/>
     </View>
   )
+
 }
 }
 
