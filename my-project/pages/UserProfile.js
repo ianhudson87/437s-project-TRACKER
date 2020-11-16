@@ -8,6 +8,7 @@ import {
   View,
   ScrollView,
 } from 'react-native'
+import { ListItem } from 'react-native-elements'
 import { getObjectByID, addFriend, checkFriends, getObjectsByIDs } from "../constants/api"
 import GameThumbnail from "../components/GameThumbnail"
 import UserThumbnail from "../components/UserThumbnail"
@@ -139,7 +140,7 @@ render() {
 
       {this.friendDisplayHandler(this.state.isFriend)}
       
-      <View style={styles.usersContainer}>
+      <View style={styles.groupsContainer}>
         <Text>{this.state.user.name}'s Groups:</Text>
         <ScrollView style={styles.usersListContainer}>
           {this.state.userGroups.map((group, key)=> (<Text key={key}>{group.name}</Text>))}
@@ -148,10 +149,11 @@ render() {
 
       <View style={styles.friendsContainer}>
         <Text> Friends </Text>
-        <View style={styles.friendsContainer}>
-          <Text>My Friends:</Text>
-          { this.state.friends.map((user, key)=> (<UserThumbnail user={user} key={key} navigation={this.props.navigation}/>)) }
-        </View>
+        <ScrollView style={styles.friendsContainer}>
+          { this.state.friends.map((user, key)=> (
+            <UserThumbnail user={user} key={key} navigation={this.props.navigation}/>
+          )) }
+        </ScrollView>
 
       </View>
         
@@ -179,13 +181,13 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
   },
-  usersContainer: {
-    //flex: 1,
+  groupsContainer: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     height: "20%",
   },
-  usersListContainer: {
+  friendsContainer: {
     flex: 1,
     backgroundColor: 'lightblue',
     marginHorizontal: 0,
@@ -193,7 +195,7 @@ const styles = StyleSheet.create({
     width: "80%"
   },
   gamesContainer: {
-    //flex: 3,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     height: "20%",

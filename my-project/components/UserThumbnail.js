@@ -8,6 +8,7 @@ import {
   Button,
   View,
 } from 'react-native'
+import { Card, ListItem, Icon, Divider } from 'react-native-elements'
 
 class UserThumbnail extends Component {
   // need to know the name of the user, and maybe other info
@@ -34,9 +35,14 @@ class UserThumbnail extends Component {
   
 render() {
   return (
-    <View style={styles.container}>
-      <Button color="#ff5c5c" title={this.state.name} onPress={this.goToUser}/>
-    </View>
+    <ListItem bottomDivider onPress={this.goToUser}>
+        <ListItem.Content>
+            <ListItem.Title>{this.state.name}</ListItem.Title>
+        </ListItem.Content>
+    </ListItem>
+    // <View style={styles.container}>
+    //   <Button color="#ff5c5c" title={this.state.name} onPress={this.goToUser}/>
+    // </View>
   )
 }
 }
