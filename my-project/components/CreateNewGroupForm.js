@@ -15,6 +15,7 @@ class CreateNewGroupForm extends Component {
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
     }
 
     handleChange(text) {
@@ -52,6 +53,10 @@ class CreateNewGroupForm extends Component {
         event.preventDefault();
     }
 
+    handleCancel(){
+        this.props.navigation.dispatch(CommonActions.goBack());
+    }
+
     render() {
         console.log("RENDER2")
         console.log(this.state)
@@ -61,6 +66,7 @@ class CreateNewGroupForm extends Component {
                 <TextInput value={this.state.group_name} onChangeText={(text) => {this.handleChange(text)}} style={styles.text}/>
                 
                 <Button title="Create Group" onPress={(e) => this.handleSubmit(e)} />
+                <Button title="Cancel" onPress={(e) => this.handleCancel(e)} />
             </View>
            
         )

@@ -36,9 +36,12 @@ class UserThumbnail extends Component {
 render() {
   return (
     <ListItem bottomDivider onPress={this.goToUser}>
+        <Icon name="face" />
         <ListItem.Content>
             <ListItem.Title>{this.state.name}</ListItem.Title>
+            <ListItem.Subtitle>info</ListItem.Subtitle>
         </ListItem.Content>
+        <ListItem.Chevron />
     </ListItem>
     // <View style={styles.container}>
     //   <Button color="#ff5c5c" title={this.state.name} onPress={this.goToUser}/>

@@ -124,6 +124,10 @@ render() {
         <View style={styles.welcomeMessage}>
           <Text>
             Welcome, {this.state.loggedInUser.name}!
+            <Icon name="account-box" onPress={ ()=>{
+              // go to profile of the logged in user
+              this.props.navigation.navigate('UserProfile', {profileUserID: this.state.loggedInUserID})
+            } }/>
           </Text>
         </View>
 
@@ -132,14 +136,13 @@ render() {
           { this.state.groups.map((group, key)=> (<GroupThumbnail group={group} key={key} navigation={this.props.navigation}/>)) }
         </View>
 
-        <View style={styles.friendsContainer}>
+        {/* <View style={styles.friendsContainer}>
           <Text>My Friends:</Text>
           { this.state.friends.map((user, key)=> (<UserThumbnail user={user} key={key} navigation={this.props.navigation}/>)) }
-        </View>
+        </View> */}
 
         <View style={styles.feedContainer}>
-        <Divider style={{ backgroundColor:'blue' }}/>
-        <Title style={styles.center}>Activity Feed</Title>
+        <Title>Activity Feed</Title>
         <ScrollView>
           {
             this.state.feed.map((feed, key)=> (
@@ -153,7 +156,6 @@ render() {
 
         <Button title='drawer toggle for desktop' onPress={()=>{this.props.navigation.toggleDrawer()}} />
 
-        <LogoutButton navigation={navigation} loggedInUser={loggedInUser}></LogoutButton>
       </View>
     )
   }
@@ -166,19 +168,17 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   groupsContainer: {
     flex:1,
   },
-  friendsContainer: {
-    flex:1,
-    padding: 1,
-  },
+  // friendsContainer: {
+  //   flex:1,
+  //   padding: 1,
+  // },
   feedContainer: {
     flex: 1,
-    padding: 1,
+    padding: 3,
   },
   button: {
     alignItems: 'center',

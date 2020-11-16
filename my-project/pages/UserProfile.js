@@ -9,9 +9,11 @@ import {
   ScrollView,
 } from 'react-native'
 import { ListItem } from 'react-native-elements'
+import { Title } from 'react-native-paper'
 import { getObjectByID, addFriend, checkFriends, getObjectsByIDs } from "../constants/api"
 import GameThumbnail from "../components/GameThumbnail"
 import UserThumbnail from "../components/UserThumbnail"
+import LogoutButton from "../components/LogoutButton"
 
 class UserProfile extends Component {
 constructor(props) {
@@ -22,7 +24,7 @@ constructor(props) {
     loggedInUserID: null, // contains userID. get this from local storage
     userGroups: [], // contains list of group objects
     userGames: [], // contains list of game objects
-    isFriend: false, // friend status of logged in user and user whose profile is displayed
+    isFriend: null, // friend status of logged in user and user whose profile is displayed
     friends: [], // contains list of user objects that are friends of the user
   }
 
@@ -53,6 +55,9 @@ refreshInfo(){
     checkFriends({user1_id: this.state.loggedInUserID, user2_id: this.state.profileUserID}).then((response)=>{
         if(response.friends == true){
             this.setState({isFriend: true});
+        }
+        else{
+          this.setState({isFriend: false})
         }
     })
   })
@@ -120,12 +125,27 @@ handleFriend(){
         })
 }
 
-friendDisplayHandler(isFriend){
-  if(isFriend){
+friendDisplayHandler(isFriend, isCurrentUser){
+  if(isCurrentUser){
+    // looking at own profile
+    return(
+      <View>
+        <Text>THIS IS YOU!</Text>
+        <LogoutButton navigation={this.props.navigation} loggedInUser={this.state.loggedInUser}></LogoutButton>
+      </View>
+    )
+  }
+  else if(isFriend === true){
+    // looking at profile of friend
     return <Text style={styles.friendMessage}>You are friends with {this.state.user.name}</Text>
   }
-  else{
+  else if(isFriend === false){
+    // looking at profile of stranger
     return <Button title='Add friend' onPress={() => this.handleFriend()} />
+  }
+  else{
+    // waiting for verdict
+    return <Text>Loading...</Text>
   }
 }
   
@@ -138,7 +158,7 @@ render() {
         </Text>
       </View>
 
-      {this.friendDisplayHandler(this.state.isFriend)}
+      {this.friendDisplayHandler(this.state.isFriend, this.state.profileUserID==this.state.loggedInUserID)}
       
       <View style={styles.groupsContainer}>
         <Text>{this.state.user.name}'s Groups:</Text>
@@ -148,8 +168,8 @@ render() {
       </View>
 
       <View style={styles.friendsContainer}>
-        <Text> Friends </Text>
-        <ScrollView style={styles.friendsContainer}>
+        <Title> Friends </Title>
+        <ScrollView>
           { this.state.friends.map((user, key)=> (
             <UserThumbnail user={user} key={key} navigation={this.props.navigation}/>
           )) }
@@ -189,10 +209,8 @@ const styles = StyleSheet.create({
   },
   friendsContainer: {
     flex: 1,
-    backgroundColor: 'lightblue',
-    marginHorizontal: 0,
+    marginHorizontal: 2,
     //height: "30%",
-    width: "80%"
   },
   gamesContainer: {
     flex: 1,
@@ -208,8 +226,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   button: {
     alignItems: 'center',
