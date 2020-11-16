@@ -61,6 +61,8 @@ render() {
                 onPress={(e) => this.handleGroupPress(group, e)}/>))
         }
         </Text>
+
+        <Button title="Cancel" onPress={()=>{ this.props.navigation.dispatch(CommonActions.goBack()) }}/>
         
       </View>
     )

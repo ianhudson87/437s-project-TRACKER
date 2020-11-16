@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import AsyncStorage from '@react-native-community/async-storage'
 import {
   StyleSheet,
   TouchableOpacity,
@@ -9,23 +10,35 @@ import {
 import CreateNewGroupForm from '../components/CreateNewGroupForm'
 
 class CreateNewGroup extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {user: this.props.route.params.loggedInUser, group: {'name': "default", 'users': [], 'games': []}}
-    }
+  constructor(props) {
+      super(props);
+      this.state = {loggedInUserID: null, group: {'name': "default", 'users': [], 'games': []}}
 
-    componentDidMount(){
-      console.log(this.state.user);
-    }
+      this.getUserID = this.getUserID.bind(this);
+  }
+
+  componentDidMount(){
+    this.getUserID()
+  }
+
+  getUserID(){
+    AsyncStorage.getItem('loggedInUserID').then((loggedInUserID)=>{
+      console.log("USERID FROM STORAGE:", loggedInUserID)
+      // update loggedInUserID in the state
+      this.setState({loggedInUserID: loggedInUserID})
+    })
+  }
 
 render() {
+  console.log("RENDER")
+  console.log(this.state)
     return (
       <View style={styles.container}>
         <Text>
           New group
         </Text>
        
-        <CreateNewGroupForm navigation={this.props.navigation} loggedInUser={this.state.user}></CreateNewGroupForm>
+        <CreateNewGroupForm navigation={this.props.navigation} loggedInUserID={this.state.loggedInUserID}></CreateNewGroupForm>
       </View>
     )
   }

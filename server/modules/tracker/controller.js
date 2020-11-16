@@ -7,10 +7,12 @@ export const createUser = async (req, res) => {
     const {name, password} = req.body;
     console.log(req.body);
     const groups = []
+    const group_time_joined = []
     const games = []
+    const game_time_joined = []
     const friends = []
     const saltRounds = 6;
-    const newUser = new Models.UserModel( {name, password, groups, games, friends});
+    const newUser = new Models.UserModel( {name, password, groups, group_time_joined, games, game_time_joined, friends});
 
     // hashes and salts the entered password for storage in database
     let hash = bcrypt.hashSync(password, saltRounds)
@@ -122,6 +124,41 @@ export const getObjectByID = async (req, res) => {
     }
 }
 
+export const getObjectsByIDs = async (req, res) => {
+    // ids and type required in req.body
+    console.log("GETTING objects FROM IDs")
+    const {ids, type} = req.body;
+
+    // determine which type of object is being wanted
+    let model_type
+    switch(type){
+        case "group":
+            model_type = Models.GroupModel
+            break
+        case "game":
+            model_type = Models.GameModel
+            break
+        case "user":
+            model_type = Models.UserModel
+        default:
+            model_type = Models.UserModel
+    }
+
+    try{
+        let objects_with_given_id = await model_type.find({ '_id': {'$in': ids}})
+        if(objects_with_given_id.length == 0){
+            // there doesn't exist a group with the given id
+            console.log("Object IDs: " + ids)
+            return res.status(200).json({ objects: null, error: false, objects_exist: false, message: "object_ids DNE"})
+        }
+        else{
+            return res.status(201).json({ objects: objects_with_given_id, error: false, objects_exist: true, message: "objects Found"})
+        }
+    } catch(e) {
+        return res.status(500).json({ error:true, message: "error with getting object by ID"})
+    }
+}
+
 export const getGameByID = async (req, res) => {
     // no requirements for req.body
     console.log("GETTING GAME FROM ID")
@@ -185,6 +222,7 @@ export const joinGroup = async (req, res) => {
     // req.body requires the id of the user and the id of the group
     const {user_id, group_id} = req.body;
     console.log(group_id)
+    console.log(user_id)
 
     try{
         // check to make sure that user_id and group_id are valid
@@ -211,6 +249,8 @@ export const joinGroup = async (req, res) => {
                 await Models.GroupModel.updateOne({ '_id': group_id }, { '$push': { users: user_id } })
                 // push group id to the list of groups for the user
                 await Models.UserModel.updateOne({ '_id': user_id }, { '$push': { groups: group_id } })
+                // push time stamp to list of times when user joinged group
+                await Models.UserModel.updateOne({ '_id': user_id }, { '$push': { group_time_joined: Date.now() } })
                 return res.status(200).json({ error: false, joined_group: true, message: "joined group!"})
             }
         }
@@ -424,7 +464,6 @@ export const addFriend = async (req, res) => {
 
 //check whether two users are friends
 export const checkFriends = async (req, res) => {
-    // req.body requires the id of the user and the id of the game
     const {user1_id, user2_id} = req.body;
 
     try{
