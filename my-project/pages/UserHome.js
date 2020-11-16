@@ -122,18 +122,21 @@ render() {
     return (
       <View style={styles.container}>
         <View style={styles.welcomeMessage}>
-          <Text>
+          <Title>
             Welcome, {this.state.loggedInUser.name}!
             <Icon name="account-box" onPress={ ()=>{
               // go to profile of the logged in user
               this.props.navigation.navigate('UserProfile', {profileUserID: this.state.loggedInUserID})
             } }/>
-          </Text>
+          </Title>
         </View>
 
         <View style={styles.groupsContainer}>
-          <Text>My Groups:</Text>
-          { this.state.groups.map((group, key)=> (<GroupThumbnail group={group} key={key} navigation={this.props.navigation}/>)) }
+          <Title>My Groups:</Title>
+          <ScrollView>
+            { this.state.groups.map((group, key)=> (<GroupThumbnail group={group} key={key} navigation={this.props.navigation}/>)) }
+          </ScrollView>
+          
         </View>
 
         {/* <View style={styles.friendsContainer}>

@@ -13,7 +13,7 @@ import { Title } from 'react-native-paper'
 import { getObjectByID, addFriend, checkFriends, getObjectsByIDs } from "../constants/api"
 import GameThumbnail from "../components/GameThumbnail"
 import UserThumbnail from "../components/UserThumbnail"
-import LogoutButton from "../components/LogoutButton"
+// import LogoutButton from "../components/LogoutButton"
 
 class UserProfile extends Component {
 constructor(props) {
@@ -131,7 +131,7 @@ friendDisplayHandler(isFriend, isCurrentUser){
     return(
       <View>
         <Text>THIS IS YOU!</Text>
-        <LogoutButton navigation={this.props.navigation} loggedInUser={this.state.loggedInUser}></LogoutButton>
+        {/* <LogoutButton navigation={this.props.navigation} loggedInUser={this.state.loggedInUser}></LogoutButton> */}
       </View>
     )
   }
@@ -155,10 +155,9 @@ render() {
       <View style={styles.nameContainer}>
         <Text style={styles.nameContainer}>
           {this.state.user.name}
+          {this.friendDisplayHandler(this.state.isFriend, this.state.profileUserID==this.state.loggedInUserID)}
         </Text>
       </View>
-
-      {this.friendDisplayHandler(this.state.isFriend, this.state.profileUserID==this.state.loggedInUserID)}
       
       <View style={styles.groupsContainer}>
         <Text>{this.state.user.name}'s Groups:</Text>

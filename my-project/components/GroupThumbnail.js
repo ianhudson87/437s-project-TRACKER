@@ -35,9 +35,16 @@ class GroupThumbnail extends Component {
   
 render() {
   return (
-    <View style={styles.container}>
-      <Button color="#00aa00" title={this.state.name} onPress={this.goToGroup}/>
-    </View>
+    // <View style={styles.container}>
+    //   <Button color="#00aa00" title={this.state.name} onPress={this.goToGroup}/>
+    // </View>
+    <Card>
+        <Card.Title>{this.state.name} <Icon size="15" name="chevron-right" onPress={this.goToGroup} /></Card.Title>
+        <Card.Divider/>
+        <Text style={{marginBottom: 10}}>
+            The idea with React Native Elements is more about component structure than actual design.
+        </Text>
+    </Card>
   )
 
 }

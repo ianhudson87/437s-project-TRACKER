@@ -4,7 +4,8 @@ import React, { Component } from 'react';
 import { Text, View, Button } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createDrawerNavigator, DrawerItem, DrawerItemList, DrawerContentScrollView } from '@react-navigation/drawer';
+import { CommonActions } from '@react-navigation/native';
 
 // need to make sure to import all pages
 
@@ -64,10 +65,27 @@ class AppStack extends Component {
 };
 
 class UserHomeDrawer extends Component {
+
+
     render(){
         console.log("IM HERE", this.props)
         return(
-            <Drawer.Navigator initialRouteName="Home">
+            // citation: https://stackoverflow.com/questions/60450126/how-to-add-a-button-inside-a-react-navigation-drawer
+            <Drawer.Navigator initialRouteName="Home" drawerContent={props => {
+                // ADDING LOGOUT BUTTON TO DRAWER
+                return (
+                  <DrawerContentScrollView {...props}>
+                    <DrawerItemList {...props} />
+                    <DrawerItem
+                        label="Logout"
+                        onPress={() => props.navigation.dispatch(
+                            // reset the navigation so that you can't navigate back from the welcome page
+                            CommonActions.reset({ index: 1, routes: [{ name: 'Welcome', params: {firstTimeUser: true} }] })
+                        ) }
+                    />
+                  </DrawerContentScrollView>
+                )
+            }}>
                 <Drawer.Screen name="Home">
                     {props => <UserHome {...props} firstTimeUser={this.props.route.params.firstTimeUser}/>}
                 </Drawer.Screen>

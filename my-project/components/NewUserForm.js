@@ -44,7 +44,7 @@ class NewUserForm extends Component {
             }
             else{
                 // good registration. go to user home page
-                alert('Successfully registered')
+                //alert('Successfully registered')
                 console.log('NEW USER NAME:', data.user.name)
                 AsyncStorage.setItem( 'loggedInUserID', data.user._id ) // set local storage var for userID
 

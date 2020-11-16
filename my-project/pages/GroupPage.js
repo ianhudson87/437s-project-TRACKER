@@ -8,7 +8,9 @@ import {
   View,
   ScrollView,
 } from 'react-native'
-import { getObjectByID } from "../constants/api"
+import { Icon } from 'react-native-elements'
+import { Title } from 'react-native-paper'
+import { getObjectByID, getObjectsByIDs } from "../constants/api"
 import GameThumbnail from "../components/GameThumbnail"
 import UserThumbnail from '../components/UserThumbnail'
 
@@ -49,35 +51,48 @@ refreshInfo(){
   }).then((group)=>{
     console.log("GROUP:", group)
 
-    let users_info_list = []
+    // let users_info_list = []
+    // let user_ids_in_group = group.users
+    // GET ALL THE USERS IN THE GROUP
     let user_ids_in_group = group.users
-    user_ids_in_group.forEach((user_id) => {
-      // push user info into list
-      getObjectByID({id: user_id, type: "user"}).then((response)=>{
-        if(response.object_exists){
-          users_info_list.push(response.object)
-        }
-        this.setState({usersInGroup: users_info_list})
-        console.log(this.state.usersInGroup)
-        console.log("gamesInGroup", this.state.gamesInGroup)
-      })
+    getObjectsByIDs({ids: user_ids_in_group, type: "user"}).then((response) => {
+      if(response.objects_exist){
+        this.setState({usersInGroup: response.objects})
+      }
     })
+    // user_ids_in_group.forEach((user_id) => {
+    //   // push user info into list
+    //   getObjectByID({id: user_id, type: "user"}).then((response)=>{
+    //     if(response.object_exists){
+    //       users_info_list.push(response.object)
+    //     }
+    //     this.setState({usersInGroup: users_info_list})
+    //     console.log(this.state.usersInGroup)
+    //     console.log("gamesInGroup", this.state.gamesInGroup)
+    //   })
+    // })
 
-    let games_info_list = []
+    // let games_info_list = []
+    // GET ALL THE GAMES IN THE GROUP
     let game_ids_in_group = group.games
-    game_ids_in_group.forEach((game_id) => {
-      // push game info into list
-      getObjectByID({id: game_id, type: "game"}).then((response)=>{
-        console.log("RESPONSE", response)
-        if(response.object_exists){
-          console.log("RESPONSE OBJECT", response.object)
-          games_info_list.push(response.object)
-        }
-        this.setState({gamesInGroup: games_info_list})
-        console.log(this.state.gamesInGroup)
-        console.log("gamesInGroup", this.state.gamesInGroup)
-      })
+    getObjectsByIDs({ids: game_ids_in_group, type: "game"}).then((response) => {
+      if(response.objects_exist){
+        this.setState({gamesInGroup: response.objects})
+      }
     })
+    // game_ids_in_group.forEach((game_id) => {
+    //   // push game info into list
+    //   getObjectByID({id: game_id, type: "game"}).then((response)=>{
+    //     console.log("RESPONSE", response)
+    //     if(response.object_exists){
+    //       console.log("RESPONSE OBJECT", response.object)
+    //       games_info_list.push(response.object)
+    //     }
+    //     this.setState({gamesInGroup: games_info_list})
+    //     console.log(this.state.gamesInGroup)
+    //     console.log("gamesInGroup", this.state.gamesInGroup)
+    //   })
+    // })
   })
 }
 
@@ -112,22 +127,20 @@ render() {
           <Text style={styles.nameContainer}>
             {this.state.group.name}
           </Text>
-          <Button title='Add User' onPress={(e) => this.handleNewUser(e)}/>
         </View>
         
         <View style={styles.usersContainer}>
-          <Text>Players:</Text>
-          <ScrollView style={styles.usersListContainer}>
+          <Title>Players <Icon size="19" name="person-add" title='Add User' onPress={(e) => this.handleNewUser(e)}/></Title>
+          <ScrollView>
             { this.state.usersInGroup.map((user, key)=> (<UserThumbnail key={key} user={user} navigation={this.props.navigation} />)) }
           </ScrollView>
         </View>
           
         <View style={styles.gamesContainer}>
-          <Text>Games in the group:</Text>
-          <ScrollView style={styles.gamesListContainer}>
+          <Title>Games <Icon size="19" name="create" onPress={() => this.handleNewGame()} /></Title>
+          <ScrollView>
             { this.state.gamesInGroup.map((game, key)=> (<GameThumbnail key={key} game={game} navigation={this.props.navigation}/>)) }
           </ScrollView>
-          <Button title='Create new game' onPress={() => this.handleNewGame()} />
         </View>
       </View>
     )
@@ -141,41 +154,20 @@ const styles = StyleSheet.create({
   //   marginHorizontal: 0,
   // },
   nameContainer: {
-    //flex: 1,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     fontSize: 30,
     fontWeight: "bold",
   },
   usersContainer: {
-    //flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: "20%",
-  },
-  usersListContainer: {
-    flex: 1,
-    backgroundColor: 'lightblue',
-    marginHorizontal: 0,
-    //height: "30%",
-    width: "120%"
+    flex: 3,
   },
   gamesContainer: {
-    //flex: 3,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: "20%",
-  },
-  gamesListContainer: {
-    flex: 1,
-    backgroundColor: 'lightblue',
-    marginHorizontal: 0,
-    height: "20%",
+    flex: 3,
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   button: {
     alignItems: 'center',
