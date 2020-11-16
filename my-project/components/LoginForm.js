@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { CommonActions } from '@react-navigation/native';
 import { View, Text, TextInput, Button, StyleSheet, Alert} from 'react-native'
 import { createUser, loginUser } from "../constants/api"
+import { Input, Icon } from 'react-native-elements';
 
 class LoginForm extends Component {
     static defaultProps = {
@@ -70,11 +71,22 @@ class LoginForm extends Component {
 
     render() {
         return (
-            <View>
-                <Text>Username:</Text>
-                <TextInput value={this.state.username} onChangeText={(text) => {this.handleChangeName(text)}} style={styles.text}/>
-                <Text>Password:</Text>
-                <TextInput secureTextEntry={true} value={this.state.password} onChangeText={(text) => {this.handleChangePass(text)}} style={styles.text} />
+            <View style={styles.container}>
+                <Input
+                    placeholder="email"
+                    value={this.state.username}
+                    onChangeText={(text) => {this.handleChangeName(text)}}
+                    style={styles.text}
+                    leftIcon={<Icon name='email'/>}
+                />
+                <Input
+                    placeholder="password"
+                    secureTextEntry={true}
+                    value={this.state.password}
+                    onChangeText={(text) => {this.handleChangePass(text)}}
+                    style={styles.text}
+                    leftIcon={<Icon name='lock'/>}
+                />
                 <Button title="Login" onPress={(e) => this.handleSubmit(e)} />
             </View>
            
@@ -83,10 +95,11 @@ class LoginForm extends Component {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        width: 400
+    },
     text: {
-      borderColor: 'black',
-      borderStyle: 'solid',
-      borderWidth: 2,
     }
   })
 

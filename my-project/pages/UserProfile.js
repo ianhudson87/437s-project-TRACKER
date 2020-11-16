@@ -8,7 +8,6 @@ import {
   View,
   ScrollView,
 } from 'react-native'
-import { ListItem } from 'react-native-elements'
 import { Title } from 'react-native-paper'
 import { getObjectByID, addFriend, checkFriends, getObjectsByIDs } from "../constants/api"
 import GameThumbnail from "../components/GameThumbnail"
@@ -178,7 +177,7 @@ render() {
         
       <View style={styles.gamesContainer}>
         <Text>{this.state.user.name}'s Games:</Text>
-        <ScrollView style={styles.gamesListContainer}>
+        <ScrollView>
           { this.state.userGames.map((game, key)=> (<GameThumbnail key={key} game={game} navigation={this.props.navigation}/>)) }
         </ScrollView>
       </View>
@@ -193,8 +192,11 @@ const styles = StyleSheet.create({
   //   backgroundColor: 'lightblue',
   //   marginHorizontal: 0,
   // },
+  container: {
+    flex: 1,
+  },
   nameContainer: {
-    //flex: 1,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     fontSize: 30,
@@ -202,29 +204,12 @@ const styles = StyleSheet.create({
   },
   groupsContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: "20%",
   },
   friendsContainer: {
-    flex: 1,
-    marginHorizontal: 2,
-    //height: "30%",
+    flex: 2,
   },
   gamesContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: "20%",
-  },
-  gamesListContainer: {
-    flex: 1,
-    backgroundColor: 'lightblue',
-    marginHorizontal: 0,
-    height: "20%",
-  },
-  container: {
-    flex: 1,
+    flex: 2,
   },
   button: {
     alignItems: 'center',
