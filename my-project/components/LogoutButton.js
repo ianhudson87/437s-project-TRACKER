@@ -19,7 +19,7 @@ class LogoutButton extends Component {
             CommonActions.reset({
                 index: 1,
                 routes: [
-                    { name: 'Test' }
+                    { name: 'Welcome' }
                 ]
             })
         )
