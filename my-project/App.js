@@ -43,7 +43,7 @@ const Drawer = createDrawerNavigator();
 
 /********************* DEFINE ALL STACKS AND DRAWERS WITHIN HERE*/
 
-class StartStack extends Component {
+class AppStack extends Component {
     render(){
         // welcome screen, login, register, home_drawer
         return(
@@ -67,31 +67,15 @@ class StartStack extends Component {
 
 class UserHomeDrawer extends Component {
     render(){
-        // AppStack, settings, friends,
+        console.log("IM HERE", this.props)
         return(
             <Drawer.Navigator initialRouteName="Home">
-                <Drawer.Screen name="Home" component={UserHome}/>
+                <Drawer.Screen name="Home">
+                    {props => <UserHome {...props} firstTimeUser={this.props.route.params.firstTimeUser}/>}
+                </Drawer.Screen>
                 <Drawer.Screen name="Settings" component={UserHome}/>
                 <Drawer.Screen name="Friends" component={UserHome}/>
             </Drawer.Navigator>
-        )
-    }
-};
-
-class AppStack extends Component {
-    render(){
-        // Everything needed once you log in
-        return(
-            <Stack.Navigator initialRouteName="UserHome">
-                <Stack.Screen name="UserHome" component={UserHome} />
-                <Stack.Screen name="GroupPage" component={GroupPage} />
-                <Stack.Screen name="AddUserToGroup" component={AddUserToGroup} />
-                <Stack.Screen name="CreateNewGroup" component={CreateNewGroup} />
-                <Stack.Screen name="JoinGroup" component={JoinGroup} />
-                <Stack.Screen name="CreateNewGame" component={CreateNewGame} />
-                <Stack.Screen name="Game" component={Game} />
-                <Stack.Screen name="UserProfile" component={UserProfile} />
-            </Stack.Navigator>
         )
     }
 };
@@ -102,7 +86,7 @@ class App extends Component {
     render(){
         return(
             <NavigationContainer>
-                <StartStack />
+                <AppStack />
             </NavigationContainer>
 
         )

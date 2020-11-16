@@ -33,8 +33,13 @@ class UserHome extends Component {
     }
 
     componentDidMount(){
-      // this.refreshUserInfo()
       this.props.navigation.addListener('focus', ()=>{this.refreshUserInfo()}); // THIS REFRESHES THE PAGE EVERY TIME YOU GO BACK TO IT. 0.0
+      
+      // if user is first time user (came from register page, automatically open up the drawer since it isn't very intuitive)
+      if(this.props.firstTimeUser){
+        console.log('first time user')
+        this.props.navigation.openDrawer();
+      }
     }
 
     refreshUserInfo(){
@@ -111,7 +116,7 @@ class UserHome extends Component {
       })
 
       // order newFeed by date
-      this.setState({ feed: newFeed })
+      this.setState({ feed: newFeed.sort((a,b)=>{return (a.time < b.time) ? 1 : -1}) })
 
     }
 
@@ -128,7 +133,6 @@ class UserHome extends Component {
   }
   
 render() {
-  let orderedFeed = this.state.feed.sort((a,b)=>{console.log('here'); return (a._id > b._id) ? 1 : -1})
 
   const navigation = this.props.navigation;
   const loggedInUser = this.state.loggedInUser;
@@ -153,7 +157,7 @@ render() {
         <View style={styles.feedContainer}>
           <Text>My Feed:</Text>
           <ScrollView>
-            { orderedFeed.map((feed, key)=> (
+            { this.state.feed.map((feed, key)=> (
                 <View key={key} style={styles.feedObjectContainer}>
                   <FeedObject feed={feed} key={key} navigation={this.props.navigation}/>
                 </View>

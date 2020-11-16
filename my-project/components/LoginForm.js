@@ -43,7 +43,10 @@ class LoginForm extends Component {
                     CommonActions.reset({
                         index: 1,
                         routes: [
-                            { name: 'UserHome' }
+                            {
+                                name: 'UserHome',
+                                params: {firstTimeUser: false}
+                            }
                         ]
                     })
                 );

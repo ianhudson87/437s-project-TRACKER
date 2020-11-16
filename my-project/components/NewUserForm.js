@@ -53,11 +53,14 @@ class NewUserForm extends Component {
                     CommonActions.reset({
                         index: 1,
                         routes: [
-                            { name: 'UserHome' }
+                            {
+                                name: 'UserHome',
+                                params: {firstTimeUser: true}
+                            }
                         ]
                     })
                 );
-                //this.props.navigation.navigate('UserHome')
+                // this.props.navigation.navigate('UserHome', {firstTimeUser: true})
             }
         })
         
