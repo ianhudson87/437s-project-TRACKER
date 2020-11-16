@@ -50,12 +50,12 @@ class UserHome extends Component {
         getObjectByID({id: loggedInUserID, type: "user"}).then((response)=>{
           return response
         }).then((response)=>{
-          this.processUserInfo(response)
+          return this.processUserInfo(response)
         })
       })
     }
 
-    processUserInfo(userInfo){
+    async processUserInfo(userInfo){
       // given user object of the logged in user, update the info of the page
       if(userInfo.object_exists){
         // if user exists
@@ -64,29 +64,28 @@ class UserHome extends Component {
 
         let groupIDs = user.groups; // ids of groups that user is in
         let friendIDs = user.friends;
-        this.populateFriendsAndGroupsArrays(groupIDs, friendIDs)
+        await this.populateFriendsAndGroupsArrays(groupIDs, friendIDs)
+        this.generateFeed(); // update the feed
       }
     }
 
-    populateFriendsAndGroupsArrays(groupIDs, friendIDs){
+    async populateFriendsAndGroupsArrays(groupIDs, friendIDs){
       console.log("groupIDS", groupIDs);
       // POPULATE GROUPS LIST WITH GROUP OBJECTS
       // get information about groups based on id. used for displaying groups that user is in
-      getObjectsByIDs({ids: groupIDs, type: "group"}).then((data)=>{
+      await getObjectsByIDs({ids: groupIDs, type: "group"}).then((data)=>{
         console.log(data.objects)
         if(data.objects_exist){
           this.setState({groups: data.objects})
-          this.generateFeed(); // update the feed
         }
       })
 
       // POPULATE FRIENDS LIST WITH FRIEND OBJECTS
       // get information about friends based on id. used for displaying activity feed
-      getObjectsByIDs({ids: friendIDs, type: "user"}).then((data)=>{
+      await getObjectsByIDs({ids: friendIDs, type: "user"}).then((data)=>{
         console.log(data.objects)
         if(data.objects_exist){
           this.setState({friends: data.objects})
-          this.generateFeed(); // update the feed
         }
       })
     }
@@ -94,24 +93,24 @@ class UserHome extends Component {
     generateFeed(){
       // with the info currently stored, create a feed of the latest things that have happened
 
+      let newFeed = []
       // get all "user joined group" events
       this.state.friends.forEach((user)=>{
         // for each user
         user.groups.forEach((group_id, index) => {
           // get each group_id they are in and what time they joined the group at
-          console.log("USER", user.group_time_joined)
           let time_joined_group = user.group_time_joined[index]
-          
           // create new feed object and push it to this.state.feed
-          let newFeed = []
           newFeed.push({
             time: time_joined_group,
             type: 0, // "user joined group" event
             data: {group_id: group_id, user: user}
           });
-          this.setState({ feed: newFeed })
         })
       })
+
+      // order newFeed by date
+      this.setState({ feed: newFeed })
 
     }
 
@@ -128,6 +127,8 @@ class UserHome extends Component {
   }
   
 render() {
+  let orderedFeed = this.state.feed.sort((a,b)=>{console.log('here'); return (a._id > b._id) ? 1 : -1})
+
   const navigation = this.props.navigation;
   const loggedInUser = this.state.loggedInUser;
     return (
@@ -143,14 +144,19 @@ render() {
           { this.state.groups.map((group, key)=> (<GroupThumbnail group={group} key={key} navigation={this.props.navigation}/>)) }
         </View>
 
-        <View>
+        <View style={styles.friendsContainer}>
           <Text>My Friends:</Text>
           { this.state.friends.map((user, key)=> (<UserThumbnail user={user} key={key} navigation={this.props.navigation}/>)) }
         </View>
 
-        <View>
+        <View style={styles.feedContainer}>
           <Text>My Feed:</Text>
-          { this.state.feed.map((feed, key)=> (<FeedObject feed={feed} key={key} navigation={this.props.navigation}/>)) }
+          { orderedFeed.map((feed, key)=> (
+              <View key={key} style={styles.feedObjectContainer}>
+                <FeedObject feed={feed} key={key} navigation={this.props.navigation}/>
+              </View>
+            ))
+          }
         </View>
 
         <Button title='Create New Group' onPress={(e) => this.createNewGroup(e)}/>
@@ -179,6 +185,17 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderStyle: 'solid',
     borderWidth: 1,
+  },
+  friendsContainer: {
+    padding: 2,
+  },
+  feedContainer: {
+    borderWidth: 2,
+    padding: 2,
+    backgroundColor: 'green',
+  },
+  feedObjectContainer: {
+    padding: 2,
   }
 })
 

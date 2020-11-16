@@ -1,10 +1,11 @@
 // Thumbnail for displaying an update in the feed
 
 import React, { Component } from 'react'
-import { format } from "date-fns";
+import { format, formatDistance, formatRelative } from "date-fns";
 import {
   StyleSheet,
   Text,
+  Platform,
   TextInput,
   Button,
   View,
@@ -53,6 +54,15 @@ class FeedObject extends Component {
 
   
   render() {
+    let formatted_date
+    try{
+      formatted_date = formatDistance(new Date(this.state.time), new Date())
+      // formatted_date = format(new Date(this.state.time), "MMMM do, yyyy H:mma")
+    }
+    catch(e){
+      formatted_date = "unknown date"
+    }
+
     switch(this.state.type){
       // depending on the type of the feed object render different things
       case 0:
@@ -61,13 +71,13 @@ class FeedObject extends Component {
           // if the data needed to display the feed update has been gotten
           return(
             <View style={styles.container}>
-              <Text>
+              <Text style={styles.text}>
                 {
                   this.state.generated_data.user.name
                 } joined group {
                   this.state.generated_data.group.name
                 } at {
-                  format(new Date(this.state.time), "MMMM do, yyyy H:mma")
+                  formatted_date
                 }
               </Text>
             </View>
@@ -96,12 +106,32 @@ class FeedObject extends Component {
   }
 }
 
+const stylesByPlatform = Platform.select({
+  ios: {
+    fontFamily: 'Papyrus',
+    fontWeight: 'bold',
+  },
+  android: {
+    fontFamily: 'Roboto',
+    fontWeight: 'bold',
+  },
+})
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'pink',
+    borderWidth: 1,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 1,
+    borderRadius: 3,
+  },
+  text:{
+    ...stylesByPlatform,
+    padding: 2,
+    color: 'white',
+    fontSize: 20,
   }
 })
 
