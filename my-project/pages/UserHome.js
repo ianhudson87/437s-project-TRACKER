@@ -12,6 +12,7 @@ import LogoutButton from "../components/LogoutButton"
 import GroupThumbnail from '../components/GroupThumbnail'
 import UserThumbnail from '../components/UserThumbnail'
 import FeedObject from '../components/FeedObject'
+import { ScrollView } from 'react-native-gesture-handler'
 
 class UserHome extends Component {
 
@@ -139,7 +140,7 @@ render() {
           </Text>
         </View>
 
-        <View>
+        <View style={styles.groupsContainer}>
           <Text>My Groups:</Text>
           { this.state.groups.map((group, key)=> (<GroupThumbnail group={group} key={key} navigation={this.props.navigation}/>)) }
         </View>
@@ -151,12 +152,14 @@ render() {
 
         <View style={styles.feedContainer}>
           <Text>My Feed:</Text>
-          { orderedFeed.map((feed, key)=> (
-              <View key={key} style={styles.feedObjectContainer}>
-                <FeedObject feed={feed} key={key} navigation={this.props.navigation}/>
-              </View>
-            ))
-          }
+          <ScrollView>
+            { orderedFeed.map((feed, key)=> (
+                <View key={key} style={styles.feedObjectContainer}>
+                  <FeedObject feed={feed} key={key} navigation={this.props.navigation}/>
+                </View>
+              ))
+            }
+          </ScrollView>
         </View>
 
         <Button title='Create New Group' onPress={(e) => this.createNewGroup(e)}/>
@@ -175,6 +178,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  groupsContainer: {
+    flex:1,
+  },
+  friendsContainer: {
+    flex:1,
+    padding: 2,
+  },
+  feedContainer: {
+    flex: 1,
+    borderWidth: 2,
+    padding: 2,
+    backgroundColor: 'green',
+  },
   button: {
     alignItems: 'center',
     backgroundColor: '#DDDDDD',
@@ -185,14 +201,6 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderStyle: 'solid',
     borderWidth: 1,
-  },
-  friendsContainer: {
-    padding: 2,
-  },
-  feedContainer: {
-    borderWidth: 2,
-    padding: 2,
-    backgroundColor: 'green',
   },
   feedObjectContainer: {
     padding: 2,
