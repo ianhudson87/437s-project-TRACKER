@@ -222,6 +222,7 @@ export const joinGroup = async (req, res) => {
     // req.body requires the id of the user and the id of the group
     const {user_id, group_id} = req.body;
     console.log(group_id)
+    console.log(user_id)
 
     try{
         // check to make sure that user_id and group_id are valid

@@ -67,7 +67,7 @@ class FeedObject extends Component {
       // depending on the type of the feed object render different things
       case 0:
         if(this.state.generated_data){
-          console.log(this.state.generated_data)
+          //console.log(this.state.generated_data)
           // if the data needed to display the feed update has been gotten
           return(
             <View style={styles.container}>

@@ -55,8 +55,6 @@ class AppStack extends Component {
 
                 <Stack.Screen name="GroupPage" component={GroupPage} />
                 <Stack.Screen name="AddUserToGroup" component={AddUserToGroup} />
-                <Stack.Screen name="CreateNewGroup" component={CreateNewGroup} />
-                <Stack.Screen name="JoinGroup" component={JoinGroup} />
                 <Stack.Screen name="CreateNewGame" component={CreateNewGame} />
                 <Stack.Screen name="Game" component={Game} />
                 <Stack.Screen name="UserProfile" component={UserProfile} />
@@ -75,6 +73,8 @@ class UserHomeDrawer extends Component {
                 </Drawer.Screen>
                 <Drawer.Screen name="Settings" component={UserHome}/>
                 <Drawer.Screen name="Friends" component={UserHome}/>
+                <Drawer.Screen name="CreateNewGroup" component={CreateNewGroup} />
+                <Drawer.Screen name="JoinGroup" component={JoinGroup} />
             </Drawer.Navigator>
         )
     }

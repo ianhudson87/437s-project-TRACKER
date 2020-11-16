@@ -10,7 +10,8 @@ class CreateNewGroupForm extends Component {
       }
     constructor(props) {
         super(props);
-        this.state = {group_name: '', user: this.props.loggedInUser};
+        // user id is in this.props.loggedInUserID
+        this.state = {group_name: ''};
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -30,7 +31,7 @@ class CreateNewGroupForm extends Component {
                 console.log("Data: " + data.group);
 
                 // put creator into group
-                joinGroup(this.state.user._id, data.group._id)
+                joinGroup(this.props.loggedInUserID, data.group._id)
 
                 alert("Group"+ data.group.name+ "successfully created")
 
@@ -52,6 +53,9 @@ class CreateNewGroupForm extends Component {
     }
 
     render() {
+        console.log("RENDER2")
+        console.log(this.state)
+        console.log(this.props.loggedInUserID)
         return (
             <View>
                 <TextInput value={this.state.group_name} onChangeText={(text) => {this.handleChange(text)}} style={styles.text}/>

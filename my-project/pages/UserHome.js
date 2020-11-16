@@ -133,7 +133,7 @@ class UserHome extends Component {
   }
   
 render() {
-
+  console.log("FEED", this.state.feed)
   const navigation = this.props.navigation;
   const loggedInUser = this.state.loggedInUser;
     return (
