@@ -3,6 +3,7 @@ import { View, Text, TextInput, Button, StyleSheet} from 'react-native'
 import { CommonActions } from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage'
 import { createUser } from "../constants/api"
+import { Input, Icon } from 'react-native-elements';
 
 class NewUserForm extends Component {
     static defaultProps = {
@@ -44,7 +45,7 @@ class NewUserForm extends Component {
             }
             else{
                 // good registration. go to user home page
-                alert('Successfully registered')
+                //alert('Successfully registered')
                 console.log('NEW USER NAME:', data.user.name)
                 AsyncStorage.setItem( 'loggedInUserID', data.user._id ) // set local storage var for userID
 
@@ -71,22 +72,20 @@ class NewUserForm extends Component {
 
     render() {
         return (
-            // <form onSubmit={this.handleSubmit}>
-            //     <label>
-            //         Username:
-            //         <input type="text" value={this.state.username} onChange={this.handleChangeName} />
-            //     </label>
-            //     <label>
-            //         Password:
-            //         <input type="password" value={this.state.password} onChange={this.handleChangePass} />
-            //     </label>
-            //     <input type="submit" value="Register" />
-            // </form>
-            <View>
-                <Text>Username:</Text>
-                <TextInput value={this.state.username} onChangeText={(text)=>{this.handleChangeName(text)}} style={styles.text}/>
-                <Text>Password:</Text>
-                <TextInput secureTextEntry={true} value={this.state.password} onChangeText={(text)=>{this.handleChangePass(text)}} style={styles.text}/>
+            <View style={styles.container}>
+                <Input
+                    placeholder="email"
+                    value={this.state.username}
+                    onChangeText={(text)=>{this.handleChangeName(text)}}
+                    leftIcon={<Icon name='email'/>}
+                />
+                <Input
+                    placeholder="password"
+                    secureTextEntry={true}
+                    value={this.state.password}
+                    onChangeText={(text)=>{this.handleChangePass(text)}}
+                    leftIcon={<Icon name='lock'/>}
+                />
                 <Button title="Register" onPress={this.handleSubmit} />
             </View>
         )
@@ -94,10 +93,11 @@ class NewUserForm extends Component {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        width: 400,
+    },
     text: {
-      borderColor: 'black',
-      borderStyle: 'solid',
-      borderWidth: 2
     }
   })
 
