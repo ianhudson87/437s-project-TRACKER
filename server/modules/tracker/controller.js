@@ -433,6 +433,40 @@ export const changeScore = async (req, res) => {
     }
 }
 
+// advances some user to the next round in a tournament
+export const moveToNextRound = async (req, res) => {
+    // tournament_id, index required for req.body
+    console.log("Move to next round")
+    const {tournament_id, index} = req.body;
+   
+    try{
+        // get id stored at given index of the results array
+        let tournament = await Models.TournamentModel.findOne({ '_id': tournament_id })
+        let results = tournament.results
+        let userToAdvance = results[index]
+
+        if(userToAdvance == 0){ // no user at that position in the results array
+            return res.status(200).json({ error: false, tournament_updated: false, message: "tournament not updated" })
+        }
+        else{
+             // advance the user and then send resulting array to database
+            console.log("Initial results");
+            console.log(results)
+            results[index/2] = userToAdvance
+            console.log("Index: " + index)
+            console.log("Index/2", index/2)
+            console.log("New results")
+            console.log(results)
+            await Models.TournamentModel.updateOne({'_id': tournament_id}, {'results': results})
+            let updated_tournament = await Models.TournamentModel.findOne({ '_id': tournament_id })
+
+            return res.status(201).json({ error: false, updated_tournament: updated_tournament, tournament_updated: true, message: "tournament successfully updated" })
+        }
+    } catch(e) {
+        return res.status(400).json({ error:true, tournament_updated: false, message: "error with moveToNextRound", err_msg: e})
+    }
+}
+
 // add users to each other's list of friends
 export const addFriend = async (req, res) => {
     // req.body requires the id of the user and the id of the game

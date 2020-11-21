@@ -217,6 +217,29 @@ export const changeScore = async (scoreData) =>{
     return data
 }
 
+//submits a request to the API to change score of certain user
+export const moveToNextRound = async (resultData) =>{
+    /*
+    resultData = {
+        tournament_id:  // tournament that you want to change a result in
+        index: // index of the results array that is to be advanced to the next round
+    }
+    */
+    const res = await fetch(API_PATH + "moveToNextRound",{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            tournament_id: resultData.tournament_id,
+            index: resultData.index,
+        })
+    })
+    const data = await res.json();
+    return data
+}
+
 //submits a request to the API to add a friend
 export const addFriend = async (friendData) =>{
     /*

@@ -8,7 +8,7 @@ import {
   View,
   ScrollView
 } from 'react-native'
-import { getObjectByID, changeScore } from '../constants/api'
+import { getObjectByID, moveToNextRound } from '../constants/api'
 import { getSocket } from '../constants/socketio'
 
 class Tournament extends Component {
@@ -25,11 +25,13 @@ class Tournament extends Component {
     }
     
     this.populateUsersArray = this.populateUsersArray.bind(this)
+    this.populateResultsArray = this.populateResultsArray.bind(this)
     this.handleClick = this.handleClick.bind(this)
   }
 
   componentDidMount(){
     this.populateUsersArray()
+    this.populateResultsArray()
     console.log("data: game:", this.state.game)
 
     this.socket = getSocket()
@@ -40,20 +42,21 @@ class Tournament extends Component {
 
     this.socket.on('refresh_score', (data)=>{
       console.log('REFRESH SCORE')
-      getObjectByID({id: this.state.game._id, type: 'game'}).then((response) => {
+      getObjectByID({id: this.state.game._id, type: 'tournament'}).then((response) => {
         console.log('RESPONSE', response)
         if(response.object_exists){
-          this.setState({ game: response.object })
-          this.populateUsersArray() // updates the tournament results in the display
+          this.setState({ tournament: response.object })
+          this.populateResultsArray() // updates the tournament results in the display
         }
       })
     })
   }
 
   populateUsersArray(){
-    // populate the this.state.users array. Set the tournament results
+    // populate the this.state.users array
     let user_object_list = []
-    let user_scores_dict = {}
+    console.log("Populate Array")
+    console.log(this.state.game.results)
     this.state.game.users.forEach((user_id, index) => {
       getObjectByID({id: user_id, type: 'user'}).then((response) => {
         if(response.object_exists){
@@ -62,36 +65,55 @@ class Tournament extends Component {
       })
     })
     this.setState({users: user_object_list, results: this.state.game.results}) // update state of component
-    console.log("user_object_list", this.state.users)
-    console.log("results", this.state.results)
-
-    let results_object_list = []
-    this.state.game.results.forEach((user_id, index) => {
-        console.log(user_id)
-        if(user_id != 0){
-            getObjectByID({id: user_id, type: 'user'}).then((response) => {
-                if(response.object_exists){  
-                    results_object_list.push(response.object)
-                    console.log(results_object_list)
-                }
-                this.setState({results_objects: results_object_list}) // update state of component
-                console.log("State")
-                console.log(this.state.results_objects)
-              })
-        }
-        else{
-            results_object_list.push({name: ''})
-            this.setState({results_objects: results_object_list}) // update state of component
-            console.log("State")
-            console.log(this.state.results_objects)
-        }
-    })
-    
   }
 
-  handleClick(user){
+  populateResultsArray(){
+    // populate the this.state.results_objects array
+    let results_object_list = []
+    this.state.game.results.forEach((user_id, index) => {
+      if(user_id != 0){
+        getObjectByID({id: user_id, type: 'user'}).then((response) => {
+          if(response.object_exists){  
+            results_object_list.push(response.object)
+          }
+          this.setState({results_objects: results_object_list}) // update state of component
+          console.log("State0")
+        })
+      }
+      else{
+        results_object_list.push({name: ''})
+        this.setState({results_objects: results_object_list}) // update state of component
+        console.log("State1")
+      }
+    })
+  }
+
+  handleClick(user, key){
     console.log("Handle click")
     console.log(user)
+    console.log(key)
+    let resultData = {
+      tournament_id: this.state.game._id,
+      index: key
+    }
+    moveToNextRound(resultData).then((response)=>{
+      console.log("MOVE ROUND RESPONSE", response)
+      if(response.tournament_updated){
+        this.socket.emit('changed_score', {
+          game_id: this.state.game._id
+        }) // tells other people to change their scores
+        // game is updated on server. display updated game
+        this.setState({game: response.updated_tournament})
+        this.populateUsersArray() // update the list of user just in case
+      }
+      else if(response.error){
+        // tournament failed to update
+        console.log("ERROR")
+      }
+      else{
+        console.log("Invalid button pressed")
+      }
+    })
   }
 
   render() {
@@ -104,7 +126,7 @@ class Tournament extends Component {
         <View style={styles.usersContainer}>
           <Text>Bracket:</Text>
             {this.state.results_objects.map((user, key)=> (<Button title={user.name} key={key} 
-                  onPress={(e) => this.handleClick(user, e)}/>))}
+                  onPress={(e) => this.handleClick(user, key, e)}/>))}
 
         </View>
       </View>
