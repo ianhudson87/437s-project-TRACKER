@@ -201,9 +201,8 @@ export const createGame = async (name, user_ids, group_id, game_type, goal_score
             name: name,
             user_ids: user_ids,
             group_id: group_id,
-            game_type: game_type
+            game_type: game_type,
             goal_score: goal_score
-
         })
     })
     const data = await res.json();
