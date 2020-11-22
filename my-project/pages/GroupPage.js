@@ -23,6 +23,7 @@ constructor(props) {
     loggedInUserID: null, // contains userID. get this from local storage
     usersInGroup: [], // contains list of user objects
     gamesInGroup: [], // contains list of game objects
+    tournamentsInGroup: [], // contains list of tournament objects
   }
 
   this.handleNewUser = this.handleNewUser.bind(this);
@@ -77,6 +78,22 @@ refreshInfo(){
         this.setState(newState)
       }
     })
+
+    let tournaments_info_list = []
+    let tournament_ids_in_group = group.tournaments
+    tournament_ids_in_group.forEach((tournament_id) => {
+      // push game info into list
+      getObjectByID({id: tournament_id, type: "tournament"}).then((response)=>{
+        console.log("RESPONSE", response)
+        if(response.object_exists){
+          console.log("RESPONSE OBJECT", response.object)
+          tournaments_info_list.push(response.object)
+        }
+        this.setState({tournamentsInGroup: tournaments_info_list})
+        console.log(this.state.tournamentsInGroup)
+        console.log("tournamentsInGroup", this.state.tournamentsInGroup)
+      })
+    })
   })
 }
 
@@ -123,6 +140,15 @@ render() {
             { this.state.gamesInGroup.reverse().map((game, key)=> (<GameThumbnail key={game._id} game={game} navigation={this.props.navigation}/>)) }
           </ScrollView>
         </View>
+        
+        <View style={styles.gamesContainer}>
+          <Text>Tournaments in the group:</Text>
+            <ScrollView style={styles.gamesListContainer}>
+              { this.state.tournamentsInGroup.map((tournament, key)=> (<GameThumbnail key={key} game={tournament} type="tournament" navigation={this.props.navigation}/>)) }
+            </ScrollView>
+        </View>
+
+        <Button title='Create new game' onPress={() => this.handleNewGame()} />
       </View>
     )
   }

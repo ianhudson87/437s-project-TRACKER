@@ -58,20 +58,18 @@ export const createGroup = async (req, res) => {
     const {name} = req.body;
     const users = []
     const games = []
-    const newGroup = new Models.GroupModel( {name, users, games} );
+    const tournaments = []
+    const newGroup = new Models.GroupModel( {name, users, games, tournaments} );
     
     try{
         let existingGroups  = await Models.GroupModel.find({});
         // determine if group name is taken already
         for(let i=0; i<existingGroups.length; i++){
-            console.log("New group name" + newGroup.name)
-            console.log("Existing group name" + existingGroups[i].name)
             if(newGroup.name == existingGroups[i].name){
                 return res.status(203).json({ error:false, repeatedGroup:true, message: "group is taken is taken"})
             }
         }
         // name not taken yet
-        console.log('here')
         return res.status(203).json({ group: await newGroup.save(), error:false, repeatedGroup:false })
     } catch(e) {
         return res.status(400).json({ error:true, message: "error with creating user", error_msg:e})
@@ -102,6 +100,9 @@ export const getObjectByID = async (req, res) => {
             break
         case "game":
             model_type = Models.GameModel
+            break
+        case "tournament":
+            model_type = Models.TournamentModel
             break
         case "user":
             model_type = Models.UserModel
@@ -339,13 +340,46 @@ export const createGame = async (req, res) => {
     //  name of the game that you are creating
     //  list of user_ids in the game
     //  group_id of group that the game is being created for
-    //  goal_score = score the users are trying to reach
-    const {name, user_ids, group_id, goal_score} = req.body;
-    console.log(req.body)
-    let scores = Array(user_ids.length).fill(0)
-    const newGame = new Models.GameModel( {name: name, users: user_ids, scores: scores, goal_score: goal_score, game_ended: false} );
-    try{
+    //  game_type of the game that you are creating
+    //  goal_score for standard game, or 0 for tournament
+    const {name, user_ids, group_id, game_type, goal_score} = req.body;
+    let newGame;
+    if(game_type == "tournament"){
+        if(user_ids.length < 4 || user_ids > 32){
+            return res.status(200).json({ error: false, game_created: false, message: "invalid number of users"})
+        }
+        // initialize results as an empty array of the correct size
+        let results;
+        if(user_ids.length == 4){
+            results = Array(7).fill(0)
+        }
+        else if(user_ids.length <= 8){
+            results = Array(15).fill(0)
+        }
+        else if(user_ids.length <= 16){
+            results = Array(31).fill(0)
+        }
+        else{
+            results = Array(63).fill(0)
+        }
+        // assign first round positions
+        for(let i=0; i<user_ids.length; i++){
+            results[results.length-1-i] = user_ids[i];
+        }
+        console.log(name)
+        console.log(user_ids)
+        console.log(results)    
+        newGame = new Models.TournamentModel( {name, user_ids, results} );
+    }
+    else if(game_type == "standard"){
+        let scores = Array(user_ids.length).fill(0)
+        newGame = new Models.GameModel( {name: name, users: user_ids, scores: scores, goal_score: goal_score, game_ended: false} );
+    }
+    else{
+        return res.status(200).json({ error: false, game_created: false, message: "invalid game type"})
+    }
 
+    try{
         // check to make sure that user_ids are valid
         let valid_user_ids = true
         for(let i=0; i<user_ids.length; i++){
@@ -364,17 +398,31 @@ export const createGame = async (req, res) => {
             // check to make sure that group_id is valid
             let group_with_given_id = await Models.GroupModel.find({ '_id': group_id})
             if(group_with_given_id.length == 0){
-                return res.status(200).json({ error: false, game_created: false, message: "some group_id DNE"})
+                return res.status(200).json({ error: false, game_created: false, message: "group_id DNE"})
             }
             else{
                 // all user_ids and group_id are valid
                 // create the game and get the id of the game
-                let game = await newGame.save()
+                let game;
+                if(game_type == "tournament"){
+                    game = await newGame.save()
+                }
+                else{
+                    game = await newGame.save()
+                }
+                
                 let game_id = game._id
 
                 // add the game_id to the user and group
-                await Models.UserModel.updateMany({ '_id': {$in: user_ids} }, { '$push': { games: game_id } })
-                await Models.GroupModel.updateOne({ '_id': group_id }, { '$push': { games: game_id } })
+                if(game_type == "tournament"){
+                    await Models.UserModel.updateMany({ '_id': {$in: user_ids} }, { '$push': { tournaments: game_id } })
+                    await Models.GroupModel.updateOne({ '_id': group_id }, { '$push': { tournaments: game_id } })
+                }
+                else{
+                    await Models.UserModel.updateMany({ '_id': {$in: user_ids} }, { '$push': { games: game_id } })
+                    await Models.GroupModel.updateOne({ '_id': group_id }, { '$push': { games: game_id } })
+                }
+                
 
                 return res.status(200).json({ error:false, game_created: true, game_info: game, message: "game created!"})
             }
@@ -383,6 +431,7 @@ export const createGame = async (req, res) => {
         return res.status(400).json({ error:true, game_created: false, message: "error with creating game", error_msg: e})
     }
 }
+
 
 // retrieves a list of all games in the database
 export const getAllGames = async (req, res) => {
@@ -449,6 +498,40 @@ export const changeScore = async (req, res) => {
     }
     else{
         return res.status(200).json({ error:false, game_updated: false, message: "error with changeScore: not valid type"})
+    }
+}
+
+// advances some user to the next round in a tournament
+export const moveToNextRound = async (req, res) => {
+    // tournament_id, index required for req.body
+    console.log("Move to next round")
+    const {tournament_id, index} = req.body;
+   
+    try{
+        // get id stored at given index of the results array
+        let tournament = await Models.TournamentModel.findOne({ '_id': tournament_id })
+        let results = tournament.results
+        let userToAdvance = results[index]
+
+        if(userToAdvance == 0){ // no user at that position in the results array
+            return res.status(200).json({ error: false, tournament_updated: false, message: "tournament not updated" })
+        }
+        else{
+             // advance the user and then send resulting array to database
+            console.log("Initial results");
+            console.log(results)
+            results[Math.floor((index-1)/2)] = userToAdvance
+            console.log("Index: " + index)
+            console.log("Index/2", index/2)
+            console.log("New results")
+            console.log(results)
+            await Models.TournamentModel.updateOne({'_id': tournament_id}, {'results': results})
+            let updated_tournament = await Models.TournamentModel.findOne({ '_id': tournament_id })
+
+            return res.status(201).json({ error: false, updated_tournament: updated_tournament, tournament_updated: true, message: "tournament successfully updated" })
+        }
+    } catch(e) {
+        return res.status(400).json({ error:true, tournament_updated: false, message: "error with moveToNextRound", err_msg: e})
     }
 }
 
@@ -520,3 +603,4 @@ export const checkFriends = async (req, res) => {
         return res.status(400).json({ error:true, error_message: "error with checking friends"})
     }
 }
+

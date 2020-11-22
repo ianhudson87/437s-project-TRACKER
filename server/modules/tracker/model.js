@@ -50,6 +50,11 @@ const GroupSchema = new Schema({
         // contains game ids that the users created 
         type: Array,
         required: true
+    },
+    tournaments: {
+        // contains tournament ids that the users created 
+        type: Array,
+        required: true
     }
 })
 
@@ -86,6 +91,24 @@ const GameSchema = new Schema({
 }, {timestamps: true}
 )
 
+const TournamentSchema = new Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    users: {
+        // contains ids of Users in the Group
+        type: Array,
+        required: true
+    },
+    results: {
+        // contains an array representing the User at each slot in the tournament
+        type: Array,
+        required: true
+    }
+})
+
 export const UserModel =  mongoose.model('users', UserSchema)
 export const GroupModel = mongoose.model('groups', GroupSchema)
 export const GameModel = mongoose.model('games', GameSchema)
+export const TournamentModel = mongoose.model('tournaments', TournamentSchema)

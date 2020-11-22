@@ -188,7 +188,8 @@ export const createGroup = async (name) =>{
 
 
 //submits a request to the API to create new game with certain parameters
-export const createGame = async (name, user_ids, group_id, goal_score) =>{
+
+export const createGame = async (name, user_ids, group_id, game_type, goal_score) =>{
     console.log('send api')
     const res = await fetch(API_PATH + "createGame",{
         method: 'POST',
@@ -200,7 +201,9 @@ export const createGame = async (name, user_ids, group_id, goal_score) =>{
             name: name,
             user_ids: user_ids,
             group_id: group_id,
+            game_type: game_type
             goal_score: goal_score
+
         })
     })
     const data = await res.json();
@@ -228,6 +231,29 @@ export const changeScore = async (scoreData) =>{
             user_id: scoreData.user_id,
             type: scoreData.type,
             amount: scoreData.amount
+        })
+    })
+    const data = await res.json();
+    return data
+}
+
+//submits a request to the API to change score of certain user
+export const moveToNextRound = async (resultData) =>{
+    /*
+    resultData = {
+        tournament_id:  // tournament that you want to change a result in
+        index: // index of the results array that is to be advanced to the next round
+    }
+    */
+    const res = await fetch(API_PATH + "moveToNextRound",{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            tournament_id: resultData.tournament_id,
+            index: resultData.index,
         })
     })
     const data = await res.json();

@@ -39,5 +39,7 @@ routes.post('/addFriend', TrackerController.addFriend)
 
 routes.post('/checkFriends', TrackerController.checkFriends)
 
+routes.post('/moveToNextRound', TrackerController.moveToNextRound)
+
 
 export default routes;
