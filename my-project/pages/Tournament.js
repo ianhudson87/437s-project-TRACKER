@@ -22,6 +22,11 @@ class Tournament extends Component {
       users: [], // stores user objects of users in the game (because the game object only stores user ids)
       results: [], // contains id of user at each position in tournament
       results_objects: [], // contains name of user at each position in tournament
+      first_round: [],
+      second_round: [],
+      third_round: [],
+      fourth_round: [],
+      fifth_round: []
     }
     
     this.populateUsersArray = this.populateUsersArray.bind(this)
@@ -70,24 +75,89 @@ class Tournament extends Component {
   populateResultsArray(){
     // populate the this.state.results_objects array
     let results_object_list = []
+    let first_round = []
+    let second_round = []
+    let third_round = []
+    let fourth_round = []
+    let fifth_round = []
     console.log(this.state.game.results)
     this.state.game.results.forEach((user_id, index) => {
-      if(user_id != 0){
-        getObjectByID({id: user_id, type: 'user'}).then((response) => {
-          if(response.object_exists){  
-            results_object_list[index] = response.object
-          }
-          this.setState({results_objects: results_object_list}) // update state of component
-          console.log("State0")
-        })
+      if(index > 14){
+        if(user_id != 0){
+          getObjectByID({id: user_id, type: 'user'}).then((response) => {
+            if(response.object_exists){  
+              first_round[index] = response.object
+            }
+            this.setState({first_round: first_round}) // update state of component
+          })
+        }
+        else{
+          first_round[index] = {name: '           '}
+          this.setState({first_round: first_round}) // update state of component
+        }
+      }
+      else if(index > 6){
+        if(user_id != 0){
+          getObjectByID({id: user_id, type: 'user'}).then((response) => {
+            if(response.object_exists){  
+              second_round[index] = response.object
+            }
+            this.setState({second_round: second_round}) // update state of component
+          })
+        }
+        else{
+          second_round[index] = {name: '           '}
+          this.setState({second_round: second_round}) // update state of component
+        }
+      }
+      else if(index > 2){
+        if(user_id != 0){
+          getObjectByID({id: user_id, type: 'user'}).then((response) => {
+            if(response.object_exists){  
+              third_round[index] = response.object
+            }
+            this.setState({third_round: third_round}) // update state of component
+          })
+        }
+        else{
+          third_round[index] = {name: '           '}
+          this.setState({third_round: third_round}) // update state of component
+        }
+      }
+      else if(index > 0){
+        if(user_id != 0){
+          getObjectByID({id: user_id, type: 'user'}).then((response) => {
+            if(response.object_exists){  
+              fourth_round[index] = response.object
+            }
+            this.setState({fourth_round: fourth_round}) // update state of component
+          })
+        }
+        else{
+          fourth_round[index] = {name: '           '}
+          this.setState({fourth_round: fourth_round}) // update state of component
+        }
       }
       else{
-        results_object_list[index] = {name: '           '}
-        this.setState({results_objects: results_object_list}) // update state of component
-        console.log("State1")
+        if(user_id != 0){
+          getObjectByID({id: user_id, type: 'user'}).then((response) => {
+            if(response.object_exists){  
+              fifth_round[index] = response.object
+            }
+            this.setState({fifth_round: fifth_round}) // update state of component
+          })
+        }
+        else{
+          fifth_round[index] = {name: '           '}
+          this.setState({fifth_round: fifth_round}) // update state of component
+        }
       }
+      
     })
-    console.log(this.state.results_objects)
+    
+    console.log("ROUNDS")
+    console.log(this.state.first_round)
+    console.log(this.state.second_round)
   }
 
   handleClick(user, key){
@@ -125,11 +195,31 @@ class Tournament extends Component {
           Tournament: {this.state.game.name}
         </Text>
         
-        <View style={styles.usersContainer}>
-          <Text>Bracket:</Text>
+        <View style={styles.bracketContainer}>
+  
+          {/* <Text>Bracket:</Text>
             {this.state.results_objects.map((user, key)=> (<Button title={user.name} key={key} 
-                  onPress={(e) => this.handleClick(user, key, e)}/>))}
-
+                  onPress={(e) => this.handleClick(user, key, e)}/>))} */}
+          <View style={styles.first_round}>
+            {this.state.first_round.map((user, key)=> (<Button title={user.name} key={key} 
+                  onPress={(e) => this.handleClick(user, key, e)}/>))} 
+          </View>
+          <View style={styles.second_round}>
+            {this.state.second_round.map((user, key)=> (<Button title={user.name} key={key} 
+                  onPress={(e) => this.handleClick(user, key, e)}/>))} 
+          </View>
+          <View style={styles.third_round}>
+            {this.state.third_round.map((user, key)=> (<Button title={user.name} key={key} 
+                  onPress={(e) => this.handleClick(user, key, e)}/>))} 
+          </View>
+          <View style={styles.fourth_round}>
+            {this.state.fourth_round.map((user, key)=> (<Button title={user.name} key={key} 
+                  onPress={(e) => this.handleClick(user, key, e)}/>))} 
+          </View>
+          <View style={styles.fifth_round}>
+            {this.state.fifth_round.map((user, key)=> (<Button title={user.name} key={key} 
+                  onPress={(e) => this.handleClick(user, key, e)}/>))} 
+          </View>
         </View>
       </View>
     )
@@ -146,7 +236,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#DDDDDD',
     padding: 10,
-    marginBottom: 10,
+    marginBottom: 30,
   },
   text: {
     borderColor: 'black',
@@ -160,11 +250,12 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
   },
-  usersContainer: {
+  bracketContainer: {
     //flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     height: "20%",
+    flexDirection: 'row',
   },
   usersListContainer: {
     flex: 1,
@@ -172,6 +263,26 @@ const styles = StyleSheet.create({
     marginHorizontal: 0,
     //height: "30%",
     width: "120%"
+  },
+  first_round: {
+    flex: 5,
+    flexDirection: "column"
+  },
+  second_round: {
+    flex: 5,
+    flexDirection: "column"
+  },
+  third_round: {
+    flex: 5,
+    flexDirection: "column"
+  },
+  fourth_round: {
+    flex: 5,
+    flexDirection: "column"
+  },
+  fifth_round: {
+    flex: 5,
+    flexDirection: "column"
   },
 })
 
