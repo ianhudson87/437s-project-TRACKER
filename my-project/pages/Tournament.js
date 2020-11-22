@@ -26,7 +26,8 @@ class Tournament extends Component {
       second_round: [],
       third_round: [],
       fourth_round: [],
-      fifth_round: []
+      fifth_round: [],
+      results_to_display: [[], [], [], [], []]
     }
     
     this.populateUsersArray = this.populateUsersArray.bind(this)
@@ -74,99 +75,129 @@ class Tournament extends Component {
 
   populateResultsArray(){
     // populate the this.state.results_objects array
-    let results_object_list = []
-    let first_round = []
-    let second_round = []
-    let third_round = []
-    let fourth_round = []
-    let fifth_round = []
-    console.log(this.state.game.results)
-    this.state.game.results.forEach((user_id, index) => {
-      if(index > 14){
-        if(user_id != 0){
-          getObjectByID({id: user_id, type: 'user'}).then((response) => {
-            if(response.object_exists){  
-              first_round[index] = response.object
-            }
-            this.setState({first_round: first_round}) // update state of component
-          })
-        }
-        else{
-          first_round[index] = {name: '           '}
-          this.setState({first_round: first_round}) // update state of component
-        }
-      }
-      else if(index > 6){
-        if(user_id != 0){
-          getObjectByID({id: user_id, type: 'user'}).then((response) => {
-            if(response.object_exists){  
-              second_round[index] = response.object
-            }
-            this.setState({second_round: second_round}) // update state of component
-          })
-        }
-        else{
-          second_round[index] = {name: '           '}
-          this.setState({second_round: second_round}) // update state of component
-        }
-      }
-      else if(index > 2){
-        if(user_id != 0){
-          getObjectByID({id: user_id, type: 'user'}).then((response) => {
-            if(response.object_exists){  
-              third_round[index] = response.object
-            }
-            this.setState({third_round: third_round}) // update state of component
-          })
-        }
-        else{
-          third_round[index] = {name: '           '}
-          this.setState({third_round: third_round}) // update state of component
-        }
-      }
-      else if(index > 0){
-        if(user_id != 0){
-          getObjectByID({id: user_id, type: 'user'}).then((response) => {
-            if(response.object_exists){  
-              fourth_round[index] = response.object
-            }
-            this.setState({fourth_round: fourth_round}) // update state of component
-          })
-        }
-        else{
-          fourth_round[index] = {name: '           '}
-          this.setState({fourth_round: fourth_round}) // update state of component
-        }
-      }
-      else{
-        if(user_id != 0){
-          getObjectByID({id: user_id, type: 'user'}).then((response) => {
-            if(response.object_exists){  
-              fifth_round[index] = response.object
-            }
-            this.setState({fifth_round: fifth_round}) // update state of component
-          })
-        }
-        else{
-          fifth_round[index] = {name: '           '}
-          this.setState({fifth_round: fifth_round}) // update state of component
-        }
-      }
+    // let results_object_list = []
+    // let first_round = []
+    // let second_round = []
+    // let third_round = []
+    // let fourth_round = []
+    // let fifth_round = []
+    // console.log(this.state.game.results)
+    // this.state.game.results.forEach((user_id, index) => {
+    //   if(index > 14){
+    //     if(user_id != 0){
+    //       getObjectByID({id: user_id, type: 'user'}).then((response) => {
+    //         if(response.object_exists){  
+    //           first_round[index] = response.object
+    //         }
+    //         this.setState({first_round: first_round}) // update state of component
+    //       })
+    //     }
+    //     else{
+    //       first_round[index] = {name: '           '}
+    //       this.setState({first_round: first_round}) // update state of component
+    //     }
+    //   }
+    //   else if(index > 6){
+    //     if(user_id != 0){
+    //       getObjectByID({id: user_id, type: 'user'}).then((response) => {
+    //         if(response.object_exists){  
+    //           second_round[index] = response.object
+    //         }
+    //         this.setState({second_round: second_round}) // update state of component
+    //       })
+    //     }
+    //     else{
+    //       second_round[index] = {name: '           '}
+    //       this.setState({second_round: second_round}) // update state of component
+    //     }
+    //   }
+    //   else if(index > 2){
+    //     if(user_id != 0){
+    //       getObjectByID({id: user_id, type: 'user'}).then((response) => {
+    //         if(response.object_exists){  
+    //           third_round[index] = response.object
+    //         }
+    //         this.setState({third_round: third_round}) // update state of component
+    //       })
+    //     }
+    //     else{
+    //       third_round[index] = {name: '           '}
+    //       this.setState({third_round: third_round}) // update state of component
+    //     }
+    //   }
+    //   else if(index > 0){
+    //     if(user_id != 0){
+    //       getObjectByID({id: user_id, type: 'user'}).then((response) => {
+    //         if(response.object_exists){  
+    //           fourth_round[index] = response.object
+    //         }
+    //         this.setState({fourth_round: fourth_round}) // update state of component
+    //       })
+    //     }
+    //     else{
+    //       fourth_round[index] = {name: '           '}
+    //       this.setState({fourth_round: fourth_round}) // update state of component
+    //     }
+    //   }
+    //   else{
+    //     if(user_id != 0){
+    //       getObjectByID({id: user_id, type: 'user'}).then((response) => {
+    //         if(response.object_exists){  
+    //           fifth_round[index] = response.object
+    //         }
+    //         this.setState({fifth_round: fifth_round}) // update state of component
+    //       })
+    //     }
+    //     else{
+    //       fifth_round[index] = {name: '           '}
+    //       this.setState({fifth_round: fifth_round}) // update state of component
+    //     }
+    //   }
       
-    })
+    // })
     
-    console.log("ROUNDS")
-    console.log(this.state.first_round)
-    console.log(this.state.second_round)
+    console.log("POPULATE")
+    let results_object_list = []
+    let results = []
+    let numRounds = Math.log2(this.state.game.results.length+1)
+    console.log(this.state.game.results)
+    for(let i = 0; i < numRounds; i++){
+      results[i] = []
+    }
+    this.state.game.results.forEach((user_id, index) => {
+      let added = false
+      for(let i = numRounds-1; i >= 0; i--){
+        if(index >= Math.pow(2, i)-1 && !added){
+          added = true
+          console.log("i: " + i)
+          console.log("index: " + index)
+          console.log("List num: " + ((numRounds-1)-i) + ", " + (index-Math.pow(2, i)+1))
+          if(user_id != 0){
+            getObjectByID({id: user_id, type: 'user'}).then((response) => {
+              if(response.object_exists){  
+                results[(numRounds-1)-i][index-Math.pow(2, i)+1] = response.object
+              }
+              this.setState({results_to_display: results}) // update state of component
+            })
+          }
+          else{
+            results[(numRounds-1)-i][index-Math.pow(2, i)+1] = {name: '           '}
+            this.setState({results_to_display: results}) // update state of component
+          }
+        }
+      }
+    })
+    console.log(this.state.results_to_display)
+    console.log(results)
   }
 
-  handleClick(user, key){
+  handleClick(user, key, roundNum){
     console.log("Handle click")
     console.log(user)
-    console.log(key)
+    console.log(key + Math.pow(2, roundNum) - 1)
     let resultData = {
       tournament_id: this.state.game._id,
-      index: key
+      index: key + Math.pow(2, roundNum) - 1
     }
     moveToNextRound(resultData).then((response)=>{
       console.log("MOVE ROUND RESPONSE", response)
@@ -201,24 +232,24 @@ class Tournament extends Component {
             {this.state.results_objects.map((user, key)=> (<Button title={user.name} key={key} 
                   onPress={(e) => this.handleClick(user, key, e)}/>))} */}
           <View style={styles.first_round}>
-            {this.state.first_round.map((user, key)=> (<Button title={user.name} key={key} 
-                  onPress={(e) => this.handleClick(user, key, e)}/>))} 
+            {this.state.results_to_display[0].map((user, key)=> (<Button title={user.name} key={key} 
+                  onPress={(e) => this.handleClick(user, key, 4, e)}/>))} 
           </View>
           <View style={styles.second_round}>
-            {this.state.second_round.map((user, key)=> (<Button title={user.name} key={key} 
-                  onPress={(e) => this.handleClick(user, key, e)}/>))} 
+            {this.state.results_to_display[1].map((user, key)=> (<Button title={user.name} key={key} 
+                  onPress={(e) => this.handleClick(user, key, 3, e)}/>))} 
           </View>
           <View style={styles.third_round}>
-            {this.state.third_round.map((user, key)=> (<Button title={user.name} key={key} 
-                  onPress={(e) => this.handleClick(user, key, e)}/>))} 
+            {this.state.results_to_display[2].map((user, key)=> (<Button title={user.name} key={key} 
+                  onPress={(e) => this.handleClick(user, key, 2, e)}/>))} 
           </View>
           <View style={styles.fourth_round}>
-            {this.state.fourth_round.map((user, key)=> (<Button title={user.name} key={key} 
-                  onPress={(e) => this.handleClick(user, key, e)}/>))} 
+            {this.state.results_to_display[3].map((user, key)=> (<Button title={user.name} key={key} 
+                  onPress={(e) => this.handleClick(user, key, 1, e)}/>))} 
           </View>
           <View style={styles.fifth_round}>
-            {this.state.fifth_round.map((user, key)=> (<Button title={user.name} key={key} 
-                  onPress={(e) => this.handleClick(user, key, e)}/>))} 
+            {this.state.results_to_display[4].map((user, key)=> (<Button title={user.name} key={key} 
+                  onPress={(e) => this.handleClick(user, key, 0, e)}/>))} 
           </View>
         </View>
       </View>
