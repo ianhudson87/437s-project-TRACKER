@@ -311,10 +311,10 @@ export const createGame = async (req, res) => {
         if(user_ids.length == 4){
             results = Array(7).fill(0)
         }
-        else if(user_ids.length < 8){
+        else if(user_ids.length <= 8){
             results = Array(15).fill(0)
         }
-        else if(user_ids.length < 16){
+        else if(user_ids.length <= 16){
             results = Array(31).fill(0)
         }
         else{

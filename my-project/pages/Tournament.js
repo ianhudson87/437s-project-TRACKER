@@ -27,12 +27,14 @@ class Tournament extends Component {
       third_round: [],
       fourth_round: [],
       fifth_round: [],
-      results_to_display: [[], [], [], [], []]
+      results_to_display: [[], [], [], [], []],
+      numRounds: 0
     }
     
     this.populateUsersArray = this.populateUsersArray.bind(this)
     this.populateResultsArray = this.populateResultsArray.bind(this)
     this.handleClick = this.handleClick.bind(this)
+    this.bracketDisplayHandler = this.bracketDisplayHandler.bind(this)
   }
 
   componentDidMount(){
@@ -160,6 +162,7 @@ class Tournament extends Component {
     let results_object_list = []
     let results = []
     let numRounds = Math.log2(this.state.game.results.length+1)
+    this.setState({numRounds: numRounds})
     console.log(this.state.game.results)
     for(let i = 0; i < numRounds; i++){
       results[i] = []
@@ -219,18 +222,50 @@ class Tournament extends Component {
     })
   }
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.nameContainer}>
-          Tournament: {this.state.game.name}
-        </Text>
-        
+  bracketDisplayHandler(numRounds){
+    if(numRounds == 3){
+      return(
         <View style={styles.bracketContainer}>
-  
-          {/* <Text>Bracket:</Text>
-            {this.state.results_objects.map((user, key)=> (<Button title={user.name} key={key} 
-                  onPress={(e) => this.handleClick(user, key, e)}/>))} */}
+          <View style={styles.first_round}>
+            {this.state.results_to_display[0].map((user, key)=> (<Button title={user.name} key={key} 
+                  onPress={(e) => this.handleClick(user, key, 2, e)}/>))} 
+          </View>
+          <View style={styles.second_round}>
+            {this.state.results_to_display[1].map((user, key)=> (<Button title={user.name} key={key} 
+                  onPress={(e) => this.handleClick(user, key, 1, e)}/>))} 
+          </View>
+          <View style={styles.third_round}>
+            {this.state.results_to_display[2].map((user, key)=> (<Button title={user.name} key={key} 
+                  onPress={(e) => this.handleClick(user, key, 0, e)}/>))} 
+          </View>
+        </View>
+      )
+    }
+    else if(numRounds == 4){
+      return(
+        <View style={styles.bracketContainer}>
+          <View style={styles.first_round}>
+            {this.state.results_to_display[0].map((user, key)=> (<Button title={user.name} key={key} 
+                  onPress={(e) => this.handleClick(user, key, 3, e)}/>))} 
+          </View>
+          <View style={styles.second_round}>
+            {this.state.results_to_display[1].map((user, key)=> (<Button title={user.name} key={key} 
+                  onPress={(e) => this.handleClick(user, key, 2, e)}/>))} 
+          </View>
+          <View style={styles.third_round}>
+            {this.state.results_to_display[2].map((user, key)=> (<Button title={user.name} key={key} 
+                  onPress={(e) => this.handleClick(user, key, 1, e)}/>))} 
+          </View>
+          <View style={styles.fourth_round}>
+            {this.state.results_to_display[3].map((user, key)=> (<Button title={user.name} key={key} 
+                  onPress={(e) => this.handleClick(user, key, 0, e)}/>))} 
+          </View>
+        </View>
+      )
+    }
+    else if(numRounds == 5){
+      return(
+        <View style={styles.bracketContainer}>
           <View style={styles.first_round}>
             {this.state.results_to_display[0].map((user, key)=> (<Button title={user.name} key={key} 
                   onPress={(e) => this.handleClick(user, key, 4, e)}/>))} 
@@ -252,6 +287,46 @@ class Tournament extends Component {
                   onPress={(e) => this.handleClick(user, key, 0, e)}/>))} 
           </View>
         </View>
+      )
+    }
+    else{
+      return(<View></View>)
+    }
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.nameContainer}>
+          Tournament: {this.state.game.name}
+        </Text>
+        {this.bracketDisplayHandler(this.state.numRounds)}
+        {/*<View style={styles.bracketContainer}>
+  
+          {/* <Text>Bracket:</Text>
+            {this.state.results_objects.map((user, key)=> (<Button title={user.name} key={key} 
+                  onPress={(e) => this.handleClick(user, key, e)}/>))} *
+          <View style={styles.first_round}>
+            {this.state.results_to_display[0].map((user, key)=> (<Button title={user.name} key={key} 
+                  onPress={(e) => this.handleClick(user, key, 4, e)}/>))} 
+          </View>
+          <View style={styles.second_round}>
+            {this.state.results_to_display[1].map((user, key)=> (<Button title={user.name} key={key} 
+                  onPress={(e) => this.handleClick(user, key, 3, e)}/>))} 
+          </View>
+          <View style={styles.third_round}>
+            {this.state.results_to_display[2].map((user, key)=> (<Button title={user.name} key={key} 
+                  onPress={(e) => this.handleClick(user, key, 2, e)}/>))} 
+          </View>
+          <View style={styles.fourth_round}>
+            {this.state.results_to_display[3].map((user, key)=> (<Button title={user.name} key={key} 
+                  onPress={(e) => this.handleClick(user, key, 1, e)}/>))} 
+          </View>
+          <View style={styles.fifth_round}>
+            {this.state.results_to_display[4].map((user, key)=> (<Button title={user.name} key={key} 
+                  onPress={(e) => this.handleClick(user, key, 0, e)}/>))} 
+          </View>
+            </View> */}
       </View>
     )
   }
