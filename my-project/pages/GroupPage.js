@@ -8,14 +8,17 @@ import {
   View,
   ScrollView,
 } from 'react-native'
-import { getObjectByID } from "../constants/api"
+import { Icon } from 'react-native-elements'
+import { Title } from 'react-native-paper'
+import { getObjectByID, getObjectsByIDs } from "../constants/api"
 import GameThumbnail from "../components/GameThumbnail"
+import UserThumbnail from '../components/UserThumbnail'
 
 class GroupPage extends Component {
 constructor(props) {
   super(props);
   this.state = { 
-    groupID: this.props.route.params.group._id,
+    groupID: this.props.route.params.groupID,
     group: {name: "default"}, // contains group "object". get this from api
     loggedInUserID: null, // contains userID. get this from local storage
     usersInGroup: [], // contains list of user objects
@@ -28,19 +31,27 @@ constructor(props) {
   this.refreshInfo = this.refreshInfo.bind(this);
 }
 
+componentDidMount(){
+  this.props.navigation.addListener('focus', ()=>{this.refreshInfo()}); // THIS REFRESHES THE PAGE EVERY TIME YOU GO BACK TO IT. 0.0
+}
+
 refreshInfo(){
   // refresh all the information about the group
   console.log('REFRESH')
+
+  let newState = {}
   AsyncStorage.getItem('loggedInUserID').then((value)=>{
     // get the id of the logged in user
-    this.setState({loggedInUserID: value})
+    newState.loggedInUserID = value // this.setState({loggedInUserID: value})
   }).then(()=>{console.log("data: group:", this.state.groupID, "user", this.state.loggedInUser)})
 
-  // populate the usersInGroup list
+
+
+  // populate the usersInGroup list and gamesInGroup list
   getObjectByID({id: this.state.groupID, type: "group"}).then((response)=>{
     // get the group object
     if(response.object_exists){
-      this.setState({group: response.object})
+      newState.group = response.object // this.setState({group: response.object})
       return response.object
     }
     else{
@@ -49,34 +60,23 @@ refreshInfo(){
   }).then((group)=>{
     console.log("GROUP:", group)
 
-    let users_info_list = []
+    // GET ALL THE USERS IN THE GROUP
     let user_ids_in_group = group.users
-    user_ids_in_group.forEach((user_id) => {
-      // push user info into list
-      getObjectByID({id: user_id, type: "user"}).then((response)=>{
-        if(response.object_exists){
-          users_info_list.push(response.object)
-        }
-        this.setState({usersInGroup: users_info_list})
-        console.log(this.state.usersInGroup)
-        console.log("gamesInGroup", this.state.gamesInGroup)
-      })
+    getObjectsByIDs({ids: user_ids_in_group, type: "user"}).then((response) => {
+      if(response.objects_exist){
+        newState.usersInGroup = response.objects // this.setState({usersInGroup: response.objects})
+      }
     })
 
-    let games_info_list = []
+    // GET ALL THE GAMES IN THE GROUP
     let game_ids_in_group = group.games
-    game_ids_in_group.forEach((game_id) => {
-      // push game info into list
-      getObjectByID({id: game_id, type: "game"}).then((response)=>{
-        console.log("RESPONSE", response)
-        if(response.object_exists){
-          console.log("RESPONSE OBJECT", response.object)
-          games_info_list.push(response.object)
-        }
-        this.setState({gamesInGroup: games_info_list})
-        console.log(this.state.gamesInGroup)
-        console.log("gamesInGroup", this.state.gamesInGroup)
-      })
+    getObjectsByIDs({ids: game_ids_in_group, type: "game"}).then((response) => {
+      if(response.objects_exist){
+        console.log("length", response.objects.length)
+        response.objects
+        newState.gamesInGroup = response.objects // this.setState({gamesInGroup: response.objects})
+        this.setState(newState)
+      }
     })
 
     let tournaments_info_list = []
@@ -97,10 +97,6 @@ refreshInfo(){
   })
 }
 
-componentDidMount(){
-  this.props.navigation.addListener('focus', ()=>{this.refreshInfo()}); // THIS REFRESHES THE PAGE EVERY TIME YOU GO BACK TO IT. 0.0
-}
-
 handleNewUser(){
     this.props.navigation.navigate("AddUserToGroup", {
         group: this.state.group,
@@ -119,12 +115,6 @@ handleNewGame(){
   });
 }
 
-navigateToUserProfile(user, event) {
-  console.log(user.name);
-  this.props.navigation.navigate("UserProfile", {
-      profileUserID: user._id
-  });
-}
 
   
 render() {
@@ -134,21 +124,20 @@ render() {
           <Text style={styles.nameContainer}>
             {this.state.group.name}
           </Text>
-          <Button title='Add User' onPress={(e) => this.handleNewUser(e)}/>
         </View>
         
         <View style={styles.usersContainer}>
-          <Text>Players:</Text>
-          <ScrollView style={styles.usersListContainer}>
-            {this.state.usersInGroup.map((user, key)=> (<Button title={user.name} key={key} 
-                  onPress={(e) => this.navigateToUserProfile(user, e)}/>))}
+          <Title>Players <Icon size="19" name="person-add" title='Add User' onPress={(e) => this.handleNewUser(e)}/></Title>
+          <ScrollView>
+            { this.state.usersInGroup.map((user, key)=> (<UserThumbnail key={key} user={user} navigation={this.props.navigation} />)) }
           </ScrollView>
         </View>
           
         <View style={styles.gamesContainer}>
-          <Text>Games in the group:</Text>
-          <ScrollView style={styles.gamesListContainer}>
-            { this.state.gamesInGroup.map((game, key)=> (<GameThumbnail key={key} game={game} type="standard" navigation={this.props.navigation}/>)) }
+          <Title>Games <Icon size="19" name="create" onPress={() => this.handleNewGame()} /></Title>
+          <ScrollView>
+            { console.log("GamesInGroup", this.state.gamesInGroup)}
+            { this.state.gamesInGroup.reverse().map((game, key)=> (<GameThumbnail key={game._id} game={game} navigation={this.props.navigation}/>)) }
           </ScrollView>
         </View>
         
@@ -172,41 +161,20 @@ const styles = StyleSheet.create({
   //   marginHorizontal: 0,
   // },
   nameContainer: {
-    //flex: 1,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     fontSize: 30,
     fontWeight: "bold",
   },
   usersContainer: {
-    //flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: "20%",
-  },
-  usersListContainer: {
-    flex: 1,
-    backgroundColor: 'lightblue',
-    marginHorizontal: 0,
-    //height: "30%",
-    width: "120%"
+    flex: 3,
   },
   gamesContainer: {
-    //flex: 3,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: "20%",
-  },
-  gamesListContainer: {
-    flex: 1,
-    backgroundColor: 'lightblue',
-    marginHorizontal: 0,
-    height: "20%",
+    flex: 3,
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   button: {
     alignItems: 'center',

@@ -8,7 +8,7 @@ import {
   View,
   ScrollView
 } from 'react-native'
-import { getObjectByID, changeScore } from '../constants/api'
+import { getObjectByID, changeScore, getObjectsByIDs } from '../constants/api'
 import { getSocket } from '../constants/socketio'
 
 class Game extends Component {
@@ -20,15 +20,17 @@ class Game extends Component {
     this.state = {
       game: this.props.route.params.game, // stores game object that we want to display
       users: [], // stores user objects of users in the game (because the game object only stores user ids)
-      user_scores: {} // contains key:value pairs of user_id:score
+      user_scores: {}, // contains key:value pairs of user_id:score
     }
     
-    this.populateUsersArray = this.populateUsersArray.bind(this)
+    this.updateGame = this.updateGame.bind(this)
+    this.updateDisplay = this.updateDisplay.bind(this)
     this.handleIncrement = this.handleIncrement.bind(this)
+    this.game_buttons = this.game_buttons.bind(this)
   }
 
   componentDidMount(){
-    this.populateUsersArray()
+    this.props.navigation.addListener('focus', ()=>{this.updateGame()}); // THIS REFRESHES THE PAGE EVERY TIME YOU GO BACK TO IT. 0.0
     console.log("data: game:", this.state.game)
 
     this.socket = getSocket()
@@ -39,33 +41,40 @@ class Game extends Component {
 
     this.socket.on('refresh_score', (data)=>{
       console.log('REFRESH SCORE')
-      getObjectByID({id: this.state.game._id, type: 'game'}).then((response) => {
-        console.log('RESPONSE', response)
-        if(response.object_exists){
-          this.setState({ game: response.object })
-          this.populateUsersArray() // updates the scores of the players in the display
-        }
-      })
+      this.updateGame()
     })
   }
 
-  populateUsersArray(){
-    // populate the this.state.users array. Set the scores of the players
-    let user_object_list = []
-    let user_scores_dict = {}
-    this.state.game.users.forEach((user_id, index) => {
-      getObjectByID({id: user_id, type: 'user'}).then((response) => {
-        if(response.object_exists){
-          user_object_list.push(response.object)
-          user_scores_dict[response.object._id] = this.state.game.scores[index] // get score of user
-        }
-  
-        user_object_list.sort((a,b)=>{console.log('here'); return (a._id > b._id) ? 1 : -1})
-        this.setState({users: user_object_list, user_scores: user_scores_dict}) // update state of component
-        console.log("user_object_list", this.state.users)
-        console.log("user_scores_dict", this.state.user_scores)
-      })
+  updateGame(){
+    getObjectByID({id: this.state.game._id, type: 'game'}).then((response) => {
+      // GETTING ALL INFO ABOUT GAME
+      console.log('REPSPONSE', response)
+      if(response.object_exists){
+        this.setState({ game: response.object })
+        this.updateDisplay() // updates the scores of the players in the display
+      }
     })
+  }
+
+  updateDisplay(){
+    // populate the this.state.users array. Populate the this.state.user_scores dictionary
+
+    // POPULATE USERS ARRAY
+    let user_ids = this.state.game.users
+    getObjectsByIDs({ids: user_ids, type: 'user'}).then((response)=>{
+      if(response.objects_exist){
+        let user_object_list = response.objects.sort((a,b)=>{console.log('here'); return (a._id > b._id) ? 1 : -1})
+        // we have list of user objects that always come in the same order
+        this.setState({users: user_object_list})
+      }
+    })
+
+    // turn two arrays (users, scores) into dictionary. user is key, score is value
+    let user_scores_dict = {}
+    let userIDs = this.state.game.users
+    let scores = this.state.game.scores
+    userIDs.forEach((userID, index) => { user_scores_dict[userID] = scores[index] })
+    this.setState({user_scores: user_scores_dict})
     
   }
 
@@ -87,12 +96,31 @@ class Game extends Component {
         }) // tells other people to change their scores
         // game is updated on server. display updated game
         this.setState({game: response.updated_game})
-        this.populateUsersArray() // update the list of user just in case
+        this.updateGame() // update the list of user just in case
       }
       else{
         // game failed to update
       }
     })
+  }
+
+  game_buttons(){
+    if(this.state.game.game_ended){
+      // game has ended
+      return(
+        <View>
+          <Text>Game has ended!</Text>
+        </View>
+      )
+    }
+    else{
+      return(
+        <View>
+          <Text>Add scores:</Text>
+          { this.state.users.map((user, key) => (<Button key={key} title={user.name} onPress={ () => {this.handleIncrement(this.state.game._id, user._id)} }/>))}
+        </View>
+      )
+    }
   }
 
   render() {
@@ -109,12 +137,9 @@ class Game extends Component {
         </ScrollView>
       </View>
 
-
-  
-        <Text>
-          Add scores:
-          { this.state.users.map((user, key) => (<Button key={key} title={user.name} onPress={ () => {this.handleIncrement(this.state.game._id, user._id)} }/>))}
-        </Text>
+      <View>
+        {this.game_buttons()}
+      </View>
 
       </View>
     )

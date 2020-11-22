@@ -28,6 +28,7 @@ class CreateNewGame extends Component {
       game_name: "",
       game_type:"standard",
       error_msg: "",
+      goal_score: "",
       users: [], // contains user objects
     }
 
@@ -64,6 +65,13 @@ class CreateNewGame extends Component {
     this.setState({opponent_id: user._id, opponent_name: user.name})
   }
 
+  handleGoalScoreChange(text){
+    // handler for goal score text box
+    this.setState({goal_score: text});
+  }
+
+  
+
   handleNewGame(event) {
     console.log('button click')
     if(this.state.game_type == "tournament"){ // for now I'm adding all group members to tournament
@@ -71,7 +79,7 @@ class CreateNewGame extends Component {
         for(let i=0; i<this.state.users.length; i++){
           user_ids.push(this.state.users[i]._id)
         }
-        createGame(this.state.game_name, user_ids, this.state.group, "tournament").then((data)=>{
+        createGame(this.state.game_name, user_ids, this.state.group, "tournament", 0).then((data)=>{
         console.log("response", data)
         if(data.error){
           // error in creating game
@@ -90,15 +98,15 @@ class CreateNewGame extends Component {
             // reset the navigation so that you can't navigate back from the userhome page
             CommonActions.goBack()
         );
-
         }
-
       })
     }
     else{
       // handler for create new game button press
+      let goal_score_int = parseInt(this.state.goal_score)
+      console.log(goal_score_int)
       let user_ids = [this.state.loggedInUserID, this.state.opponent_id] // hard coded for 2 players
-      createGame(this.state.game_name, user_ids, this.state.group, "standard").then((data)=>{
+      createGame(this.state.game_name, user_ids, this.state.group, "standard", goal_score_int).then((data)=>{
         console.log("response", data)
         if(data.error){
           // error in creating game
@@ -117,15 +125,9 @@ class CreateNewGame extends Component {
             // reset the navigation so that you can't navigate back from the userhome page
             CommonActions.goBack()
         );
-
         }
-
       })
-      
-    }
-
-
-    
+    }    
   }
 
   
@@ -164,7 +166,10 @@ render() {
         <Text>Opponent User ID: {this.state.opponent_name}</Text>
 
         <Text>game Name:</Text>
-        <TextInput style={styles.view2} value={this.state.game_name} onChangeText={(text)=>this.handleGameNameChange(text)} style={styles.textInput}/>
+        <TextInput value={this.state.game_name} onChangeText={(text)=>this.handleGameNameChange(text)} style={styles.textInput}/>
+
+        <Text>goal score:</Text>
+        <TextInput value={this.state.goal_score} onChangeText={(text)=>this.handleGoalScoreChange(text)} style={styles.textInput}/>
         <Button title='Create Game' onPress={this.handleNewGame}/>
       </View>
       

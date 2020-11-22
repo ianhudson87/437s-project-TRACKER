@@ -7,10 +7,12 @@ export const createUser = async (req, res) => {
     const {name, password} = req.body;
     console.log(req.body);
     const groups = []
+    const group_time_joined = []
     const games = []
+    const game_time_joined = []
     const friends = []
     const saltRounds = 6;
-    const newUser = new Models.UserModel( {name, password, groups, games, friends});
+    const newUser = new Models.UserModel( {name, password, groups, group_time_joined, games, game_time_joined, friends});
 
     // hashes and salts the entered password for storage in database
     let hash = bcrypt.hashSync(password, saltRounds)
@@ -123,6 +125,41 @@ export const getObjectByID = async (req, res) => {
     }
 }
 
+export const getObjectsByIDs = async (req, res) => {
+    // ids and type required in req.body
+    console.log("GETTING objects FROM IDs")
+    const {ids, type} = req.body;
+
+    // determine which type of object is being wanted
+    let model_type
+    switch(type){
+        case "group":
+            model_type = Models.GroupModel
+            break
+        case "game":
+            model_type = Models.GameModel
+            break
+        case "user":
+            model_type = Models.UserModel
+        default:
+            model_type = Models.UserModel
+    }
+
+    try{
+        let objects_with_given_id = await model_type.find({ '_id': {'$in': ids}})
+        if(objects_with_given_id.length == 0){
+            // there doesn't exist a group with the given id
+            console.log("Object IDs: " + ids)
+            return res.status(200).json({ objects: null, error: false, objects_exist: false, message: "object_ids DNE"})
+        }
+        else{
+            return res.status(201).json({ objects: objects_with_given_id, error: false, objects_exist: true, message: "objects Found"})
+        }
+    } catch(e) {
+        return res.status(500).json({ error:true, message: "error with getting object by ID"})
+    }
+}
+
 export const getGameByID = async (req, res) => {
     // no requirements for req.body
     console.log("GETTING GAME FROM ID")
@@ -186,6 +223,7 @@ export const joinGroup = async (req, res) => {
     // req.body requires the id of the user and the id of the group
     const {user_id, group_id} = req.body;
     console.log(group_id)
+    console.log(user_id)
 
     try{
         // check to make sure that user_id and group_id are valid
@@ -212,6 +250,8 @@ export const joinGroup = async (req, res) => {
                 await Models.GroupModel.updateOne({ '_id': group_id }, { '$push': { users: user_id } })
                 // push group id to the list of groups for the user
                 await Models.UserModel.updateOne({ '_id': user_id }, { '$push': { groups: group_id } })
+                // push time stamp to list of times when user joinged group
+                await Models.UserModel.updateOne({ '_id': user_id }, { '$push': { group_time_joined: Date.now() } })
                 return res.status(200).json({ error: false, joined_group: true, message: "joined group!"})
             }
         }
@@ -300,7 +340,9 @@ export const createGame = async (req, res) => {
     //  name of the game that you are creating
     //  list of user_ids in the game
     //  group_id of group that the game is being created for
-    const {name, user_ids, group_id, game_type} = req.body;
+    //  game_type of the game that you are creating
+    //  goal_score for standard game, or 0 for tournament
+    const {name, user_ids, group_id, game_type, goal_score} = req.body;
     let newGame;
     if(game_type == "tournament"){
         if(user_ids.length < 4 || user_ids > 32){
@@ -331,7 +373,7 @@ export const createGame = async (req, res) => {
     }
     else if(game_type == "standard"){
         let scores = Array(user_ids.length).fill(0)
-        newGame = new Models.GameModel( {name, user_ids, scores} );
+        newGame = new Models.GameModel( {name: name, users: user_ids, scores: scores, goal_score: goal_score, game_ended: false} );
     }
     else{
         return res.status(200).json({ error: false, game_created: false, message: "invalid game type"})
@@ -342,13 +384,13 @@ export const createGame = async (req, res) => {
         let valid_user_ids = true
         for(let i=0; i<user_ids.length; i++){
             let user_with_given_id = await Models.UserModel.find({ '_id': user_ids[i]})
-
             if(user_with_given_id.length == 0){
                 // user DNE
                 valid_user_ids = false
                 break
             }
         }
+        
         if(!valid_user_ids){
             return res.status(200).json({ error: false, game_created: false, message: "some user_id DNE"})
         }
@@ -408,19 +450,45 @@ export const changeScore = async (req, res) => {
     console.log("Changing Score")
     const {game_id, user_id, type, amount} = req.body;
     if(type == "delta"){
-        // change score by amount
+        // change score by amount if the game hasn't been finished yet
         try{
-            // get index of player that we want to change
+            // determine if the game is finished already or not
             let game = await Models.GameModel.findOne({ '_id': game_id })
-            let user_ids = game.users
-            let user_index = user_ids.indexOf(user_id)
+            if(game.game_ended) {
+                // game has ended, don't need to update scores, send the original game state
+                return res.status(200).json({ error: false, updated_game: game, game_updated: true, message: "game already finished" })
+            }
+            else{
+                // game has not ended, update scores, and send new game state
+                console.log(game)
 
-            // change the score of the scores array at that index
-            let score_object = {}
-            score_object['scores.'+user_index.toString()] = parseInt(amount) // tels which index of scores to change and by how much
-            await Models.GameModel.updateOne({ '_id': game_id}, { '$inc': score_object })
-            let updated_game = await Models.GameModel.findOne({ '_id': game_id })
-            return res.status(200).json({ error: false, updated_game: updated_game, game_updated: true, message: "game successfully updated" })
+                // get index of player that we want to change
+                let user_ids = game.users
+                let user_index = user_ids.indexOf(user_id)
+
+                // change the score of the scores array at that index
+                let score_object = {}
+                score_object['scores.'+user_index.toString()] = parseInt(amount) // tels which index of scores to change and by how much
+                await Models.GameModel.updateOne({ '_id': game_id}, { '$inc': score_object })
+                let updated_game = await Models.GameModel.findOne({ '_id': game_id })
+
+                let user_index_of_winner = updated_game.scores.findIndex( (elt) => {return elt >= game.goal_score} )
+                if(user_index_of_winner > -1){
+                    console.log("here2")
+                    // if someone just reached the goal or has score greater than the goal
+                    // get the id of that user
+                    let user_id_of_winner = updated_game.users[user_index_of_winner]
+                    let user_object_of_winner = await Models.UserModel.findOne({ '_id': user_id_of_winner })
+
+                    await Models.GameModel.updateOne({ '_id': game_id}, { '$set': {game_ended: true, winner: user_object_of_winner} }) // update game_ended and winner object
+                    updated_game = await Models.GameModel.findOne({ '_id': game_id }) // update the object we are sending as a response
+                    return res.status(200).json({ error: false, updated_game: updated_game, game_updated: true, message: "game successfully updated" })
+                }
+                else{
+                    // no one has won the game yet
+                    return res.status(200).json({ error: false, updated_game: updated_game, game_updated: true, message: "game successfully updated" })
+                }
+            }
         } catch(e) {
             return res.status(400).json({ error:true, game_updated: false, message: "error with changeScore", err_msg: e})
         }
@@ -505,7 +573,6 @@ export const addFriend = async (req, res) => {
 
 //check whether two users are friends
 export const checkFriends = async (req, res) => {
-    // req.body requires the id of the user and the id of the game
     const {user1_id, user2_id} = req.body;
 
     try{
