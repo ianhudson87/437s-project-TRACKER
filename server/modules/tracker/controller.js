@@ -452,7 +452,7 @@ export const moveToNextRound = async (req, res) => {
              // advance the user and then send resulting array to database
             console.log("Initial results");
             console.log(results)
-            results[index/2] = userToAdvance
+            results[Math.floor(index/2)] = userToAdvance
             console.log("Index: " + index)
             console.log("Index/2", index/2)
             console.log("New results")

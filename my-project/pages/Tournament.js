@@ -70,22 +70,24 @@ class Tournament extends Component {
   populateResultsArray(){
     // populate the this.state.results_objects array
     let results_object_list = []
+    console.log(this.state.game.results)
     this.state.game.results.forEach((user_id, index) => {
       if(user_id != 0){
         getObjectByID({id: user_id, type: 'user'}).then((response) => {
           if(response.object_exists){  
-            results_object_list.push(response.object)
+            results_object_list[index] = response.object
           }
           this.setState({results_objects: results_object_list}) // update state of component
           console.log("State0")
         })
       }
       else{
-        results_object_list.push({name: ''})
+        results_object_list[index] = {name: '           '}
         this.setState({results_objects: results_object_list}) // update state of component
         console.log("State1")
       }
     })
+    console.log(this.state.results_objects)
   }
 
   handleClick(user, key){
