@@ -5,19 +5,19 @@ const bcrypt = require('bcrypt');
 export const createUser = async (req, res) => {
     // req body requires name and password of user you're creating
     const {name, password} = req.body;
-    console.log(req.body);
-    const groups = []
-    const group_time_joined = []
-    const games = []
-    const game_time_joined = []
-    const friends = []
     const saltRounds = 6;
-    const newUser = new Models.UserModel( {name, password, groups, group_time_joined, games, game_time_joined, friends});
+
+    const newUser = new Models.UserModel( {
+        name: name,
+        password: password,
+        email_verification_code: "1234",
+    });
 
     // hashes and salts the entered password for storage in database
     let hash = bcrypt.hashSync(password, saltRounds)
     newUser.password = hash
-    
+
+    console.log(newUser)
     
     try{
 
@@ -37,7 +37,7 @@ export const createUser = async (req, res) => {
         return res.status(202).json({ user: await newUser.save(), error:false, repeatedUser:false })
 
     } catch(e) {
-        return res.status(400).json({ error:true, message: "error with creating user"})
+        return res.status(400).json({ error:true, message: "error with creating user", err_msg: e})
     }
 }
 
@@ -179,24 +179,6 @@ export const getGameByID = async (req, res) => {
         return res.status(500).json({ error:true, message: "error with getting game"})
     }
 }
-// export const getUserByID = async (req, res) => {
-//     // user_id required in req.body
-//     console.log("GETTING User FROM ID")
-//     const {user_id} = req.body;
-//     try{
-//         let users_with_given_id = await Models.UserModel.find({ '_id': user_id})
-//         if(users_with_given_id.length == 0){
-//             // there doesn't exist a user with the user_id
-//             console.log("User ID: " + user_id)
-//             return res.status(200).json({ user: null, error: false, user_exists: false, message: "user_id DNE"})
-//         }
-//         else{
-//             return res.status(201).json({ user: users_with_given_id[0], error: false, user_exists: true, message: "User Found"})
-//         }
-//     } catch(e) {
-//         return res.status(500).json({ error:true, message: "error with getting group"})
-//     }
-// }
 
 export const getUser = async (req, res) => {
     // no requirements for req.body

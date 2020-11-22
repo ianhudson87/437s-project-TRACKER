@@ -3,7 +3,7 @@ import { View, Text, TextInput, Button, StyleSheet} from 'react-native'
 import { CommonActions } from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage'
 import { createUser } from "../constants/api"
-import { Input, Icon } from 'react-native-elements';
+import { Input, Icon, Overlay } from 'react-native-elements';
 
 class NewUserForm extends Component {
     static defaultProps = {
@@ -11,11 +11,12 @@ class NewUserForm extends Component {
       }
     constructor(props) {
         super(props);
-        this.state = {username: '', password: ''};
+        this.state = {username: '', password: '', overlay_visible: false};
 
         this.handleChangeName = this.handleChangeName.bind(this);
         this.handleChangePass = this.handleChangePass.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.toggleOverlay = this.toggleOverlay.bind(this);
     }
 
     handleChangeName(text) {
@@ -38,7 +39,7 @@ class NewUserForm extends Component {
                 alert('error in creating user')
                 this.setState({username: '', password: ''});
             }
-            if(data.repeatedUser){
+            else if(data.repeatedUser){
                 // username already exists
                 alert('Username already exists');
                 this.setState({username: '', password: ''});
@@ -70,6 +71,10 @@ class NewUserForm extends Component {
         event.preventDefault();
     }
 
+    toggleOverlay() {
+        this.setState({ overlay_visible: !this.state.overlay_visible })
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -87,6 +92,11 @@ class NewUserForm extends Component {
                     leftIcon={<Icon name='lock'/>}
                 />
                 <Button title="Register" onPress={this.handleSubmit} />
+                <Button title="test" onPress={this.toggleOverlay} />
+
+                <Overlay isVisible={ this.state.overlay_visible } onBackdropPress={ this.toggleOverlay }>
+                    <Text>hi</Text>
+                </Overlay>
             </View>
         )
     }

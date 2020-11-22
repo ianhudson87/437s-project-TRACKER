@@ -12,27 +12,37 @@ const UserSchema = new Schema({
     groups: {
         // contains ids of Groups that User is in
         type: Array,
-        required: true
+        required: true,
+        default: [],
     },
     group_time_joined: {
         // contains time stamps of when user join group.
         type: Array,
-        required: true
+        required: true,
+        default: []
     },
     games: {
         // contains game ids that the users created 
         type: Array,
-        required: true
-    },
-    game_time_joined: {
-        // contains time stamps of when user joined game
-        type: Array,
         required: true,
+        default: [],
     },
     friends: {
         //contains id's of user's friends
         type: Array,
-        required: true
+        required: true,
+        default: []
+    },
+    email_verified: {
+        // contains whether user has verified their account with the email_verification_code
+        type: Boolean,
+        required: true,
+        default: false,
+    },
+    email_verification_code: {
+        // contains hashed value of the code
+        type: String,
+        required: true,
     }
 })
 

@@ -38,12 +38,6 @@ class Register extends Component {
     const navigation = this.props.navigation;
     return (
       <View style={styles.container}>
-        <Text>
-          {
-            // print out all users
-            // this.state.users.map((user, key)=> (<Text key={key}>{user.name}</Text>))
-          }
-        </Text>
         <NewUserForm navigation={this.props.navigation} />
       </View>
     )
