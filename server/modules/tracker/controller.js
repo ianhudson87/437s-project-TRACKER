@@ -339,24 +339,24 @@ export const createGame = async (req, res) => {
     //  name of the game that you are creating
     //  list of user_ids in the game
     //  group_id of group that the game is being created for
-    const {name, user_ids, group_id} = req.body;
+    //  goal_score = score the users are trying to reach
+    const {name, user_ids, group_id, goal_score} = req.body;
+    console.log(req.body)
     let scores = Array(user_ids.length).fill(0)
-    let users = user_ids
-    const newGame = new Models.GameModel( {name, users, scores} );
-    
+    const newGame = new Models.GameModel( {name: name, users: user_ids, scores: scores, goal_score: goal_score, game_ended: false} );
     try{
 
         // check to make sure that user_ids are valid
         let valid_user_ids = true
         for(let i=0; i<user_ids.length; i++){
             let user_with_given_id = await Models.UserModel.find({ '_id': user_ids[i]})
-
             if(user_with_given_id.length == 0){
                 // user DNE
                 valid_user_ids = false
                 break
             }
         }
+        
         if(!valid_user_ids){
             return res.status(200).json({ error: false, game_created: false, message: "some user_id DNE"})
         }
@@ -401,19 +401,45 @@ export const changeScore = async (req, res) => {
     console.log("Changing Score")
     const {game_id, user_id, type, amount} = req.body;
     if(type == "delta"){
-        // change score by amount
+        // change score by amount if the game hasn't been finished yet
         try{
-            // get index of player that we want to change
+            // determine if the game is finished already or not
             let game = await Models.GameModel.findOne({ '_id': game_id })
-            let user_ids = game.users
-            let user_index = user_ids.indexOf(user_id)
+            if(game.game_ended) {
+                // game has ended, don't need to update scores, send the original game state
+                return res.status(200).json({ error: false, updated_game: game, game_updated: true, message: "game already finished" })
+            }
+            else{
+                // game has not ended, update scores, and send new game state
+                console.log(game)
 
-            // change the score of the scores array at that index
-            let score_object = {}
-            score_object['scores.'+user_index.toString()] = parseInt(amount) // tels which index of scores to change and by how much
-            await Models.GameModel.updateOne({ '_id': game_id}, { '$inc': score_object })
-            let updated_game = await Models.GameModel.findOne({ '_id': game_id })
-            return res.status(200).json({ error: false, updated_game: updated_game, game_updated: true, message: "game successfully updated" })
+                // get index of player that we want to change
+                let user_ids = game.users
+                let user_index = user_ids.indexOf(user_id)
+
+                // change the score of the scores array at that index
+                let score_object = {}
+                score_object['scores.'+user_index.toString()] = parseInt(amount) // tels which index of scores to change and by how much
+                await Models.GameModel.updateOne({ '_id': game_id}, { '$inc': score_object })
+                let updated_game = await Models.GameModel.findOne({ '_id': game_id })
+
+                let user_index_of_winner = updated_game.scores.findIndex( (elt) => {return elt >= game.goal_score} )
+                if(user_index_of_winner > -1){
+                    console.log("here2")
+                    // if someone just reached the goal or has score greater than the goal
+                    // get the id of that user
+                    let user_id_of_winner = updated_game.users[user_index_of_winner]
+                    let user_object_of_winner = await Models.UserModel.findOne({ '_id': user_id_of_winner })
+
+                    await Models.GameModel.updateOne({ '_id': game_id}, { '$set': {game_ended: true, winner: user_object_of_winner} }) // update game_ended and winner object
+                    updated_game = await Models.GameModel.findOne({ '_id': game_id }) // update the object we are sending as a response
+                    return res.status(200).json({ error: false, updated_game: updated_game, game_updated: true, message: "game successfully updated" })
+                }
+                else{
+                    // no one has won the game yet
+                    return res.status(200).json({ error: false, updated_game: updated_game, game_updated: true, message: "game successfully updated" })
+                }
+            }
         } catch(e) {
             return res.status(400).json({ error:true, game_updated: false, message: "error with changeScore", err_msg: e})
         }

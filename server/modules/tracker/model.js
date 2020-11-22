@@ -67,8 +67,24 @@ const GameSchema = new Schema({
         // contains scores of Users. Indices of this array and users array match up
         type: Array,
         required: true
+    },
+    goal_score: {
+        // contains the score that users are trying to reach
+        type: Number,
+        require: true
+    },
+    game_ended: {
+        // contains bool if game has ended or not
+        type: Boolean,
+        require: true
+    },
+    winner: {
+        // contains user object of winner if the game has ended
+        type: Object,
+        require: false
     }
-})
+}, {timestamps: true}
+)
 
 export const UserModel =  mongoose.model('users', UserSchema)
 export const GroupModel = mongoose.model('groups', GroupSchema)

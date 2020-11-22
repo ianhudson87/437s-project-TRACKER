@@ -20,12 +20,13 @@ class Game extends Component {
     this.state = {
       game: this.props.route.params.game, // stores game object that we want to display
       users: [], // stores user objects of users in the game (because the game object only stores user ids)
-      user_scores: {} // contains key:value pairs of user_id:score
+      user_scores: {}, // contains key:value pairs of user_id:score
     }
     
     this.updateGame = this.updateGame.bind(this)
     this.updateDisplay = this.updateDisplay.bind(this)
     this.handleIncrement = this.handleIncrement.bind(this)
+    this.game_buttons = this.game_buttons.bind(this)
   }
 
   componentDidMount(){
@@ -68,25 +69,12 @@ class Game extends Component {
       }
     })
 
-    // turn two arrays (users, scores) into dictionary
+    // turn two arrays (users, scores) into dictionary. user is key, score is value
     let user_scores_dict = {}
     let userIDs = this.state.game.users
     let scores = this.state.game.scores
     userIDs.forEach((userID, index) => { user_scores_dict[userID] = scores[index] })
     this.setState({user_scores: user_scores_dict})
-    // this.state.game.users.forEach((user_id, index) => {
-    //   getObjectByID({id: user_id, type: 'user'}).then((response) => {
-    //     if(response.object_exists){
-    //       user_object_list.push(response.object)
-    //       user_scores_dict[response.object._id] = this.state.game.scores[index] // get score of user
-    //     }
-  
-    //     user_object_list.sort((a,b)=>{console.log('here'); return (a._id > b._id) ? 1 : -1})
-    //     this.setState({users: user_object_list, user_scores: user_scores_dict}) // update state of component
-    //     console.log("user_object_list", this.state.users)
-    //     console.log("user_scores_dict", this.state.user_scores)
-    //   })
-    // })
     
   }
 
@@ -116,6 +104,25 @@ class Game extends Component {
     })
   }
 
+  game_buttons(){
+    if(this.state.game.game_ended){
+      // game has ended
+      return(
+        <View>
+          <Text>Game has ended!</Text>
+        </View>
+      )
+    }
+    else{
+      return(
+        <View>
+          <Text>Add scores:</Text>
+          { this.state.users.map((user, key) => (<Button key={key} title={user.name} onPress={ () => {this.handleIncrement(this.state.game._id, user._id)} }/>))}
+        </View>
+      )
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -130,12 +137,9 @@ class Game extends Component {
         </ScrollView>
       </View>
 
-
-  
-        <Text>
-          Add scores:
-          { this.state.users.map((user, key) => (<Button key={key} title={user.name} onPress={ () => {this.handleIncrement(this.state.game._id, user._id)} }/>))}
-        </Text>
+      <View>
+        {this.game_buttons()}
+      </View>
 
       </View>
     )

@@ -12,6 +12,8 @@ import {
 } from 'react-native'
 import { Card, ListItem, Icon } from 'react-native-elements'
 import { getObjectByID } from '../constants/api';
+import GameThumbnail from './GameThumbnail';
+import GroupThumbnail from './GroupThumbnail'
 
 class FeedObject extends Component {
   // gets passed a feed object ex: {time: 78912, type: 1, data: [object]}
@@ -48,6 +50,30 @@ class FeedObject extends Component {
           }
         })
         break;
+      case 1:
+        // determine if friend won or lost the game
+        let game = this.props.feed.data.game
+        let friend_object = this.props.feed.data.friend
+        let scores = game.scores
+        let user_ids = game.users
+        let goal_score = game.goal_score
+        let update_time_string = this.props.feed.data.game.updatedAt
+        let update_time = null
+        
+        // get index of player who won
+        let winner_player_index = scores.findIndex((elt)=>{ return elt>=goal_score })
+
+        let winner_player_id = user_ids[winner_player_index] // get id of player who won
+        let friend_won = winner_player_id == friend_object._id
+
+        // determine the time of when the game finished
+        if(update_time_string){
+          update_time = new Date( update_time_string.substring(0, update_time_string.length-5) + "Z" )
+        }
+
+        console.log("update_time", update_time)
+        this.setState({ generated_data: { friend_won: friend_won }, time: update_time })
+        break;
       default:
         console.log('type not handled: ', this.state.type)
     }
@@ -61,31 +87,22 @@ class FeedObject extends Component {
         if(this.state.generated_data){
           // if the data needed to display the feed update has been gotten
           let formatted_date
+          let group = this.state.generated_data.group
+          let user = this.state.generated_data.user
           try{ formatted_date = formatDistance(new Date(this.state.time), new Date()) }
           catch(e){ formatted_date = "unknown date" }
-          let text = this.state.generated_data.user.name + " joined group " + this.state.generated_data.group.name + " " + formatted_date + " ago."
+
+          let text = user.name + " joined " + group.name + " " + formatted_date + " ago."
           return(
             <Card>
               <Text style={{marginBottom: 10}}>
                   {text}
               </Text>
-              <Button
-                  icon={<Icon name='code' color='#ffffff' />}
-                  buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
-                  title='VIEW NOW' />
+              <View style={styles.shadow}>
+                <GroupThumbnail group={group} key={group._id} navigation={this.props.navigation}/>
+              </View>
             </Card>
-            
-            // <View style={styles.container}>
-            //   <Text style={styles.text}>
-            //     {
-            //       this.state.generated_data.user.name
-            //     } joined group {
-            //       this.state.generated_data.group.name
-            //     } at {
-            //       formatted_date
-            //     }
-            //   </Text>
-            // </View>
+
           )
         }
         else{
@@ -98,6 +115,39 @@ class FeedObject extends Component {
             </Card>
           )
         }
+      case 1:
+        if(this.state.generated_data){
+          //console.log("PROPS", this.props)
+          let game = this.props.feed.data.game
+          let friend = this.props.feed.data.friend
+          let win_lost = this.state.generated_data.friend_won ? "WON" : "LOST"
+          let formatted_date
+          // console.log("look here", this.state)
+          try{ formatted_date = formatDistance(this.state.time, new Date()) }
+          catch(e){ formatted_date = "unknown date" }
+          let text = friend.name + " " + win_lost + " " + game.name + " " + formatted_date + " ago"
+          return(
+            <Card>
+              <Text>{text}</Text>
+              <Card.Divider/>
+              <View style={styles.shadow}>
+                <GameThumbnail key={game._id} game={game} navigation={this.props.navigation}/>
+              </View>
+              
+            </Card>
+          )
+        }
+        else{
+          // necessary data has not been gotten yet
+          return(
+            <Card>
+              <Text style={{marginBottom: 10}}>
+                  Loading...
+              </Text>
+            </Card>
+          )
+        }
+        
       default:
         return(
           <View>
@@ -137,6 +187,12 @@ const styles = StyleSheet.create({
     padding: 2,
     color: 'white',
     fontSize: 20,
+  },
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 4,
   }
 })
 

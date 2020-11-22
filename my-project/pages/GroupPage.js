@@ -37,16 +37,20 @@ componentDidMount(){
 refreshInfo(){
   // refresh all the information about the group
   console.log('REFRESH')
+
+  let newState = {}
   AsyncStorage.getItem('loggedInUserID').then((value)=>{
     // get the id of the logged in user
-    this.setState({loggedInUserID: value})
+    newState.loggedInUserID = value // this.setState({loggedInUserID: value})
   }).then(()=>{console.log("data: group:", this.state.groupID, "user", this.state.loggedInUser)})
 
-  // populate the usersInGroup list
+
+
+  // populate the usersInGroup list and gamesInGroup list
   getObjectByID({id: this.state.groupID, type: "group"}).then((response)=>{
     // get the group object
     if(response.object_exists){
-      this.setState({group: response.object})
+      newState.group = response.object // this.setState({group: response.object})
       return response.object
     }
     else{
@@ -59,7 +63,7 @@ refreshInfo(){
     let user_ids_in_group = group.users
     getObjectsByIDs({ids: user_ids_in_group, type: "user"}).then((response) => {
       if(response.objects_exist){
-        this.setState({usersInGroup: response.objects})
+        newState.usersInGroup = response.objects // this.setState({usersInGroup: response.objects})
       }
     })
 
@@ -67,7 +71,10 @@ refreshInfo(){
     let game_ids_in_group = group.games
     getObjectsByIDs({ids: game_ids_in_group, type: "game"}).then((response) => {
       if(response.objects_exist){
-        this.setState({gamesInGroup: response.objects})
+        console.log("length", response.objects.length)
+        response.objects
+        newState.gamesInGroup = response.objects // this.setState({gamesInGroup: response.objects})
+        this.setState(newState)
       }
     })
   })
@@ -94,7 +101,6 @@ handleNewGame(){
 
   
 render() {
-  // console.log("RENDER", this.state.gamesInGroup)
     return (
       <View style={styles.container}>
         <View style={styles.nameContainer}>
@@ -113,7 +119,8 @@ render() {
         <View style={styles.gamesContainer}>
           <Title>Games <Icon size="19" name="create" onPress={() => this.handleNewGame()} /></Title>
           <ScrollView>
-            { this.state.gamesInGroup.map((game, key)=> (<GameThumbnail key={game.scores} game={game} navigation={this.props.navigation}/>)) }
+            { console.log("GamesInGroup", this.state.gamesInGroup)}
+            { this.state.gamesInGroup.reverse().map((game, key)=> (<GameThumbnail key={game._id} game={game} navigation={this.props.navigation}/>)) }
           </ScrollView>
         </View>
       </View>

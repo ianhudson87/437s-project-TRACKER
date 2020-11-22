@@ -66,7 +66,7 @@ class UserHome extends Component {
       let groupIDs = user.groups; // ids of groups that user is in
       let friendIDs = user.friends;
       await this.populateFriendsAndGroupsArrays(groupIDs, friendIDs)
-      this.generateFeed(); // update the feed
+      await this.generateFeed(); // update the feed
     }
   }
 
@@ -91,7 +91,7 @@ class UserHome extends Component {
     })
   }
 
-  generateFeed(){
+  async generateFeed(){
     // with the info currently stored, create a feed of the latest things that have happened
 
     let newFeed = []
@@ -110,7 +110,36 @@ class UserHome extends Component {
       })
     })
 
+    // get all "friend won/lost game" events
+    for (const friend of this.state.friends) {
+      // go through all friends
+      let response = await getObjectsByIDs({ids: friend.games, type: 'game'}) // get all games friend is in
+      if(response.objects_exist){
+        let games_friend_is_in = response.objects
+        for(const game of games_friend_is_in){
+          // for each game friend is in
+          console.log("here")
+          if(game.game_ended){
+            // if game has ended
+            newFeed.push({
+              type: 1, // "friend completed game" event
+              data: {game: game, friend: friend}
+            })
+            
+          }
+        }
+      }
+
+    }
+    //let games_friend_is_in = await getObjectsByIDs({ids: friend_game_ids, type: 'game'})
+    // this.state.friends.forEach((friend)=>{
+    //   // for each friend
+    //   let friend_game_ids = friend.games
+    //   let games_friend_is_in = await getObjectsByIDs({ids: friend_game_ids, type: 'game'})
+    // })
+
     // order newFeed by date
+    console.log('setstate')
     this.setState({ feed: newFeed.sort((a,b)=>{return (a.time < b.time) ? 1 : -1}) })
 
   }

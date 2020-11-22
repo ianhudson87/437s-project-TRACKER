@@ -1,5 +1,6 @@
 // Thumbnail for displaying a game
 
+import { isEqual } from 'date-fns';
 import React, { Component } from 'react'
 import {
   StyleSheet,
@@ -10,6 +11,7 @@ import {
 } from 'react-native'
 import { Card, ListItem, Icon, Divider } from 'react-native-elements'
 import { getObjectsByIDs } from '../constants/api';
+import { arraysEqual } from '../constants/helper'
 
 class GameThumbnail extends Component {
   // need to know the name of the game, and maybe other info
@@ -33,11 +35,20 @@ class GameThumbnail extends Component {
     this.generateUserScores()
   }
 
+  componentDidUpdate(prevProps){
+    // every time props update?
+    //console.log("HEREHRHERHEHREHR", arraysEqual(prevProps.game.scores,this.props.game.scores))
+    if(!arraysEqual(prevProps.game.scores, this.props.game.scores)){
+      // if the game scores of teh previous props are different from the scores of the props just passed down
+      this.setState({game_info: this.props.game, name: this.props.game.name}, this.generateUserScores)
+    }
+  }
+
   generateUserScores(){
     // populate this.state.users and this.state.user_scores
     let userIDs = this.state.game_info.users
     getObjectsByIDs({ids: userIDs, type: 'user'}).then((response) => {
-      console.log("RESPONSE", response)
+      //console.log("RESPONSE", response)
       // GET ALL USERS
       if(response.objects_exist){
         let users = response.objects // contains user objects
@@ -60,6 +71,7 @@ class GameThumbnail extends Component {
 
   
 render() {
+  //console.log("RENDER THIS!", this.state)
   // console.log("STATE", this.state)
   return (
     <ListItem bottomDivider onPress={this.goToGame}>

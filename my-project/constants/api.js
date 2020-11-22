@@ -188,7 +188,7 @@ export const createGroup = async (name) =>{
 
 
 //submits a request to the API to create new game with certain parameters
-export const createGame = async (name, user_ids, group_id) =>{
+export const createGame = async (name, user_ids, group_id, goal_score) =>{
     console.log('send api')
     const res = await fetch(API_PATH + "createGame",{
         method: 'POST',
@@ -199,7 +199,8 @@ export const createGame = async (name, user_ids, group_id) =>{
         body: JSON.stringify({
             name: name,
             user_ids: user_ids,
-            group_id: group_id
+            group_id: group_id,
+            goal_score: goal_score
         })
     })
     const data = await res.json();
