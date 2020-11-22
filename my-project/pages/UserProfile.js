@@ -130,7 +130,6 @@ friendDisplayHandler(isFriend, isCurrentUser){
     return(
       <View>
         <Text>THIS IS YOU!</Text>
-        {/* <LogoutButton navigation={this.props.navigation} loggedInUser={this.state.loggedInUser}></LogoutButton> */}
       </View>
     )
   }
