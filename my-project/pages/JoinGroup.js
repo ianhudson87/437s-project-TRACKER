@@ -14,9 +14,15 @@ class JoinGroup extends Component {
     constructor(props) {
         super(props);
         this.state = {groups: [], loggedInUserID: null}
+
+        this.refreshInfo = this.refreshInfo.bind(this)
     }
 
     componentDidMount(){
+      this.props.navigation.addListener('focus', ()=>{this.refreshInfo()}); // THIS REFRESHES THE PAGE EVERY TIME YOU GO BACK TO IT. 0.0
+    }
+
+    refreshInfo(){
       AsyncStorage.getItem('loggedInUserID').then((value)=>{
         this.setState({loggedInUserID: value})
       })
@@ -27,7 +33,6 @@ class JoinGroup extends Component {
         groups.forEach((group)=>{group_list.push(group)})
         this.setState({groups: group_list})
       })
-
     }
 
     handleGroupPress(group, event)

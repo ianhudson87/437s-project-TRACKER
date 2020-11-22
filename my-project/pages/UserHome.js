@@ -103,9 +103,9 @@ class UserHome extends Component {
         let time_joined_group = user.group_time_joined[index]
         // create new feed object and push it to this.state.feed
         newFeed.push({
-          time: time_joined_group,
           type: 0, // "user joined group" event
-          data: {group_id: group_id, user: user}
+          data: {group_id: group_id, user: user},
+          time_obj: (time_joined_group!=undefined) ? new Date( time_joined_group ) : new Date(0) // used for sorting below
         });
       })
     })
@@ -122,6 +122,7 @@ class UserHome extends Component {
           if(game.game_ended){
             // if game has ended
             newFeed.push({
+              time_obj: (game.updatedAt!=undefined) ? new Date( game.updatedAt.substring(0, game.updatedAt.length-5) + "Z" ) : new Date(0), // used for sorting below
               type: 1, // "friend completed game" event
               data: {game: game, friend: friend}
             })
@@ -131,16 +132,10 @@ class UserHome extends Component {
       }
 
     }
-    //let games_friend_is_in = await getObjectsByIDs({ids: friend_game_ids, type: 'game'})
-    // this.state.friends.forEach((friend)=>{
-    //   // for each friend
-    //   let friend_game_ids = friend.games
-    //   let games_friend_is_in = await getObjectsByIDs({ids: friend_game_ids, type: 'game'})
-    // })
 
     // order newFeed by date
-    console.log('setstate')
-    this.setState({ feed: newFeed.sort((a,b)=>{return (a.time < b.time) ? 1 : -1}) })
+    console.log(newFeed)
+    this.setState({ feed: newFeed.sort((a,b)=>{return (a.time_obj.getTime() < b.time_obj.getTime()) ? 1 : -1}) })
 
   }
 
@@ -163,15 +158,11 @@ render() {
         <View style={styles.groupsContainer}>
           <Title>My Groups:</Title>
           <ScrollView>
-            { this.state.groups.map((group, key)=> (<GroupThumbnail group={group} key={key} navigation={this.props.navigation}/>)) }
+            { this.state.groups.map((group, key)=> (<GroupThumbnail group={group} key={group._id} navigation={this.props.navigation}/>)) }
           </ScrollView>
           
         </View>
 
-        {/* <View style={styles.friendsContainer}>
-          <Text>My Friends:</Text>
-          { this.state.friends.map((user, key)=> (<UserThumbnail user={user} key={key} navigation={this.props.navigation}/>)) }
-        </View> */}
 
         <View style={styles.feedContainer}>
         <Title>Activity Feed</Title>
@@ -179,7 +170,7 @@ render() {
           {
             this.state.feed.map((feed, key)=> (
               <View key={key} style={styles.feedObjectContainer}>
-                <FeedObject feed={feed} key={key} navigation={this.props.navigation}/>
+                <FeedObject feed={feed} key={feed.time_obj} navigation={this.props.navigation}/>
               </View>
             ))
           }

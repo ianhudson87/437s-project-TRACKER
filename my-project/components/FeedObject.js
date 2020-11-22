@@ -39,14 +39,35 @@ class FeedObject extends Component {
     this.generateNeededInfo()
   }
 
+  componentDidUpdate(prevProps){
+    // if props of the feed changes, regenerate the needed info
+    if(prevProps.feed.type != this.props.feed.type){
+      this.generateNeededInfo()
+    }
+    else{
+      switch(this.props.feed.type){
+        case 0:
+          if(! prevProps.feed.data.group_id == this.props.feed.data.group_id ){
+            this.generateNeededInfo()
+          }
+          break;
+        case 1:
+          if(! (prevProps.feed.data.game._id == this.props.feed.data.game._id) ){
+            this.generateNeededInfo()
+          }
+          break;
+      }
+    }
+  }
+
   generateNeededInfo(){
     // generate necessary info for displaying the feed object
-    switch(this.state.type){
+    switch(this.props.feed.type){
       case 0:
         // need to get the group object
-        getObjectByID({id: this.state.input_data.group_id, type: "group"}).then((data)=>{
+        getObjectByID({id: this.props.feed.data.group_id, type: "group"}).then((data)=>{
           if(data.object_exists){
-            this.setState({generated_data: {group: data.object, user: this.state.input_data.user}})
+            this.setState({generated_data: {group: data.object, user: this.props.feed.data.user}})
           }
         })
         break;
@@ -57,8 +78,6 @@ class FeedObject extends Component {
         let scores = game.scores
         let user_ids = game.users
         let goal_score = game.goal_score
-        let update_time_string = this.props.feed.data.game.updatedAt
-        let update_time = null
         
         // get index of player who won
         let winner_player_index = scores.findIndex((elt)=>{ return elt>=goal_score })
@@ -66,22 +85,16 @@ class FeedObject extends Component {
         let winner_player_id = user_ids[winner_player_index] // get id of player who won
         let friend_won = winner_player_id == friend_object._id
 
-        // determine the time of when the game finished
-        if(update_time_string){
-          update_time = new Date( update_time_string.substring(0, update_time_string.length-5) + "Z" )
-        }
-
-        console.log("update_time", update_time)
-        this.setState({ generated_data: { friend_won: friend_won }, time: update_time })
+        this.setState({ generated_data: { friend_won: friend_won } })
         break;
       default:
-        console.log('type not handled: ', this.state.type)
+        console.log('type not handled: ', this.props.feed.type)
     }
   }
 
   
   render() {
-    switch(this.state.type){
+    switch(this.props.feed.type){
       // depending on the type of the feed object render different things
       case 0:
         if(this.state.generated_data){
@@ -89,7 +102,7 @@ class FeedObject extends Component {
           let formatted_date
           let group = this.state.generated_data.group
           let user = this.state.generated_data.user
-          try{ formatted_date = formatDistance(new Date(this.state.time), new Date()) }
+          try{ formatted_date = formatDistance(this.props.feed.time_obj, new Date()) }
           catch(e){ formatted_date = "unknown date" }
 
           let text = user.name + " joined " + group.name + " " + formatted_date + " ago."
@@ -123,7 +136,7 @@ class FeedObject extends Component {
           let win_lost = this.state.generated_data.friend_won ? "WON" : "LOST"
           let formatted_date
           // console.log("look here", this.state)
-          try{ formatted_date = formatDistance(this.state.time, new Date()) }
+          try{ formatted_date = formatDistance(this.props.feed.time_obj, new Date()) }
           catch(e){ formatted_date = "unknown date" }
           let text = friend.name + " " + win_lost + " " + game.name + " " + formatted_date + " ago"
           return(

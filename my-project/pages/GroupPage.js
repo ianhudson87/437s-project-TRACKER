@@ -71,12 +71,14 @@ refreshInfo(){
     // GET ALL THE GAMES IN THE GROUP
     let game_ids_in_group = group.games
     getObjectsByIDs({ids: game_ids_in_group, type: "game"}).then((response) => {
+      console.log("response", response)
       if(response.objects_exist){
         console.log("length", response.objects.length)
         response.objects
         newState.gamesInGroup = response.objects // this.setState({gamesInGroup: response.objects})
-        this.setState(newState)
+        console.log("set state for group page")
       }
+      this.setState(newState)
     })
 
     let tournaments_info_list = []
@@ -127,14 +129,14 @@ render() {
         </View>
         
         <View style={styles.usersContainer}>
-          <Title>Players <Icon size="19" name="person-add" title='Add User' onPress={(e) => this.handleNewUser(e)}/></Title>
+          <Title>Players <Icon size={19} name="person-add" title='Add User' onPress={(e) => this.handleNewUser(e)}/></Title>
           <ScrollView>
-            { this.state.usersInGroup.map((user, key)=> (<UserThumbnail key={key} user={user} navigation={this.props.navigation} />)) }
+            { this.state.usersInGroup.map((user, key)=> (<UserThumbnail key={user._id} user={user} navigation={this.props.navigation} />)) }
           </ScrollView>
         </View>
           
         <View style={styles.gamesContainer}>
-          <Title>Games <Icon size="19" name="create" onPress={() => this.handleNewGame()} /></Title>
+          <Title>Games <Icon size={19} name="create" onPress={() => this.handleNewGame()} /></Title>
           <ScrollView>
             { console.log("GamesInGroup", this.state.gamesInGroup)}
             { this.state.gamesInGroup.reverse().map((game, key)=> (<GameThumbnail key={game._id} game={game} navigation={this.props.navigation}/>)) }
