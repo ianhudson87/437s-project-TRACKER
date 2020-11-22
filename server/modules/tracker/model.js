@@ -83,7 +83,8 @@ const GameSchema = new Schema({
         type: Object,
         require: false
     }
-})
+}, {timestamps: true}
+)
 
 export const UserModel =  mongoose.model('users', UserSchema)
 export const GroupModel = mongoose.model('groups', GroupSchema)
