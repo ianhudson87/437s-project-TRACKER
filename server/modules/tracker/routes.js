@@ -1,4 +1,5 @@
 import {Router} from 'express';
+import { TrackerRoutes } from '.';
 import * as TrackerController from './controller'
 
 const routes = new Router();
@@ -10,6 +11,8 @@ routes.get('/users', TrackerController.getAllUsers)
 routes.post('/loginUser', TrackerController.loginUser)
 
 routes.post('/getUser', TrackerController.getUser)
+
+routes.post('/verifyEmail', TrackerController.verifyEmail)
 
 //Groups
 routes.post('/groups', TrackerController.createGroup)

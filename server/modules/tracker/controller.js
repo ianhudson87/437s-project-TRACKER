@@ -1,23 +1,61 @@
 import * as Models from './model'
 const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
+const tracker_email_add = 'trackerihardlyknowher@gmail.com'
+
+let send_verification_email = (email_add, code) => {
+    var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: tracker_email_add,
+        pass: 'Oooofers1!'
+    }
+    });
+
+    var mailOptions = {
+        from: tracker_email_add,
+        to: email_add,
+        subject: 'Tracker Email Verification Code!',
+        text: "Here's your code: " + code, 
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+        console.log(error);
+    } else {
+        console.log('Email sent: ' + info.response);
+    }
+    });
+}
 
 // checks whether a valid username was entered and if so, creates a new user
 export const createUser = async (req, res) => {
-    // req body requires name and password of user you're creating
-    const {name, password} = req.body;
+    // req body requires name, email, and password of user you're creating
+    const {name, email, password} = req.body;
+    console.log(req.body)
     const saltRounds = 6;
+    let email_verification_code = Math.random().toString(36).substring(2,6)
+
+    // send email to user for verification: https://www.w3schools.com/nodejs/nodejs_email.asp
+    send_verification_email(email, email_verification_code)
 
     const newUser = new Models.UserModel( {
         name: name,
+        email: email,
         password: password,
-        email_verification_code: "1234",
+        // https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
+        email_verification_code: email_verification_code
     });
+
+    //console.log("USE THIS CODE", newUser.email_verification_code)
 
     // hashes and salts the entered password for storage in database
     let hash = bcrypt.hashSync(password, saltRounds)
     newUser.password = hash
 
-    console.log(newUser)
+    // hashes and salts the entered email verification code for storage in database
+    let verify_hash = bcrypt.hashSync(email_verification_code, saltRounds)
+    newUser.email_verification_code = verify_hash
     
     try{
 
@@ -38,6 +76,39 @@ export const createUser = async (req, res) => {
 
     } catch(e) {
         return res.status(400).json({ error:true, message: "error with creating user", err_msg: e})
+    }
+}
+
+// checks whether the verification code the the user gave matches the code sent to their email
+export const verifyEmail = async (req, res) => {
+    // req.body requires id of user and code they input
+    const {user_id, verification_code} = req.body;
+    console.log("VERIFY EMAIL")
+    console.log(req.body)
+    console.log(user_id)
+    try{
+        // get the user that matches the ID
+        let user = await Models.UserModel.findOne({ '_id': user_id })
+        console.log("USER", user)
+        let hashedCode = user.email_verification_code // get hashed version of email code
+        console.log("CODES", hashedCode, verification_code)
+
+        // check to see if input code matches code in database
+        console.log(bcrypt.hashSync(verification_code, 6))
+        bcrypt.compare(verification_code, hashedCode, (err, result) => {
+            if(result){
+                // user input correct verification code
+                // change user in database to have been verified
+                Models.UserModel.updateOne({ '_id': user_id }, { '$set': { email_verified: true } })
+                return res.status(200).json({ error:false, verified: true })
+            }
+            else{
+                // user input incorrect verifiction code
+                return res.status(200).json({ error:false, verified: false })
+            }
+        })
+    } catch(e) {
+        return res.status(400).json({ error:true, message: "error with checking email verification code"})
     }
 }
 
@@ -280,7 +351,6 @@ export const loginUser = async (req, res) => {
     console.log("LOGGING IN USER");
     const {name, password} = req.body;
     console.log("name:", name, "password", password)
-    const bcrypt = require('bcrypt');
 
     try{
         let existingUsers = await Models.UserModel.find();
@@ -327,6 +397,7 @@ export const createGame = async (req, res) => {
     const {name, user_ids, group_id, game_type, goal_score} = req.body;
     let newGame;
     if(game_type == "tournament"){
+        // CREATING TOURNAMENT GAME
         if(user_ids.length < 4 || user_ids > 32){
             return res.status(200).json({ error: false, game_created: false, message: "invalid number of users"})
         }
@@ -354,6 +425,7 @@ export const createGame = async (req, res) => {
         newGame = new Models.TournamentModel( {name, user_ids, results} );
     }
     else if(game_type == "standard"){
+        // CREATING COUNTER GAME
         let scores = Array(user_ids.length).fill(0)
         newGame = new Models.GameModel( {name: name, users: user_ids, scores: scores, goal_score: goal_score, game_ended: false} );
     }
