@@ -1,25 +1,20 @@
-things to do:
-download node.js
-download postman
-download exponent CLI from getexponent.com
+# Group project for 437S Fall 2020
+Our semester long project for 437S: Software Engineering Workshop. Idea is to make a score tracker for different types of games you might play with friends. Uses react-native, node.js, and mongoDB.
 
-get the repo
-go to backend folder
-do npm install
+### Things you need to test the project:
+- Node.js
+- exponent-cli: npm instll expo-cli --global
+    - If on macOS install watchman https://facebook.github.io/watchman/docs/install#buildinstall
+- Expo client on phone
 
-the mongodb server is good
-
-current routes are:
-GET localhost:3000/api/users
-POST localhost:3000/api/users
-	requires body={name: something, password: something2}
-	
-in order to run the react-native app. go to the my-project folder and do npm start
-
-in oder to run the server. go to backend and do npm run dev
-
-
-in order to push backend to heroku
-go to main folder
-git push heroku master
-check logs using "heroku logs --tail"
+### How to test project:
+- Start front end:
+    - Go to my-projects folder
+    - In console: npm install
+    - In console: npm run production
+    - Scan QR code, or run in web browser
+- If using local host as backend instead of heroku server:
+    - Instead of npm run production do npm start
+    - Go to root (437s-project-TRACKER) folder. Start the backend:
+	    - In console: npm install
+	    - In console: node index.js
