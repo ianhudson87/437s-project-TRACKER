@@ -1,23 +1,112 @@
 import * as Models from './model'
 const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
+const tracker_email_add = 'trackerihardlyknowher@gmail.com'
+
+let send_verification_email = (email_add, code) => {
+    var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: tracker_email_add,
+        pass: 'Oooofers1!'
+    }
+    });
+
+    var mailOptions = {
+        from: tracker_email_add,
+        to: email_add,
+        subject: 'Tracker Email Verification Code!',
+        text: "Here's your code: " + code, 
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+        console.log(error);
+    } else {
+        console.log('Email sent: ' + info.response);
+    }
+    });
+}
+
+// create user that has not had email verified yet. If verified then it becomes an actual user
+export const createPendingUser = async (req, res) => {
+    // req body requires name, email, and password of user you want to create
+    const {name, email, password} = req.body;
+    console.log(req.body)
+    const saltRounds = 6;
+    // https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
+    let email_verification_code = Math.random().toString(36).substring(2,6)
+
+    // send email to user for verification: https://www.w3schools.com/nodejs/nodejs_email.asp
+    send_verification_email(email, email_verification_code)
+
+    // hashes and salts the entered password for storage in database
+    let hash = bcrypt.hashSync(password, saltRounds)
+    // newUser.password = hash
+
+    // hashes and salts the entered email verification code for storage in database
+    let verify_hash = bcrypt.hashSync(email_verification_code, saltRounds)
+    // newUser.email_verification_code = verify_hash
+
+    const newPendingUser = new Models.PendingUserModel( {
+        name: name,
+        email: email,
+        password: hash,
+        email_verification_code: verify_hash
+    });
+
+    //console.log("USE THIS CODE", newUser.email_verification_code)
+    
+    try{
+
+        // iterates through USERS from database to check whether the requested 
+        //  username already exists
+        let existingUsers  = await Models.UserModel.find();
+        // determine if username is taken already
+        for(let i=0; i<existingUsers.length; i++){
+            if(newPendingUser.name == existingUsers[i].name){
+              
+                //does not create user if the username already exists
+                return res.status(202).json({ error:false, repeatedUser:true, message: "user is taken"})
+            }
+        }
+        console.log("here")
+        // creates pendingUser if username does not already exist
+        let pendingUser = await newPendingUser.save()
+        return res.status(202).json({ error:false, pendingUserID: pendingUser._id, repeatedUser:false })
+
+    } catch(e) {
+        return res.status(400).json({ error:true, message: "error with creating user", err_msg: e})
+    }
+}
 
 // checks whether a valid username was entered and if so, creates a new user
 export const createUser = async (req, res) => {
-    // req body requires name and password of user you're creating
-    const {name, password} = req.body;
-    console.log(req.body);
-    const groups = []
-    const group_time_joined = []
-    const games = []
-    const game_time_joined = []
-    const friends = []
+    // req body requires name, email, and password of user you're creating
+    const {name, email, password} = req.body;
+    console.log(req.body)
     const saltRounds = 6;
-    const newUser = new Models.UserModel( {name, password, groups, group_time_joined, games, game_time_joined, friends});
+    let email_verification_code = Math.random().toString(36).substring(2,6)
+
+    // send email to user for verification: https://www.w3schools.com/nodejs/nodejs_email.asp
+    send_verification_email(email, email_verification_code)
+
+    const newUser = new Models.UserModel( {
+        name: name,
+        email: email,
+        password: password,
+        email_verification_code: email_verification_code
+    });
+
+    //console.log("USE THIS CODE", newUser.email_verification_code)
 
     // hashes and salts the entered password for storage in database
     let hash = bcrypt.hashSync(password, saltRounds)
     newUser.password = hash
-    
+
+    // hashes and salts the entered email verification code for storage in database
+    let verify_hash = bcrypt.hashSync(email_verification_code, saltRounds)
+    newUser.email_verification_code = verify_hash
     
     try{
 
@@ -37,7 +126,51 @@ export const createUser = async (req, res) => {
         return res.status(202).json({ user: await newUser.save(), error:false, repeatedUser:false })
 
     } catch(e) {
-        return res.status(400).json({ error:true, message: "error with creating user"})
+        return res.status(400).json({ error:true, message: "error with creating user", err_msg: e})
+    }
+}
+
+// checks whether the verification code the the user gave matches the code sent to their email
+export const verifyEmail = async (req, res) => {
+    // req.body requires id of pendingUser and code they input
+    const {pending_user_id, verification_code} = req.body;
+    console.log("VERIFY EMAIL")
+    console.log(req.body)
+    try{
+        // get the pendingUser that matches the ID
+        let pendingUser = await Models.PendingUserModel.findOne({ '_id': pending_user_id })
+        console.log('here', pending_user_id)
+        let hashedCode = pendingUser.email_verification_code // get hashed version of email code
+        // console.log("CODES", hashedCode, verification_code)
+        let existingUsers  = await Models.UserModel.find();
+        // determine if username is taken already
+        for(let i=0; i<existingUsers.length; i++){
+            if(pendingUser.name == existingUsers[i].name){
+                // does not create user if the username already exists
+                return res.status(202).json({ error:false, repeatedUser:true, message: "user is taken"})
+            }
+        }
+
+        // check to see if input code matches code in database
+        bcrypt.compare(verification_code, hashedCode, async (err, result) => {
+            if(result){
+                // user input correct verification code
+                // create a new user based on the pending user
+                const newUser = new Models.UserModel( {
+                    name: pendingUser.name,
+                    email: pendingUser.email,
+                    password: pendingUser.password
+                });
+                let user = await newUser.save()
+                return res.status(200).json({ error:false, repeatedUser:false, user: user, verified: true })
+            }
+            else{
+                // user input incorrect verifiction code
+                return res.status(200).json({ error:false, repeatedUser:false, verified: false })
+            }
+        })
+    } catch(e) {
+        return res.status(400).json({ error:true, message: "error with checking email verification code"})
     }
 }
 
@@ -179,24 +312,6 @@ export const getGameByID = async (req, res) => {
         return res.status(500).json({ error:true, message: "error with getting game"})
     }
 }
-// export const getUserByID = async (req, res) => {
-//     // user_id required in req.body
-//     console.log("GETTING User FROM ID")
-//     const {user_id} = req.body;
-//     try{
-//         let users_with_given_id = await Models.UserModel.find({ '_id': user_id})
-//         if(users_with_given_id.length == 0){
-//             // there doesn't exist a user with the user_id
-//             console.log("User ID: " + user_id)
-//             return res.status(200).json({ user: null, error: false, user_exists: false, message: "user_id DNE"})
-//         }
-//         else{
-//             return res.status(201).json({ user: users_with_given_id[0], error: false, user_exists: true, message: "User Found"})
-//         }
-//     } catch(e) {
-//         return res.status(500).json({ error:true, message: "error with getting group"})
-//     }
-// }
 
 export const getUser = async (req, res) => {
     // no requirements for req.body
@@ -298,7 +413,6 @@ export const loginUser = async (req, res) => {
     console.log("LOGGING IN USER");
     const {name, password} = req.body;
     console.log("name:", name, "password", password)
-    const bcrypt = require('bcrypt');
 
     try{
         let existingUsers = await Models.UserModel.find();
@@ -345,6 +459,7 @@ export const createGame = async (req, res) => {
     const {name, user_ids, group_id, game_type, goal_score} = req.body;
     let newGame;
     if(game_type == "tournament"){
+        // CREATING TOURNAMENT GAME
         if(user_ids.length < 4 || user_ids > 32){
             return res.status(200).json({ error: false, game_created: false, message: "invalid number of users"})
         }
@@ -388,6 +503,7 @@ export const createGame = async (req, res) => {
         newGame = new Models.TournamentModel( {name, user_ids, results} );
     }
     else if(game_type == "standard"){
+        // CREATING COUNTER GAME
         let scores = Array(user_ids.length).fill(0)
         newGame = new Models.GameModel( {name: name, users: user_ids, scores: scores, goal_score: goal_score, game_ended: false} );
     }

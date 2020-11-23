@@ -24,8 +24,26 @@ export const fetchUsers = async () =>{
     return data
 }
 
+// submits request to create a pending user
+export const createPendingUser = async (name, email, password) =>{
+    const res = await fetch(API_PATH + "createPendingUser",{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: name,
+            email: email,
+            password: password
+        })
+    })
+    const data = await res.json();
+    return data
+}
+
 //submits a request to the API to create new user with specified name and password
-export const createUser = async (name, password) =>{
+export const createUser = async (name, email, password) =>{
     const res = await fetch(API_PATH + "users",{
         method: 'POST',
         headers: {
@@ -34,6 +52,7 @@ export const createUser = async (name, password) =>{
         },
         body: JSON.stringify({
             name: name,
+            email: email,
             password: password
         })
     })
@@ -52,6 +71,24 @@ export const loginUser = async (name, password) =>{
         body: JSON.stringify({
             name: name,
             password: password,
+        })
+    })
+    const data = await res.json();
+    console.log(data);
+    return data
+}
+
+//submits a request to the API to attempt to verify the email of a new user
+export const verifyEmail = async (pending_user_id, verification_code) =>{
+    const res = await fetch(API_PATH + "verifyEmail",{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            pending_user_id: pending_user_id,
+            verification_code: verification_code
         })
     })
     const data = await res.json();

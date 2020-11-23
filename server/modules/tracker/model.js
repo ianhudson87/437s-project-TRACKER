@@ -5,6 +5,10 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
+    email: {
+        type: String,
+        required: true
+    },
     password: {
         type: String,
         required: true
@@ -12,27 +16,47 @@ const UserSchema = new Schema({
     groups: {
         // contains ids of Groups that User is in
         type: Array,
-        required: true
+        required: true,
+        default: [],
     },
     group_time_joined: {
         // contains time stamps of when user join group.
         type: Array,
-        required: true
+        required: true,
+        default: []
     },
     games: {
         // contains game ids that the users created 
         type: Array,
-        required: true
-    },
-    game_time_joined: {
-        // contains time stamps of when user joined game
-        type: Array,
         required: true,
+        default: [],
     },
     friends: {
         //contains id's of user's friends
         type: Array,
+        required: true,
+        default: []
+    }
+})
+
+const PendingUserSchema = new Schema({
+    // users that are in the process of being created, ie have not had email verified yet
+    name: {
+        type: String,
         required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    email_verification_code: {
+        // contains hashed value of the code
+        type: String,
+        required: true,
     }
 })
 
@@ -109,6 +133,7 @@ const TournamentSchema = new Schema({
 })
 
 export const UserModel =  mongoose.model('users', UserSchema)
+export const PendingUserModel =  mongoose.model('pendingUsers', PendingUserSchema)
 export const GroupModel = mongoose.model('groups', GroupSchema)
 export const GameModel = mongoose.model('games', GameSchema)
 export const TournamentModel = mongoose.model('tournaments', TournamentSchema)
