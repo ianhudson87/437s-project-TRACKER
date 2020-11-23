@@ -28,6 +28,58 @@ let send_verification_email = (email_add, code) => {
     });
 }
 
+// create user that has not had email verified yet. If verified then it becomes an actual user
+export const createPendingUser = async (req, res) => {
+    // req body requires name, email, and password of user you want to create
+    const {name, email, password} = req.body;
+    console.log(req.body)
+    const saltRounds = 6;
+    // https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
+    let email_verification_code = Math.random().toString(36).substring(2,6)
+
+    // send email to user for verification: https://www.w3schools.com/nodejs/nodejs_email.asp
+    send_verification_email(email, email_verification_code)
+
+    // hashes and salts the entered password for storage in database
+    let hash = bcrypt.hashSync(password, saltRounds)
+    // newUser.password = hash
+
+    // hashes and salts the entered email verification code for storage in database
+    let verify_hash = bcrypt.hashSync(email_verification_code, saltRounds)
+    // newUser.email_verification_code = verify_hash
+
+    const newPendingUser = new Models.PendingUserModel( {
+        name: name,
+        email: email,
+        password: hash,
+        email_verification_code: verify_hash
+    });
+
+    //console.log("USE THIS CODE", newUser.email_verification_code)
+    
+    try{
+
+        // iterates through USERS from database to check whether the requested 
+        //  username already exists
+        let existingUsers  = await Models.UserModel.find();
+        // determine if username is taken already
+        for(let i=0; i<existingUsers.length; i++){
+            if(newPendingUser.name == existingUsers[i].name){
+              
+                //does not create user if the username already exists
+                return res.status(202).json({ error:false, repeatedUser:true, message: "user is taken"})
+            }
+        }
+        console.log("here")
+        // creates pendingUser if username does not already exist
+        let pendingUser = await newPendingUser.save()
+        return res.status(202).json({ error:false, pendingUserID: pendingUser._id, repeatedUser:false })
+
+    } catch(e) {
+        return res.status(400).json({ error:true, message: "error with creating user", err_msg: e})
+    }
+}
+
 // checks whether a valid username was entered and if so, creates a new user
 export const createUser = async (req, res) => {
     // req body requires name, email, and password of user you're creating
@@ -43,7 +95,6 @@ export const createUser = async (req, res) => {
         name: name,
         email: email,
         password: password,
-        // https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
         email_verification_code: email_verification_code
     });
 
@@ -81,30 +132,41 @@ export const createUser = async (req, res) => {
 
 // checks whether the verification code the the user gave matches the code sent to their email
 export const verifyEmail = async (req, res) => {
-    // req.body requires id of user and code they input
-    const {user_id, verification_code} = req.body;
+    // req.body requires id of pendingUser and code they input
+    const {pending_user_id, verification_code} = req.body;
     console.log("VERIFY EMAIL")
     console.log(req.body)
-    console.log(user_id)
     try{
-        // get the user that matches the ID
-        let user = await Models.UserModel.findOne({ '_id': user_id })
-        console.log("USER", user)
-        let hashedCode = user.email_verification_code // get hashed version of email code
-        console.log("CODES", hashedCode, verification_code)
+        // get the pendingUser that matches the ID
+        let pendingUser = await Models.PendingUserModel.findOne({ '_id': pending_user_id })
+        console.log('here', pending_user_id)
+        let hashedCode = pendingUser.email_verification_code // get hashed version of email code
+        // console.log("CODES", hashedCode, verification_code)
+        let existingUsers  = await Models.UserModel.find();
+        // determine if username is taken already
+        for(let i=0; i<existingUsers.length; i++){
+            if(pendingUser.name == existingUsers[i].name){
+                // does not create user if the username already exists
+                return res.status(202).json({ error:false, repeatedUser:true, message: "user is taken"})
+            }
+        }
 
         // check to see if input code matches code in database
-        console.log(bcrypt.hashSync(verification_code, 6))
-        bcrypt.compare(verification_code, hashedCode, (err, result) => {
+        bcrypt.compare(verification_code, hashedCode, async (err, result) => {
             if(result){
                 // user input correct verification code
-                // change user in database to have been verified
-                Models.UserModel.updateOne({ '_id': user_id }, { '$set': { email_verified: true } })
-                return res.status(200).json({ error:false, verified: true })
+                // create a new user based on the pending user
+                const newUser = new Models.UserModel( {
+                    name: pendingUser.name,
+                    email: pendingUser.email,
+                    password: pendingUser.password
+                });
+                let user = await newUser.save()
+                return res.status(200).json({ error:false, repeatedUser:false, user: user, verified: true })
             }
             else{
                 // user input incorrect verifiction code
-                return res.status(200).json({ error:false, verified: false })
+                return res.status(200).json({ error:false, repeatedUser:false, verified: false })
             }
         })
     } catch(e) {

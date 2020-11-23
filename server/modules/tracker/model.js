@@ -36,12 +36,22 @@ const UserSchema = new Schema({
         type: Array,
         required: true,
         default: []
+    }
+})
+
+const PendingUserSchema = new Schema({
+    // users that are in the process of being created, ie have not had email verified yet
+    name: {
+        type: String,
+        required: true
     },
-    email_verified: {
-        // contains whether user has verified their account with the email_verification_code
-        type: Boolean,
-        required: true,
-        default: false,
+    email: {
+        type: String,
+        required: true
+    },
+    password: {
+        type: String,
+        required: true
     },
     email_verification_code: {
         // contains hashed value of the code
@@ -123,6 +133,7 @@ const TournamentSchema = new Schema({
 })
 
 export const UserModel =  mongoose.model('users', UserSchema)
+export const PendingUserModel =  mongoose.model('pendingUsers', PendingUserSchema)
 export const GroupModel = mongoose.model('groups', GroupSchema)
 export const GameModel = mongoose.model('games', GameSchema)
 export const TournamentModel = mongoose.model('tournaments', TournamentSchema)

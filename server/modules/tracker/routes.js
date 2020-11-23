@@ -6,6 +6,7 @@ const routes = new Router();
 
 //Users
 routes.post('/users', TrackerController.createUser)
+routes.post('/createPendingUser', TrackerController.createPendingUser)
 routes.get('/users', TrackerController.getAllUsers)
 
 routes.post('/loginUser', TrackerController.loginUser)

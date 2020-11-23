@@ -2,13 +2,10 @@ import React, { Component } from 'react'
 import { View, Text, TextInput, Button, StyleSheet} from 'react-native'
 import { CommonActions } from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage'
-import { createUser, verifyEmail } from "../constants/api"
+import { createPendingUser, verifyEmail } from "../constants/api"
 import { Input, Icon, Overlay } from 'react-native-elements';
 
 class NewUserForm extends Component {
-    static defaultProps = {
-        createUser
-      }
     constructor(props) {
         super(props);
         this.state = {
@@ -16,7 +13,7 @@ class NewUserForm extends Component {
             email: '',
             password: '',
             verification_code: '', // what user inputs as verification_code
-            pending_user: null, // user that has been created, but not been verified. This gets populated in handleRegister
+            pending_user_id: null, // id of user that has been created, but not been verified. This gets populated in handleRegister
             overlay_visible: false
         };
 
@@ -50,42 +47,45 @@ class NewUserForm extends Component {
 
     handleRegister(event) {
         // handler for when register button gets pressed
-        createUser(this.state.username, this.state.email, this.state.password).then((data)=>{
+        createPendingUser(this.state.username, this.state.email, this.state.password).then((data)=>{
             console.log(data)
             this.setState({response: data})
             if(data.error){
-                // error in creating user
+                // error in creating pendingUser
                 alert('error in creating user')
-                this.setState({username: '', password: ''});
             }
             else if(data.repeatedUser){
                 // username already exists
                 alert('Username already exists');
-                this.setState({username: '', password: ''});
             }
             else{
-                // good registration. show verification popup
-                console.log('NEW USER NAME:', data.user.name)
-                
-                this.setState({ overlay_visible: true, pending_user: data.user })
+                // good registration (was able to create pendingUser). show verification popup
+                this.setState({ overlay_visible: true, pending_user_id: data.pendingUserID })
             }
         })
-        
-        this.setState({username: ''});
-        this.setState({password: ''});
         event.preventDefault();
     }
 
     handleVerify() {
         console.log("handle verify")
         // handle when user tries to verify email
-        console.log("VERIFY EMAIL", this.state.pending_user._id, this.state.verification_code)
-        verifyEmail(this.state.pending_user._id, this.state.verification_code).then((response) => {
+        console.log("VERIFY EMAIL", this.state.pending_user_id, this.state.verification_code)
+        verifyEmail(this.state.pending_user_id, this.state.verification_code).then((response) => {
             if(!response.error){
                 // no error
-                if(response.verified){
+                if(response.repeatedUser){
+                    alert("username already taken")
+                    this.setState({ username: '', password: '' });
+                    this.toggleOverlay()
+                }
+                else if(response.verified == false){
+                    // wrong code
+                    alert("wrong code, try again")
+                }
+                else if(response.verified){
                     // correct code
-                    AsyncStorage.setItem( 'loggedInUserID', this.state.pending_user._id ) // set local storage var for userID
+                    this.setState({ username: '', password: '' });
+                    AsyncStorage.setItem( 'loggedInUserID', response.user._id ) // set local storage var for userID
                     this.props.navigation.dispatch(
                         // reset the navigation so that you can't navigate back from the userhome page
                         CommonActions.reset({
@@ -96,7 +96,7 @@ class NewUserForm extends Component {
                 }
                 else{
                     // wrong code
-                    alert("wrong code, try again")
+                    alert("something went terribly wrong")
                 }
             }
             else{
