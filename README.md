@@ -22,22 +22,22 @@ Our semester long project for 437S: Software Engineering Workshop. Idea is to ma
 ### Features:
 - Social:
     - Friends
-    	    - can add users as friends to see their updates in your activity feed
+	    - can add users as friends to see their updates in your activity feed
     - Groups
 	    - can add users to group
 	    - can create games within the group
 	    - people within the group are the people that can be involved in a game
     - User profile
-    	    - displays friends, groups, games
+	    - displays friends, groups, games
     - Activity feed:
-            - displayes when friends join a group or finish a game
+	    - displayes when friends join a group or finish a game
 - Games:
     - simple counter:
-            - has maximum score, first person to reach max wins
+	    - has maximum score, first person to reach max wins
     - tournament:
-            - bracket style game
+	    - bracket style game
 - Navigation:
-	- Navigation stack
-	- Navigation drawer on home page
+    - Navigation stack
+    - Navigation drawer on home page
 - Email confirmation on registration
 - Cross platform: ios, android, web
