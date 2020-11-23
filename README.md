@@ -16,5 +16,23 @@ Our semester long project for 437S: Software Engineering Workshop. Idea is to ma
 - If using local host as backend instead of heroku server:
     - Instead of npm run production do npm start
     - Go to root (437s-project-TRACKER) folder. Start the backend:
-	    - In console: npm install
+            - In console: npm install
 	    - In console: node index.js
+
+### Features:
+- Social:
+    - Groups
+	    - can add users to group
+	    - can create games within the group
+	    - people within the group are the people that can be involved in a game
+    - User profile
+    	    - displays friends, groups, games
+    - Activity feed:
+            - displayes when friends join a group or finish a game
+- Games:
+    - simple counter:
+            - has maximum score, first person to reach max wins
+    - tournament:
+            - bracket style game
+- Email confirmation on registration
+- Cross platform: ios, android, web
