@@ -21,6 +21,8 @@ Our semester long project for 437S: Software Engineering Workshop. Idea is to ma
 
 ### Features:
 - Social:
+    - Friends
+    	    - can add users as friends to see their updates in your activity feed
     - Groups
 	    - can add users to group
 	    - can create games within the group
@@ -34,5 +36,8 @@ Our semester long project for 437S: Software Engineering Workshop. Idea is to ma
             - has maximum score, first person to reach max wins
     - tournament:
             - bracket style game
+- Navigation:
+	- Navigation stack
+	- Navigation drawer on home page
 - Email confirmation on registration
 - Cross platform: ios, android, web
