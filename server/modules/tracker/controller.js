@@ -350,21 +350,37 @@ export const createGame = async (req, res) => {
         }
         // initialize results as an empty array of the correct size
         let results;
+        let numRounds;
         if(user_ids.length == 4){
             results = Array(7).fill(0)
+            numRounds = 3;
         }
         else if(user_ids.length <= 8){
             results = Array(15).fill(0)
+            numRounds = 4;
         }
         else if(user_ids.length <= 16){
             results = Array(31).fill(0)
+            numRounds = 5;
         }
         else{
             results = Array(63).fill(0)
+            numRounds = 6;
         }
         // assign first round positions
-        for(let i=0; i<user_ids.length; i++){
-            results[results.length-1-i] = user_ids[i];
+        let numEmpty = Math.pow(2, numRounds-1) - user_ids.length;
+        let user = 0;
+        for(let i=0; i<Math.pow(2, numRounds-1); i++){
+            if(user < user_ids.length){
+                if(numEmpty <= 0 || i%2==0){
+                    results[results.length-1-i] = user_ids[user];
+                    user++;
+                }
+                else{
+                    results[Math.floor((results.length-i)/2)-1] = results[results.length-i]
+                    numEmpty--;
+                }
+            }
         }
         console.log(name)
         console.log(user_ids)
