@@ -3,7 +3,7 @@ Our semester long project for 437S: Software Engineering Workshop. Idea is to ma
 
 ### Things you need to test the project:
 - Node.js
-- exponent-cli: npm instll expo-cli --global
+- exponent-cli: npm install expo-cli --global
     - If on macOS install watchman https://facebook.github.io/watchman/docs/install#buildinstall
 - Expo client on phone
 
