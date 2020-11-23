@@ -139,7 +139,7 @@ render() {
           <Title>Games <Icon size={19} name="create" onPress={() => this.handleNewGame()} /></Title>
           <ScrollView>
             { console.log("GamesInGroup", this.state.gamesInGroup)}
-            { this.state.gamesInGroup.reverse().map((game, key)=> (<GameThumbnail key={game._id} game={game} navigation={this.props.navigation}/>)) }
+            { this.state.gamesInGroup.reverse().map((game, key)=> (<GameThumbnail key={game._id} game={game} type="standard" navigation={this.props.navigation}/>)) }
           </ScrollView>
         </View>
         
