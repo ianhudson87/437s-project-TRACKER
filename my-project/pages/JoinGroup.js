@@ -46,7 +46,7 @@ class JoinGroup extends Component {
           alert('You are already in this group')
         }
         else{
-          alert('joined group:'+ group.name + 'successfully')
+          //alert('joined group:'+ group.name + 'successfully')
           this.props.navigation.dispatch(CommonActions.goBack())
         }
       })

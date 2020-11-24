@@ -160,8 +160,8 @@ render() {
         <Text>Select Game Type:</Text>
         <ScrollView style={styles.scrollView}>
           {/* buttons that show each game type */}
-          <Button title="Counter" onPress={()=>{this.setState({game_type: "standard"})}} />
-          <Button title="Tournament" onPress={()=>{this.setState({game_type: "tournament"})}} />
+          <Button title="Counter" onPress={()=>{this.setState({game_type: "standard", goal_score: ""})}} />
+          <Button title="Tournament" onPress={()=>{this.setState({game_type: "tournament", goal_score: "N/A"})}} />
         </ScrollView>
       </View>
       
