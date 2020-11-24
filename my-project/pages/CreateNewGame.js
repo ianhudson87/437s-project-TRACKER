@@ -169,7 +169,11 @@ render() {
         <Text>Select Opponent:</Text>
         <ScrollView style={styles.scrollView}>
           {/* buttons that show each user */}
-          {this.state.users.map((user, key)=> (<Button title={user.name} key={key} onPress={()=>{this.handleSelectOpponent(user)}} />))}
+          {this.state.users.map((user, key)=> {
+            if(user._id != this.state.loggedInUserID){
+              return (<Button title={user.name} key={key} onPress={()=>{this.handleSelectOpponent(user)}} />)
+            }
+          })}
         </ScrollView>
       </View>
       
