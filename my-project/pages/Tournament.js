@@ -159,11 +159,9 @@ class Tournament extends Component {
     // })
     
     console.log("POPULATE")
-    let results_object_list = []
     let results = []
     let numRounds = Math.log2(this.state.game.results.length+1)
     this.setState({numRounds: numRounds})
-    console.log(this.state.game.results)
     for(let i = 0; i < numRounds; i++){
       results[i] = []
     }
@@ -172,9 +170,6 @@ class Tournament extends Component {
       for(let i = numRounds-1; i >= 0; i--){
         if(index >= Math.pow(2, i)-1 && !added){
           added = true
-          console.log("i: " + i)
-          console.log("index: " + index)
-          console.log("List num: " + ((numRounds-1)-i) + ", " + (index-Math.pow(2, i)+1))
           if(user_id != 0){
             getObjectByID({id: user_id, type: 'user'}).then((response) => {
               if(response.object_exists){  
@@ -190,8 +185,6 @@ class Tournament extends Component {
         }
       }
     })
-    console.log(this.state.results_to_display)
-    console.log(results)
   }
 
   handleClick(user, key, roundNum){
@@ -297,9 +290,9 @@ class Tournament extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.nameContainer}>
+        {/* <Text style={styles.nameContainer}>
           Tournament: {this.state.game.name}
-        </Text>
+        </Text> */}
         {this.bracketDisplayHandler(this.state.numRounds)}
         {/*<View style={styles.bracketContainer}>
   

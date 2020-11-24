@@ -1,25 +1,43 @@
-things to do:
-download node.js
-download postman
-download exponent CLI from getexponent.com
+# Group project for 437S Fall 2020
+Our semester long project for 437S: Software Engineering Workshop. Idea is to make a score tracker for different types of games you might play with friends. Uses react-native, node.js, and mongoDB.
 
-get the repo
-go to backend folder
-do npm install
+### Things you need to test the project:
+- Node.js
+- exponent-cli: npm install expo-cli --global
+    - If on macOS install watchman https://facebook.github.io/watchman/docs/install#buildinstall
+- Expo client on phone
 
-the mongodb server is good
+### How to test project:
+- Start front end:
+    - Go to my-projects folder
+    - In console: npm install
+    - In console: npm run production
+    - Scan QR code, or run in web browser
+- If using local host as backend instead of heroku server:
+    - Instead of npm run production do npm start
+    - Go to root (437s-project-TRACKER) folder. Start the backend:
+            - In console: npm install
+	    - In console: node index.js
 
-current routes are:
-GET localhost:3000/api/users
-POST localhost:3000/api/users
-	requires body={name: something, password: something2}
-	
-in order to run the react-native app. go to the my-project folder and do npm start
-
-in oder to run the server. go to backend and do npm run dev
-
-
-in order to push backend to heroku
-go to main folder
-git push heroku master
-check logs using "heroku logs --tail"
+### Features:
+- Social:
+    - Friends
+	    - can add users as friends to see their updates in your activity feed
+    - Groups
+	    - can add users to group
+	    - can create games within the group
+	    - people within the group are the people that can be involved in a game
+    - User profile
+	    - displays friends, groups, games
+    - Activity feed:
+	    - displayes when friends join a group or finish a game
+- Games:
+    - simple counter:
+	    - has maximum score, first person to reach max wins
+    - tournament:
+	    - bracket style game
+- Navigation:
+    - Navigation stack
+    - Navigation drawer on home page
+- Email confirmation on registration
+- Cross platform: ios, android, web
