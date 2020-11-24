@@ -165,7 +165,7 @@ render() {
         </ScrollView>
       </View>
       
-      <View style={styles.view2}>
+      <View style={styles.view3}>
         <Text>Select Opponent:</Text>
         <ScrollView style={styles.scrollView}>
           {/* buttons that show each user */}
@@ -177,7 +177,7 @@ render() {
         </ScrollView>
       </View>
       
-      <View style={styles.view3}>
+      <View style={styles.view4}>
         <Text>Opponent User ID: {this.state.opponent_id}</Text>
         <Text>Opponent User ID: {this.state.opponent_name}</Text>
 
@@ -206,7 +206,10 @@ const styles = StyleSheet.create({
     height:150
   },
   view3:{
-    flex:1
+    flex:5
+  },
+  view4:{
+    flex:5
   },
   container: {
     flex: 1,
