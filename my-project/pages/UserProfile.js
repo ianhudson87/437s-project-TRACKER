@@ -12,6 +12,7 @@ import { Title } from 'react-native-paper'
 import { getObjectByID, addFriend, checkFriends, getObjectsByIDs } from "../constants/api"
 import GameThumbnail from "../components/GameThumbnail"
 import UserThumbnail from "../components/UserThumbnail"
+import GroupThumbnail from '../components/GroupThumbnail'
 // import LogoutButton from "../components/LogoutButton"
 
 class UserProfile extends Component {
@@ -160,7 +161,8 @@ render() {
       <View style={styles.groupsContainer}>
         <Text>{this.state.user.name}'s Groups:</Text>
         <ScrollView style={styles.usersListContainer}>
-          {this.state.userGroups.map((group, key)=> (<Text key={group._id}>{group.name}</Text>))}
+          {this.state.userGroups.map((group, key)=> (<GroupThumbnail group={group} key={group._id}>{group.name}</GroupThumbnail>))}
+          {/* {this.state.userGroups.map((group, key)=> (<Text key={group._id}>{group.name}</Text>))} */}
         </ScrollView>
       </View>
 
@@ -202,13 +204,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   groupsContainer: {
-    flex: 1,
+    flex: 3,
   },
   friendsContainer: {
-    flex: 2,
+    flex: 3,
   },
   gamesContainer: {
-    flex: 2,
+    flex: 3,
   },
   button: {
     alignItems: 'center',
