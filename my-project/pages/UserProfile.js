@@ -160,7 +160,7 @@ render() {
       <View style={styles.groupsContainer}>
         <Text>{this.state.user.name}'s Groups:</Text>
         <ScrollView style={styles.usersListContainer}>
-          {this.state.userGroups.map((group, key)=> (<Text key={key}>{group.name}</Text>))}
+          {this.state.userGroups.map((group, key)=> (<Text key={group._id}>{group.name}</Text>))}
         </ScrollView>
       </View>
 
@@ -168,7 +168,7 @@ render() {
         <Title> Friends </Title>
         <ScrollView>
           { this.state.friends.map((user, key)=> (
-            <UserThumbnail user={user} key={key} navigation={this.props.navigation}/>
+            <UserThumbnail user={user} key={user._id} navigation={this.props.navigation}/>
           )) }
         </ScrollView>
 
@@ -177,7 +177,7 @@ render() {
       <View style={styles.gamesContainer}>
         <Text>{this.state.user.name}'s Games:</Text>
         <ScrollView>
-          { this.state.userGames.map((game, key)=> (<GameThumbnail key={key} game={game} type={'standard'} navigation={this.props.navigation}/>)) }
+          { this.state.userGames.map((game, key)=> (<GameThumbnail key={game._id} game={game} type={'standard'} navigation={this.props.navigation}/>)) }
         </ScrollView>
       </View>
     </View>

@@ -68,7 +68,6 @@ refreshInfo(){
     }
 
     // GET ALL THE GAMES IN THE GROUP
-    ..
     let game_ids_in_group = group.games
     response = await getObjectsByIDs({ids: game_ids_in_group, type: "game"})
     if(response.objects_exist){
@@ -166,7 +165,7 @@ render() {
         <View style={styles.gamesContainer}>
           <Text>Tournaments in the group:</Text>
             <ScrollView style={styles.gamesListContainer}>
-              { this.state.tournamentsInGroup.map((tournament, key)=> (<GameThumbnail key={key} game={tournament} type="tournament" navigation={this.props.navigation}/>)) }
+              { this.state.tournamentsInGroup.map((tournament, key)=> (<GameThumbnail key={tournament._id} game={tournament} type="tournament" navigation={this.props.navigation}/>)) }
             </ScrollView>
         </View>
 
