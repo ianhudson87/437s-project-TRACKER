@@ -129,7 +129,7 @@ friendDisplayHandler(isFriend, isCurrentUser){
     // looking at own profile
     return(
       <View>
-        <Text>THIS IS YOU!</Text>
+        <Text> (You)</Text>
       </View>
     )
   }
