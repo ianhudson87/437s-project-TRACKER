@@ -144,7 +144,7 @@ class FeedObject extends Component {
               <Text>{text}</Text>
               <Card.Divider/>
               <View style={styles.shadow}>
-                <GameThumbnail key={game._id} game={game} navigation={this.props.navigation}/>
+                <GameThumbnail key={game._id} game={game} type={'standard'} navigation={this.props.navigation}/>
               </View>
               
             </Card>

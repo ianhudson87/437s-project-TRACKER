@@ -177,7 +177,7 @@ render() {
       <View style={styles.gamesContainer}>
         <Text>{this.state.user.name}'s Games:</Text>
         <ScrollView>
-          { this.state.userGames.map((game, key)=> (<GameThumbnail key={key} game={game} navigation={this.props.navigation}/>)) }
+          { this.state.userGames.map((game, key)=> (<GameThumbnail key={key} game={game} type={'standard'} navigation={this.props.navigation}/>)) }
         </ScrollView>
       </View>
     </View>
