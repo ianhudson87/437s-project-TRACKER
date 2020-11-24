@@ -458,7 +458,7 @@ export const createGame = async (req, res) => {
     let newGame;
     if(game_type == "tournament"){
         // CREATING TOURNAMENT GAME
-        if(user_ids.length < 4 || user_ids > 32){
+        if(user_ids.length < 4 || user_ids > 16){ //eventually might support larger tournaments
             return res.status(200).json({ error: false, game_created: false, message: "invalid number of users"})
         }
         // initialize results as an empty array of the correct size
@@ -476,10 +476,10 @@ export const createGame = async (req, res) => {
             results = Array(31).fill(0)
             numRounds = 5;
         }
-        else{
-            results = Array(63).fill(0)
-            numRounds = 6;
-        }
+        // else{
+        //     results = Array(63).fill(0)
+        //     numRounds = 6;
+        // }
         // assign first round positions
         let numEmpty = Math.pow(2, numRounds-1) - user_ids.length;
         let user = 0;
