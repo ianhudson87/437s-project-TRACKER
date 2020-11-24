@@ -73,11 +73,11 @@ class LoginForm extends Component {
         return (
             <View style={styles.container}>
                 <Input
-                    placeholder="email"
+                    placeholder="name"
                     value={this.state.username}
                     onChangeText={(text) => {this.handleChangeName(text)}}
                     style={styles.text}
-                    leftIcon={<Icon name='email'/>}
+                    leftIcon={<Icon name='fingerprint'/>}
                 />
                 <Input
                     placeholder="password"
