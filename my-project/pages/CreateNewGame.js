@@ -11,7 +11,7 @@ import {
   Button,
   View,
 } from 'react-native'
-import { createGame, fetchUsers} from "../constants/api"
+import { createGame, getObjectsByIDs, fetchUsers} from "../constants/api"
 
 class CreateNewGame extends Component {
   // need to know the user who wants to create the game. Need to know the group that the user is creating the game in
@@ -30,6 +30,7 @@ class CreateNewGame extends Component {
       error_msg: "",
       goal_score: "",
       users: [], // contains user objects
+      user_ids: this.props.route.params.group.users, //contains user id's
     }
 
     this.handleSelectOpponent = this.handleSelectOpponent.bind(this);
@@ -46,11 +47,22 @@ class CreateNewGame extends Component {
     })
 
     // populate this.state.users
-    fetchUsers().then((data)=>{
-      console.log("response from fetchUsers", data)
-      this.setState({users: data.users})
-    }).then(()=>{
-      console.log("this.state.users", this.state.users)
+    // fetchUsers().then((data)=>{
+    //   console.log("response from fetchUsers", data)
+    //   this.setState({users: data.users})
+    // }).then(()=>{
+    //   console.log("this.state.users", this.state.users)
+    // })
+    //this.setState({users: this.state.group.users})
+    
+    let userIDs = this.state.user_ids
+    getObjectsByIDs({ids: userIDs, type: 'user'}).then((response) => {
+      //console.log("RESPONSE", response)
+      // GET ALL USERS
+      if(response.objects_exist){
+        let users = response.objects // contains user objects
+        this.setState({users: users})
+      }
     })
 
   }
