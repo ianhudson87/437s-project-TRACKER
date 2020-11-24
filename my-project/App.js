@@ -91,7 +91,7 @@ class UserHomeDrawer extends Component {
                 <Drawer.Screen name="Home">
                     {props => <UserHome {...props} firstTimeUser={this.props.route.params.firstTimeUser}/>}
                 </Drawer.Screen>
-                <Drawer.Screen name="Settings" component={UserHome}/>
+                {/* <Drawer.Screen name="Settings" component={UserHome}/> */}
                 <Drawer.Screen name="CreateNewGroup" component={CreateNewGroup} />
                 <Drawer.Screen name="JoinGroup" component={JoinGroup} />
             </Drawer.Navigator>
