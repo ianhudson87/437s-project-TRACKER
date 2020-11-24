@@ -7,17 +7,26 @@ import {
   View,
 } from 'react-native'
 import AddUserForm from '../components/AddUserForm'
+import { getObjectsByIDs } from '../constants/api'
 
 class AddUserToGroup extends Component {
 constructor(props) {
     super(props);
-    this.state = {group: {'name': "default", 'users': []}}
+    this.state = {
+      group: {'name': "default", 'users': []},
+      users: [] //stores user objects
+    }
 }
 
 componentDidMount(){
     const group = this.props.route.params.group;
     this.setState({group: group});
     console.log(this.props.route.params.group)
+    getObjectsByIDs({ids: group.users, type: 'user'}).then((response)=>{
+      if(response.objects_exist){
+        this.setState({users: response.objects})
+      }
+    })
 }
 
   
@@ -32,7 +41,7 @@ render() {
         </Text>
         <Text>
         {
-            this.state.group.users.map((user, key)=> (<Text key={key}>{user.name}</Text>))
+            this.state.users.map((user, key)=> (<Text key={key}>{user.name} </Text>))
         }
         </Text>
         <AddUserForm group={this.state.group} navigation={this.props.navigation} loggedInUser={this.props.loggedInUser}></AddUserForm>

@@ -7,10 +7,11 @@ class AddUserForm extends Component {
     static defaultProps = { }
     constructor(props) {
         super(props);
-        this.state = {username: ''};
+        this.state = {username: '', invalidUser: false};
 
         this.handleChangeName = this.handleChangeName.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.displayHandler = this.displayHandler.bind(this);
     }
 
     componentDidMount(){
@@ -49,6 +50,7 @@ class AddUserForm extends Component {
             }
             else{ // username not found in database
                 console.log("User does not exist")
+                this.setState({invalidUser: true})
             }
         })
 
@@ -57,6 +59,16 @@ class AddUserForm extends Component {
         event.preventDefault();
     }
 
+    displayHandler() {
+        console.log("Display handler")
+        if(this.state.invalidUser){
+            return (
+                <View>
+                    <Text>User does not exist</Text>
+                </View>
+            )
+        }
+    }
     render() {
         const navigation = this.props.navigation;
         return (
@@ -64,8 +76,8 @@ class AddUserForm extends Component {
                 <Text>User to add:</Text>
                 <TextInput value={this.state.username} onChangeText={(text)=>{this.handleChangeName(text)}} style={styles.text}/>
                 <Button title="Add User" onPress={(e) => this.handleSubmit(navigation, e)} />
+                {this.displayHandler()}
             </View>
-           
         )
     }
 }
