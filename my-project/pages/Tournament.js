@@ -175,12 +175,16 @@ class Tournament extends Component {
               if(response.object_exists){  
                 results[(numRounds-1)-i][index-Math.pow(2, i)+1] = response.object
               }
-              this.setState({results_to_display: results}) // update state of component
+              this.setState({results_to_display: results}, ()=>{
+                console.log(this.state.results_to_display)
+              }) // update state of component
             })
           }
           else{
-            results[(numRounds-1)-i][index-Math.pow(2, i)+1] = {name: '           ', _id: 0}
-            this.setState({results_to_display: results}) // update state of component
+            results[(numRounds-1)-i][index-Math.pow(2, i)+1] = {name: '           ', _id: index}
+            this.setState({results_to_display: results}, ()=>{
+              console.log(this.state.results_to_display)
+            }) // update state of component
           }
         }
       }
@@ -217,7 +221,6 @@ class Tournament extends Component {
 
   bracketDisplayHandler(numRounds){
     if(numRounds == 3){
-      console.log(this.state.results_to_display)
       return(
         <View style={styles.bracketContainer}>
           <View style={styles.first_round}>
@@ -236,6 +239,7 @@ class Tournament extends Component {
       )
     }
     else if(numRounds == 4){
+      console.log(this.state.results_to_display[0])
       return(
         <View style={styles.bracketContainer}>
           <View style={styles.first_round}>
