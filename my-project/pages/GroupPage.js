@@ -57,29 +57,47 @@ refreshInfo(){
     else{
       return null
     }
-  }).then((group)=>{
+  }).then( async (group)=>{
     console.log("GROUP:", group)
 
     // GET ALL THE USERS IN THE GROUP
     let user_ids_in_group = group.users
-    getObjectsByIDs({ids: user_ids_in_group, type: "user"}).then((response) => {
-      if(response.objects_exist){
-        newState.usersInGroup = response.objects // this.setState({usersInGroup: response.objects})
-      }
-    })
+    let response = await getObjectsByIDs({ids: user_ids_in_group, type: "user"})
+    if(response.objects_exist){
+      newState.usersInGroup = response.objects // this.setState({usersInGroup: response.objects})
+    }
 
     // GET ALL THE GAMES IN THE GROUP
+    ..
     let game_ids_in_group = group.games
-    getObjectsByIDs({ids: game_ids_in_group, type: "game"}).then((response) => {
-      console.log("response", response)
-      if(response.objects_exist){
-        console.log("length", response.objects.length)
-        response.objects
-        newState.gamesInGroup = response.objects // this.setState({gamesInGroup: response.objects})
-        console.log("set state for group page")
-      }
-      this.setState(newState)
-    })
+    response = await getObjectsByIDs({ids: game_ids_in_group, type: "game"})
+    if(response.objects_exist){
+      console.log("length", response.objects.length)
+      response.objects
+      newState.gamesInGroup = response.objects // this.setState({gamesInGroup: response.objects})
+      console.log("set state for group page")
+    }
+    console.log("newState", newState)
+    this.setState(newState)
+    // getObjectsByIDs({ids: user_ids_in_group, type: "user"}).then((response) => {
+    //   if(response.objects_exist){
+    //     newState.usersInGroup = response.objects // this.setState({usersInGroup: response.objects})
+    //   }
+    // })
+
+    // // GET ALL THE GAMES IN THE GROUP
+    // let game_ids_in_group = group.games
+    // getObjectsByIDs({ids: game_ids_in_group, type: "game"}).then((response) => {
+    //   console.log("response", response)
+    //   if(response.objects_exist){
+    //     console.log("length", response.objects.length)
+    //     response.objects
+    //     newState.gamesInGroup = response.objects // this.setState({gamesInGroup: response.objects})
+    //     console.log("set state for group page")
+    //   }
+    //   console.log("newState", newState)
+    //   this.setState(newState)
+    // })
 
     let tournaments_info_list = []
     let tournament_ids_in_group = group.tournaments
@@ -120,6 +138,7 @@ handleNewGame(){
 
   
 render() {
+  console.log("STATE", this.state)
     return (
       <View style={styles.container}>
         <View style={styles.nameContainer}>
@@ -129,6 +148,7 @@ render() {
         </View>
         
         <View style={styles.usersContainer}>
+          {console.log("USERS HERE", this.state.usersInGroup)}
           <Title>Players <Icon size={19} name="person-add" title='Add User' onPress={(e) => this.handleNewUser(e)}/></Title>
           <ScrollView>
             { this.state.usersInGroup.map((user, key)=> (<UserThumbnail key={user._id} user={user} navigation={this.props.navigation} />)) }

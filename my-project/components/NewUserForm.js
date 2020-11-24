@@ -132,7 +132,6 @@ class NewUserForm extends Component {
                     leftIcon={<Icon name='lock'/>}
                 />
                 <Button title="Register" onPress={this.handleRegister} />
-                <Button title="test" onPress={this.toggleOverlay} />
 
                 <Overlay isVisible={ this.state.overlay_visible } onBackdropPress={ this.toggleOverlay }>
                     <Text> A code has been sent to you email. Input below to verify your email </Text>
@@ -142,7 +141,7 @@ class NewUserForm extends Component {
                         onChangeText={(text)=>{this.handleVerificationCodeChange(text)}}
                     />
                     <Button title="Submit" onPress={this.handleVerify}/>
-                    <Button title="Cancel Registration" />
+                    <Button title="Cancel Registration" onPress={this.toggleOverlay} />
                 </Overlay>
             </View>
         )
