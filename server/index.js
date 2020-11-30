@@ -1,8 +1,7 @@
 const express = require('express')
-import { isObject } from "util"
 import dbConfig from "./config/db"
 import middlewaresConfig from './config/middlewares'
-import {TrackerRoutes} from './modules'
+import {TrackerRoutes, UpdateStats} from './modules'
 var cors = require('cors')
 
 const app = express();
@@ -50,3 +49,8 @@ io.on("connection", socket => {
 
 
 });
+
+/**
+ * Updating stats of users and groups
+ */
+setInterval(UpdateStats, 3*1000)

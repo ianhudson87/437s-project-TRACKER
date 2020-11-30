@@ -503,7 +503,8 @@ export const createGame = async (req, res) => {
     else if(game_type == "standard"){
         // CREATING COUNTER GAME
         let scores = Array(user_ids.length).fill(0)
-        newGame = new Models.GameModel( {name: name, users: user_ids, scores: scores, goal_score: goal_score, game_ended: false} );
+        let handled_goal_score = Number.isInteger(goal_score) ? goal_score : 1
+        newGame = new Models.GameModel( {name: name, users: user_ids, scores: scores, goal_score: handled_goal_score, game_ended: false} );
     }
     else{
         return res.status(200).json({ error: false, game_created: false, message: "invalid game type"})

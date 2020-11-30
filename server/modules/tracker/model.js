@@ -36,8 +36,14 @@ const UserSchema = new Schema({
         type: Array,
         required: true,
         default: []
+    },
+    stats: {
+        // contains json of various stats
+        type: Object,
+        required: true,
+        default: { },
     }
-})
+}, { minimize: false })
 
 const PendingUserSchema = new Schema({
     // users that are in the process of being created, ie have not had email verified yet
@@ -79,6 +85,11 @@ const GroupSchema = new Schema({
         // contains tournament ids that the users created 
         type: Array,
         required: true
+    },
+    stats: {
+        // contains json of various stats
+        type: Object,
+        required: false
     }
 })
 
@@ -100,7 +111,8 @@ const GameSchema = new Schema({
     goal_score: {
         // contains the score that users are trying to reach
         type: Number,
-        require: true
+        require: true,
+        default: 1,
     },
     game_ended: {
         // contains bool if game has ended or not
