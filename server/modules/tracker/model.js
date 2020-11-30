@@ -89,9 +89,10 @@ const GroupSchema = new Schema({
     stats: {
         // contains json of various stats
         type: Object,
-        required: false
+        required: true,
+        default: { },
     }
-})
+}, { minimize: false })
 
 const GameSchema = new Schema({
     name: {

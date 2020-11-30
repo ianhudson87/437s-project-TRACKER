@@ -1,14 +1,7 @@
 import React, { Component } from 'react'
 import AsyncStorage from '@react-native-community/async-storage'
-import {
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-  Button,
-  View,
-  ScrollView,
-} from 'react-native'
-import { Icon } from 'react-native-elements'
+import { StyleSheet, TouchableOpacity, Text, Button, View, ScrollView } from 'react-native'
+import { Icon, Overlay } from 'react-native-elements'
 import { Title } from 'react-native-paper'
 import { getObjectByID, getObjectsByIDs } from "../constants/api"
 import GameThumbnail from "../components/GameThumbnail"
@@ -24,18 +17,21 @@ constructor(props) {
     usersInGroup: [], // contains list of user objects
     gamesInGroup: [], // contains list of game objects
     tournamentsInGroup: [], // contains list of tournament objects
+    stats: {users_wins_dict: {}}, // stats of the group
+    overlay_visible: false, // stats overlay visibility
   }
 
   this.handleNewUser = this.handleNewUser.bind(this);
   this.handleNewGame = this.handleNewGame.bind(this);
   this.refreshInfo = this.refreshInfo.bind(this);
+  this.toggleOverlay = this.toggleOverlay.bind(this);
 }
 
 componentDidMount(){
-  this.props.navigation.addListener('focus', ()=>{this.refreshInfo()}); // THIS REFRESHES THE PAGE EVERY TIME YOU GO BACK TO IT. 0.0
+  this.props.navigation.addListener('focus', async ()=>{this.refreshInfo()}); // THIS REFRESHES THE PAGE EVERY TIME YOU GO BACK TO IT. 0.0
 }
 
-refreshInfo(){
+async refreshInfo(){
   // refresh all the information about the group
   console.log('REFRESH')
 
@@ -60,6 +56,9 @@ refreshInfo(){
   }).then( async (group)=>{
     console.log("GROUP:", group)
 
+    // get stats of the group
+    newState.stats = group.stats
+
     // GET ALL THE USERS IN THE GROUP
     let user_ids_in_group = group.users
     let response = await getObjectsByIDs({ids: user_ids_in_group, type: "user"})
@@ -73,30 +72,10 @@ refreshInfo(){
     if(response.objects_exist){
       console.log("length", response.objects.length)
       response.objects
-      newState.gamesInGroup = response.objects // this.setState({gamesInGroup: response.objects})
+      newState.gamesInGroup = response.objects.reverse() // this.setState({gamesInGroup: response.objects})
       console.log("set state for group page")
     }
-    console.log("newState", newState)
-    this.setState(newState)
-    // getObjectsByIDs({ids: user_ids_in_group, type: "user"}).then((response) => {
-    //   if(response.objects_exist){
-    //     newState.usersInGroup = response.objects // this.setState({usersInGroup: response.objects})
-    //   }
-    // })
-
-    // // GET ALL THE GAMES IN THE GROUP
-    // let game_ids_in_group = group.games
-    // getObjectsByIDs({ids: game_ids_in_group, type: "game"}).then((response) => {
-    //   console.log("response", response)
-    //   if(response.objects_exist){
-    //     console.log("length", response.objects.length)
-    //     response.objects
-    //     newState.gamesInGroup = response.objects // this.setState({gamesInGroup: response.objects})
-    //     console.log("set state for group page")
-    //   }
-    //   console.log("newState", newState)
-    //   this.setState(newState)
-    // })
+    
 
     let tournaments_info_list = []
     let tournament_ids_in_group = group.tournaments
@@ -108,11 +87,13 @@ refreshInfo(){
           console.log("RESPONSE OBJECT", response.object)
           tournaments_info_list.push(response.object)
         }
-        this.setState({tournamentsInGroup: tournaments_info_list})
+        newState.tournamentsInGroup = tournaments_info_list// this.setState({tournamentsInGroup: tournaments_info_list})
         console.log(this.state.tournamentsInGroup)
         console.log("tournamentsInGroup", this.state.tournamentsInGroup)
       })
     })
+
+    this.setState(newState)
   })
 }
 
@@ -134,6 +115,10 @@ handleNewGame(){
   });
 }
 
+toggleOverlay(){
+  this.refreshInfo()
+  this.setState({ overlay_visible: !this.state.overlay_visible })
+}
 
   
 render() {
@@ -143,6 +128,7 @@ render() {
         <View style={styles.nameContainer}>
           <Text style={styles.nameContainer}>
             {this.state.group.name}
+            <Button title="show stats" onPress={this.toggleOverlay} />
           </Text>
         </View>
         
@@ -158,7 +144,7 @@ render() {
           <Title>Games <Icon size={19} name="create" onPress={() => this.handleNewGame()} /></Title>
           <ScrollView>
             { console.log("GamesInGroup", this.state.gamesInGroup)}
-            { this.state.gamesInGroup.reverse().map((game, key)=> (<GameThumbnail key={game._id} game={game} type="standard" navigation={this.props.navigation}/>)) }
+            { this.state.gamesInGroup.map((game, key)=> (<GameThumbnail key={game._id} game={game} type="standard" navigation={this.props.navigation}/>)) }
           </ScrollView>
         </View>
         
@@ -167,6 +153,20 @@ render() {
             <ScrollView style={styles.gamesListContainer}>
               { this.state.tournamentsInGroup.map((tournament, key)=> (<GameThumbnail key={tournament._id} game={tournament} type="tournament" navigation={this.props.navigation}/>)) }
             </ScrollView>
+        </View>
+
+        <View style={styles.overlay}>
+          <Overlay isVisible={ this.state.overlay_visible } onBackdropPress={ this.toggleOverlay }>
+            <Text> Total Games: {this.state.stats.total_num_of_games} (completed: {this.state.stats.num_finished_games}) </Text>
+            <Text> Leaderboard: </Text>
+            {
+              Array.from(Object.values(this.state.stats.users_wins_dict)).sort((a,b) => {return a.wins < b.wins ? 1: -1}).map( (wins_user) => {
+                return(
+                  <Text> {wins_user.user_name}: {wins_user.wins} wins </Text>
+                )
+              })
+            }
+          </Overlay>
         </View>
 
         <Button title='Create new game' onPress={() => this.handleNewGame()} />

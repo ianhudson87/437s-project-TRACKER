@@ -18,10 +18,11 @@ const update_group_stats = async (group) => {
 
     // get total number of games
     let total_num_of_games = group.games.length
-    stats["total_num_of_games"] = total_num_of_games
+    stats.total_num_of_games = total_num_of_games
     
     // create dictionary of user_id: {wins, user_name}
     let user_wins_dict = {}
+    let num_finished_games = 0
     for(const user_id of group.users){
         // populate everyone with 0 wins
         let user = await Models.UserModel.findOne({ '_id': user_id })
@@ -31,13 +32,16 @@ const update_group_stats = async (group) => {
         // go through all finished games and populate the dictionary
         let game = await Models.GameModel.findOne({ '_id': game_id })
         if(game.game_ended){
+            num_finished_games += 1
             let winner = game.winner
             user_wins_dict[winner._id]["wins"] += 1
         }
     }
-    stats["users_wins_dict"] = user_wins_dict
+    stats.num_finished_games = num_finished_games
+    stats.users_wins_dict = user_wins_dict
 
     //console.log(stats)
+    await Models.GroupModel.updateOne( { '_id': group._id }, { '$set': { stats: stats } })
 }
 
 const update_user_stats = async (user) => {
@@ -46,16 +50,18 @@ const update_user_stats = async (user) => {
 
     // get total number of games
     let total_num_of_games = user.games.length
-    stats["total_num_of_games"] = total_num_of_games
+    stats.total_num_of_games = total_num_of_games
     
     // find total number of wins, avg score over all games, avg fraction of max_points over all games
     let num_wins = 0
+    let num_finished_games = 0
     let scores = []
     let fractions_of_max_points = []
     for(const game_id of user.games){
         // go through all finished games
         let game = await Models.GameModel.findOne({ '_id': game_id })
         if(game.game_ended){
+            num_finished_games += 1
             //console.log(game)
             let winner = game.winner
 
@@ -74,10 +80,11 @@ const update_user_stats = async (user) => {
             fractions_of_max_points.push(score_of_user_in_game / max_points_of_game)
         }
     }
-    stats["total_num_of_wins"] = num_wins
+    stats.total_num_of_wins = num_wins
+    stats.num_finished_games = num_finished_games
     //console.log("frac2", fractions_of_max_points)
-    stats["avg_score_over_all_games"] = scores.length != 0 ? scores.reduce((sum, val) => { return sum + val }) / scores.length : 0
-    stats["avg_fraction_of_max_points_over_all_games"] = fractions_of_max_points.length != 0 ? fractions_of_max_points.reduce((sum, val) => { return sum + val }) / fractions_of_max_points.length : 0
+    stats.avg_score_over_all_games = scores.length != 0 ? scores.reduce((sum, val) => { return sum + val }) / scores.length : 0
+    stats.avg_fraction_of_max_points_over_all_games = fractions_of_max_points.length != 0 ? fractions_of_max_points.reduce((sum, val) => { return sum + val }) / fractions_of_max_points.length : 0
 
     // // match ups against other users
 

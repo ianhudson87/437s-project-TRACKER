@@ -9,6 +9,7 @@ import {
   ScrollView,
 } from 'react-native'
 import { Title } from 'react-native-paper'
+import { Overlay } from 'react-native-elements'
 import { getObjectByID, addFriend, checkFriends, getObjectsByIDs } from "../constants/api"
 import GameThumbnail from "../components/GameThumbnail"
 import UserThumbnail from "../components/UserThumbnail"
@@ -26,12 +27,14 @@ constructor(props) {
     userGames: [], // contains list of game objects
     isFriend: null, // friend status of logged in user and user whose profile is displayed
     friends: [], // contains list of user objects that are friends of the user
+    overlay_visible: false // visibility of overlay
   }
 
   this.handleFriend = this.handleFriend.bind(this);
   this.refreshInfo = this.refreshInfo.bind(this);
   this.populateFriendsArrays = this.populateFriendsArrays.bind(this);
   this.friendDisplayHandler = this.friendDisplayHandler.bind(this);
+  this.toggleOverlay = this.toggleOverlay.bind(this);
 }
 
 populateFriendsArrays(friendIDs){
@@ -147,14 +150,22 @@ friendDisplayHandler(isFriend, isCurrentUser){
     return <Text>Loading...</Text>
   }
 }
+
+toggleOverlay(){
+  this.refreshInfo()
+  this.setState({ overlay_visible: !this.state.overlay_visible })
+}
   
 render() {
+  console.log("state", this.state.user)
+  let stats = this.state.user.stats || {}
   return (
     <View style={styles.container}>
       <View style={styles.nameContainer}>
         <Text style={styles.nameContainer}>
           {this.state.user.name}
           {this.friendDisplayHandler(this.state.isFriend, this.state.profileUserID==this.state.loggedInUserID)}
+          <Button title="show stats" onPress={this.toggleOverlay} />
         </Text>
       </View>
       
@@ -182,17 +193,22 @@ render() {
           { this.state.userGames.map((game, key)=> (<GameThumbnail key={game._id} game={game} type={'standard'} navigation={this.props.navigation}/>)) }
         </ScrollView>
       </View>
+
+      <View style={styles.overlay}>
+        <Overlay isVisible={ this.state.overlay_visible } onBackdropPress={ this.toggleOverlay }>
+          <Text> Total games: { stats.total_num_of_games } (completed: { stats.num_finished_games })</Text>
+          <Text> Average Score: { stats.avg_score_over_all_games } </Text>
+          <Text> Wins: { stats.total_num_of_wins }</Text>
+          <Text> Win percentage: { stats.total_num_of_wins / stats.num_finished_games * 100 }%</Text>
+          <Text> Average percentage of points out of max: { stats.avg_fraction_of_max_points_over_all_games * 100 }%</Text>
+        </Overlay>
+      </View>
     </View>
   )
 }
 }
 
 const styles = StyleSheet.create({
-  // scrollView: {
-  //   flex: 1,
-  //   backgroundColor: 'lightblue',
-  //   marginHorizontal: 0,
-  // },
   container: {
     flex: 1,
   },
