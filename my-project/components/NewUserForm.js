@@ -120,6 +120,7 @@ class NewUserForm extends Component {
                 />
                 <Input
                     placeholder="email"
+                    keyboardType="email-address"
                     value={this.state.email}
                     onChangeText={(text)=>{this.handleChangeEmail(text)}}
                     leftIcon={<Icon name='email'/>}

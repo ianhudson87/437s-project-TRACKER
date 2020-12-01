@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import AsyncStorage from '@react-native-community/async-storage'
 import { CommonActions } from '@react-navigation/native'
-import { StyleSheet, ScrollView, Text, TextInput, Button, View, Keyboard, TouchableWithoutFeedback} from 'react-native'
+import { StyleSheet, ScrollView, Text, TextInput, Button, View} from 'react-native'
 import { ButtonGroup } from 'react-native-elements'
 import { Title } from 'react-native-paper'
 import { createGame, getObjectsByIDs, fetchUsers} from "../constants/api"
@@ -175,10 +175,10 @@ class CreateNewGame extends Component {
           <Text>Opponent User ID: {this.state.opponent_name}</Text>
 
           <Text>game Name:</Text>
-          <TextInput value={this.state.game_name} onChangeText={(text)=>this.handleGameNameChange(text)} style={styles.textInput}/>
+          <TextInput returnKeyType={ 'done' } value={this.state.game_name} onChangeText={(text)=>this.handleGameNameChange(text)} style={styles.textInput}/>
 
           <Text>goal score:</Text>
-          <TextInput value={this.state.goal_score} onChangeText={(text)=>this.handleGoalScoreChange(text)} style={styles.textInput}/>
+          <TextInput keyboardType="number-pad" returnKeyType={ 'done' } value={this.state.goal_score} onChangeText={(text)=>this.handleGoalScoreChange(text)} style={styles.textInput}/>
           <Button title='Create Game' onPress={this.handleNewGame}/>
         </View>
       </View>
@@ -189,7 +189,7 @@ class CreateNewGame extends Component {
         <View style={styles.submitContainer}>
           <Text>All users in group will be put into the tournament!</Text>
           <Text>game Name:</Text>
-          <TextInput value={this.state.game_name} onChangeText={(text)=>this.handleGameNameChange(text)} style={styles.textInput}/>
+          <TextInput returnKeyType={ 'done' } value={this.state.game_name} onChangeText={(text)=>this.handleGameNameChange(text)} style={styles.textInput}/>
           <Button title='Create Game' onPress={this.handleNewGame}/>
         </View>
       </View>
@@ -199,25 +199,22 @@ class CreateNewGame extends Component {
   
 render() {
   return (
+    <View style={styles.container}>
+      <View style={styles.gameTypeContainer}>
+        <Title>Create a new game for {this.state.group.name}</Title>
 
-      <TouchableWithoutFeedback onPress={ ()=>{ Keyboard.dismiss() } }>
-        <View style={styles.container}>
-          <View style={styles.gameTypeContainer}>
-            <Title>Create a new game for {this.state.group.name}</Title>
+        <Title>Game Type:</Title>
+        {/* buttons that show each game type */}
+        <ButtonGroup
+          onPress={this.updateIndex}
+          selectedIndex={this.state.selected_index}
+          buttons={["Counter", "Tournament"]}
+        />
+      </View>
 
-            <Title>Game Type:</Title>
-            {/* buttons that show each game type */}
-            <ButtonGroup
-              onPress={this.updateIndex}
-              selectedIndex={this.state.selected_index}
-              buttons={["Counter", "Tournament"]}
-            />
-          </View>
-
-          {this.showGameOptions(this.state.game_type)}
-        </View>
-      </TouchableWithoutFeedback>
-
+      {this.showGameOptions(this.state.game_type)}
+      
+    </View>
   )
 }
 }
@@ -238,7 +235,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   submitContainer:{
-    flex:1,
+    flex:3,
     width: 250,
     alignSelf: "center",
   },
