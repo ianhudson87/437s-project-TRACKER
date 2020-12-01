@@ -126,7 +126,7 @@ render() {
     return (
       <View style={styles.container}>
         <View style={styles.nameContainer}>
-          <Text style={styles.nameContainer}>
+          <Text style={styles.nameText}>
             {this.state.group.name}
             <Button title="show stats" onPress={this.toggleOverlay} />
           </Text>
@@ -150,7 +150,7 @@ render() {
         
         <View style={styles.gamesContainer}>
           <Text>Tournaments in the group:</Text>
-            <ScrollView style={styles.gamesListContainer}>
+            <ScrollView>
               { this.state.tournamentsInGroup.map((tournament, key)=> (<GameThumbnail key={tournament._id} game={tournament} type="tournament" navigation={this.props.navigation}/>)) }
             </ScrollView>
         </View>
@@ -181,12 +181,17 @@ const styles = StyleSheet.create({
   //   backgroundColor: 'lightblue',
   //   marginHorizontal: 0,
   // },
+  container: {
+    flex: 1,
+  },
+  nameText: {
+    fontSize: 30,
+    fontWeight: "bold",
+  },
   nameContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    fontSize: 30,
-    fontWeight: "bold",
   },
   usersContainer: {
     flex: 3,
@@ -194,15 +199,6 @@ const styles = StyleSheet.create({
   gamesContainer: {
     flex: 3,
   },
-  container: {
-    flex: 1,
-  },
-  button: {
-    alignItems: 'center',
-    backgroundColor: '#DDDDDD',
-    padding: 10,
-    marginTop: 20
-  }
 })
 
 export default GroupPage;

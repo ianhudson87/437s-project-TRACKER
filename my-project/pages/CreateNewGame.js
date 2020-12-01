@@ -3,14 +3,9 @@
 import React, { Component } from 'react'
 import AsyncStorage from '@react-native-community/async-storage'
 import { CommonActions } from '@react-navigation/native'
-import {
-  StyleSheet,
-  ScrollView,
-  Text,
-  TextInput,
-  Button,
-  View,
-} from 'react-native'
+import { StyleSheet, ScrollView, Text, TextInput, Button, View, Keyboard, TouchableWithoutFeedback} from 'react-native'
+import { ButtonGroup } from 'react-native-elements'
+import { Title } from 'react-native-paper'
 import { createGame, getObjectsByIDs, fetchUsers} from "../constants/api"
 
 class CreateNewGame extends Component {
@@ -27,6 +22,7 @@ class CreateNewGame extends Component {
       opponent_name: "",
       game_name: "",
       game_type:"standard",
+      selected_index: 0, // this corresponds to game_type. Is used for the button group
       error_msg: "",
       goal_score: "",
       users: [], // contains user objects
@@ -36,6 +32,7 @@ class CreateNewGame extends Component {
     this.handleSelectOpponent = this.handleSelectOpponent.bind(this);
     this.handleGameNameChange = this.handleGameNameChange.bind(this);
     this.handleNewGame = this.handleNewGame.bind(this);
+    this.updateIndex = this.updateIndex.bind(this);
   }
 
   componentDidMount(){
@@ -82,7 +79,22 @@ class CreateNewGame extends Component {
     this.setState({goal_score: text});
   }
 
-  
+  updateIndex(selected_index){
+    let selected_game_type
+    switch(selected_index){
+      case 0:
+        selected_game_type = "standard"
+        break
+      case 1:
+        selected_game_type = "tournament"
+        break
+      default:
+        selected_game_type = "standard"
+        break
+    }
+    this.setState({selected_index: selected_index, game_type: selected_game_type})
+
+  }
 
   handleNewGame(event) {
     console.log('button click')
@@ -142,79 +154,93 @@ class CreateNewGame extends Component {
     }    
   }
 
+  showGameOptions(game_type){
+    if(game_type == "standard"){
+    return(
+      <View style={styles.gameOptionsContainer}>
+        <View style={styles.opponentsContainer}>
+          <Text>Select Opponent:</Text>
+          <ScrollView style={styles.scrollView}>
+            {/* buttons that show each user */}
+            {this.state.users.map((user, key)=> {
+              if(user._id != this.state.loggedInUserID){
+                return (<Button title={user.name} key={key} onPress={()=>{this.handleSelectOpponent(user)}} />)
+              }
+            })}
+          </ScrollView>
+        </View>
+        
+        <View style={styles.submitContainer}>
+          <Text>Opponent User ID: {this.state.opponent_id}</Text>
+          <Text>Opponent User ID: {this.state.opponent_name}</Text>
+
+          <Text>game Name:</Text>
+          <TextInput value={this.state.game_name} onChangeText={(text)=>this.handleGameNameChange(text)} style={styles.textInput}/>
+
+          <Text>goal score:</Text>
+          <TextInput value={this.state.goal_score} onChangeText={(text)=>this.handleGoalScoreChange(text)} style={styles.textInput}/>
+          <Button title='Create Game' onPress={this.handleNewGame}/>
+        </View>
+      </View>
+    )}
+    else if(game_type == "tournament"){
+    return(
+      <View style={styles.gameOptionsContainer}>
+        <View style={styles.submitContainer}>
+          <Text>All users in group will be put into the tournament!</Text>
+          <Text>game Name:</Text>
+          <TextInput value={this.state.game_name} onChangeText={(text)=>this.handleGameNameChange(text)} style={styles.textInput}/>
+          <Button title='Create Game' onPress={this.handleNewGame}/>
+        </View>
+      </View>
+    )}
+  }
+
   
 render() {
   return (
-    <View style={styles.container}>
-      <View style={styles.view1}>
-        <Text>
-          Create New Game Page
-        </Text>
 
-        <Text>
-            For Group: {this.state.group.name}
-        </Text>
-      </View>
+      <TouchableWithoutFeedback onPress={ ()=>{ Keyboard.dismiss() } }>
+        <View style={styles.container}>
+          <View style={styles.gameTypeContainer}>
+            <Title>Create a new game for {this.state.group.name}</Title>
 
-      <View style={styles.view2}>
-        <Text>Select Game Type:</Text>
-        <ScrollView style={styles.scrollView}>
-          {/* buttons that show each game type */}
-          <Button title="Counter" onPress={()=>{this.setState({game_type: "standard", goal_score: ""})}} />
-          <Button title="Tournament" onPress={()=>{this.setState({game_type: "tournament", goal_score: "N/A"})}} />
-        </ScrollView>
-      </View>
-      
-      <View style={styles.view3}>
-        <Text>Select Opponent:</Text>
-        <ScrollView style={styles.scrollView}>
-          {/* buttons that show each user */}
-          {this.state.users.map((user, key)=> {
-            if(user._id != this.state.loggedInUserID){
-              return (<Button title={user.name} key={key} onPress={()=>{this.handleSelectOpponent(user)}} />)
-            }
-          })}
-        </ScrollView>
-      </View>
-      
-      <View style={styles.view4}>
-        <Text>Opponent User ID: {this.state.opponent_id}</Text>
-        <Text>Opponent User ID: {this.state.opponent_name}</Text>
+            <Title>Game Type:</Title>
+            {/* buttons that show each game type */}
+            <ButtonGroup
+              onPress={this.updateIndex}
+              selectedIndex={this.state.selected_index}
+              buttons={["Counter", "Tournament"]}
+            />
+          </View>
 
-        <Text>game Name:</Text>
-        <TextInput value={this.state.game_name} onChangeText={(text)=>this.handleGameNameChange(text)} style={styles.textInput}/>
+          {this.showGameOptions(this.state.game_type)}
+        </View>
+      </TouchableWithoutFeedback>
 
-        <Text>goal score:</Text>
-        <TextInput value={this.state.goal_score} onChangeText={(text)=>this.handleGoalScoreChange(text)} style={styles.textInput}/>
-        <Button title='Create Game' onPress={this.handleNewGame}/>
-      </View>
-      
-    </View>
   )
 }
 }
 
 const styles = StyleSheet.create({
-  view1:{
-    flex:1,
-    backgroundColor: 'lightblue',
-    height:50
-  },
-  view2:{
-    flex:2,
-    backgroundColor: 'lightgreen',
-    height:150
-  },
-  view3:{
-    flex:5
-  },
-  view4:{
-    flex:5
-  },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  },
+  gameTypeContainer:{
+    flex:1,
+  },
+  gameOptionsContainer:{
+    flex:5,
+  },
+  opponentsContainer:{
+    flex:1,
+    width: 250,
+    alignSelf: "center",
+  },
+  submitContainer:{
+    flex:1,
+    width: 250,
+    alignSelf: "center",
   },
   textInput: {
     borderColor: 'black',

@@ -140,8 +140,12 @@ class NewUserForm extends Component {
                         value={this.state.verification_code}
                         onChangeText={(text)=>{this.handleVerificationCodeChange(text)}}
                     />
-                    <Button title="Submit" onPress={this.handleVerify}/>
-                    <Button title="Cancel Registration" onPress={this.toggleOverlay} />
+                    <View style={styles.button}>
+                        <Button title="Submit" onPress={this.handleVerify}/>
+                    </View>
+                    <View style={styles.button}>
+                        <Button title="Cancel Registration" onPress={this.toggleOverlay} />
+                    </View>
                 </Overlay>
             </View>
         )
@@ -152,6 +156,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         width: 400,
+    },
+    button: {
+        padding: 4,
     },
     text: {
     }
