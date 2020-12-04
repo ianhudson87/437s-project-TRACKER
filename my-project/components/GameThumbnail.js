@@ -79,18 +79,19 @@ class GameThumbnail extends Component {
 
   
 render() {
+  let icon_table = {"standard": "games", "tournament": "change-history"}
   //console.log("RENDER THIS!", this.state)
   // console.log("STATE", this.state)
   return (
     <ListItem bottomDivider onPress={this.goToGame}>
-        <Icon name="games" />
+        <Icon name={ icon_table[this.state.type] } />
         <ListItem.Content>
             <ListItem.Title>{this.state.name}</ListItem.Title>
             <ListItem.Subtitle>
               {
                 this.state.users.map((userObject, index) => {
                   // show scores of players
-                  return(<Text key={index}>[{userObject.name}: {this.state.userID_scores[userObject._id]}] </Text>)
+                  return(<Text key={userObject._id}>[{userObject.name}: {this.state.userID_scores[userObject._id]}] </Text>)
                 })
               }
             </ListItem.Subtitle>
