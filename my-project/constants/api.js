@@ -130,6 +130,24 @@ export const getObjectsByIDs = async (input) =>{
     return data
 }
 
+export const searchObjectsByString = async (input) =>{
+    console.log("here3")
+    const res = await fetch(API_PATH + "searchObjectsByString",{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            query_string: input.query_string,
+            type: input.type
+        })
+    })
+    const data = await res.json();
+    // console.log(data);
+    return data
+}
+
 export const getGameByID = async (input) =>{
     console.log(input.id)
     const res = await fetch("http://localhost:3000/api/getGameByID",{

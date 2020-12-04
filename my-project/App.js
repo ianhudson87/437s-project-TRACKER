@@ -21,6 +21,7 @@ import Game from "./pages/Game"
 import Tournament from "./pages/Tournament"
 import JoinGroup from './pages/JoinGroup'
 import UserProfile from './pages/UserProfile'
+import Search from './pages/Search'
 
 
 // docs: https://reactnavigation.org/docs/hello-react-navigation
@@ -91,6 +92,7 @@ class UserHomeDrawer extends Component {
                 <Drawer.Screen name="Home">
                     {props => <UserHome {...props} firstTimeUser={this.props.route.params.firstTimeUser}/>}
                 </Drawer.Screen>
+                <Drawer.Screen name="Search" component={Search} options={{ title: 'Search'}}/>
                 {/* <Drawer.Screen name="Settings" component={UserHome}/> */}
                 <Drawer.Screen name="CreateNewGroup" component={CreateNewGroup} options={{ title: 'Create New Group'}}/>
                 <Drawer.Screen name="JoinGroup" component={JoinGroup} options={{ title: 'Join Group'}}/>

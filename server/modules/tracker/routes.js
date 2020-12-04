@@ -21,6 +21,7 @@ routes.get('/groups', TrackerController.getAllGroups)
 
 routes.post('/getObjectByID', TrackerController.getObjectByID)
 routes.post('/getObjectsByIDs', TrackerController.getObjectsByIDs)
+routes.post('/searchObjectsByString', TrackerController.searchObjectsByString)
 
 routes.post('/joinGroup', TrackerController.joinGroup)
 

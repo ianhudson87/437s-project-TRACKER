@@ -28,6 +28,29 @@ let send_verification_email = (email_add, code) => {
     });
 }
 
+let get_model_type = (type) => {
+    // determine which type of object is being wanted
+    let model_type
+    switch(type){
+        case "group":
+            model_type = Models.GroupModel
+            break
+        case "game":
+            model_type = Models.GameModel
+            break
+        case "user":
+            model_type = Models.UserModel
+            break
+        case "tournament":
+            console.log("here!!!")
+            model_type = Models.TournamentModel
+            break
+        default:
+            model_type = Models.UserModel
+    }
+    return model_type
+}
+
 // create user that has not had email verified yet. If verified then it becomes an actual user
 export const createPendingUser = async (req, res) => {
     // req body requires name, email, and password of user you want to create
@@ -226,22 +249,23 @@ export const getObjectByID = async (req, res) => {
     const {id, type} = req.body;
 
     // determine which type of object is being wanted
-    let model_type
-    switch(type){
-        case "group":
-            model_type = Models.GroupModel
-            break
-        case "game":
-            model_type = Models.GameModel
-            break
-        case "tournament":
-            model_type = Models.TournamentModel
-            break
-        case "user":
-            model_type = Models.UserModel
-        default:
-            model_type = Models.UserModel
-    }
+    let model_type = get_model_type(type)
+    // let model_type
+    // switch(type){
+    //     case "group":
+    //         model_type = Models.GroupModel
+    //         break
+    //     case "game":
+    //         model_type = Models.GameModel
+    //         break
+    //     case "tournament":
+    //         model_type = Models.TournamentModel
+    //         break
+    //     case "user":
+    //         model_type = Models.UserModel
+    //     default:
+    //         model_type = Models.UserModel
+    // }
 
     try{
         let object_with_given_id = await model_type.find({ '_id': id})
@@ -265,31 +289,10 @@ export const getObjectsByIDs = async (req, res) => {
     console.log(type)
 
     // determine which type of object is being wanted
-    let model_type
-    switch(type){
-        case "group":
-            model_type = Models.GroupModel
-            break
-        case "game":
-            model_type = Models.GameModel
-            break
-        case "user":
-            model_type = Models.UserModel
-            break
-        case "tournament":
-            console.log("here!!!")
-            model_type = Models.TournamentModel
-            break
-        default:
-            model_type = Models.UserModel
-    }
+    let model_type = get_model_type(type)
 
     try{
         let objects_with_given_id = await model_type.find({ '_id': {'$in': ids}})
-        if(type=="tournament"){
-            console.log("ERIEJWPOIRE")
-            console.log(objects_with_given_id)
-        }
         if(objects_with_given_id.length == 0){
             // there doesn't exist a group with the given id
             console.log("Object IDs: " + ids)
@@ -301,6 +304,23 @@ export const getObjectsByIDs = async (req, res) => {
     } catch(e) {
         return res.status(500).json({ error:true, message: "error with getting object by ID"})
     }
+}
+
+export const searchObjectsByString = async (req, res) => {
+    // get all objects of a certain type that match "query_string"
+    const {query_string, type} = req.body;
+
+    // determine which type of object is being wanted
+    let model_type = get_model_type(type)
+
+    try{
+        let objects_that_match_query_string = await model_type.find({ 'name': { '$regex': query_string, '$options': 'i' } })
+        return res.status(200).json({ objects: objects_that_match_query_string, error: false})
+    } catch(e) {
+        return res.status(500).json({ error:true, message: "error with searching objects by query_string"})
+    }
+    
+
 }
 
 export const getGameByID = async (req, res) => {
