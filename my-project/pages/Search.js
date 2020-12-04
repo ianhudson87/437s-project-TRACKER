@@ -1,20 +1,27 @@
 import React, { Component } from 'react'
-import { SearchBar } from 'react-native-elements';
+import { SearchBar, ButtonGroup } from 'react-native-elements';
 import { StyleSheet, ScrollView, Text, Button, View } from 'react-native'
+import { CommonActions } from '@react-navigation/native';
 import { searchObjectsByString } from '../constants/api'
 import UserThumbnail from '../components/UserThumbnail'
+import GroupThumbnail from '../components/GroupThumbnail'
+import GameThumbnail from '../components/GameThumbnail'
 
 class Search extends Component {
     constructor(props) {
         super(props);
         this.state = {
             query_string: '',
-            query_objects: [] // objects you get from search
+            query_objects: [], // objects you get from search
+
+            selected_index: 0, // selected index between ["users", "group", "game"]
+            type_table: ['user', 'group', 'game'], // converts selected_index to type
         }
 
         this.update_query_string = this.update_query_string.bind(this)
         this.update_search_results = this.update_search_results.bind(this)
         this.result_objects = this.result_objects.bind(this)
+        this.updateIndex = this.updateIndex.bind(this)
     }
 
     componentDidMount(){ }
@@ -25,8 +32,10 @@ class Search extends Component {
 
     async update_search_results(){
         if(this.state.query_string.length > 0){
-            // given query_string, update query_objects
-            let res = await searchObjectsByString({ type: 'users', query_string: this.state.query_string })
+            // given query_string, selected_index, ... update query_objects
+            console.log(this.state.selected_index)
+            let type = this.state.type_table[this.state.selected_index]
+            let res = await searchObjectsByString({ type: type, query_string: this.state.query_string })
             this.setState({ query_objects: res.objects })
         }
         else{
@@ -36,13 +45,41 @@ class Search extends Component {
     }
 
     result_objects() {
-        return(
-        <View>
-            <ScrollView>
-                { this.state.query_objects.map((user, i) => { return(<UserThumbnail key={ user._id } user={ user } navigation={ this.props.navigation } />) }) }                  
-            </ScrollView>
-        </View>
-        )
+        switch(this.state.selected_index){
+            case 0:
+                // users
+                return(
+                    <View>
+                        <ScrollView>
+                            { this.state.query_objects.map((user, i) => { return(<UserThumbnail key={ user._id } user={ user } navigation={ this.props.navigation } />) }) }                  
+                        </ScrollView>
+                    </View>
+                )
+            case 1:
+                // groups
+                return(
+                    <View>
+                        <ScrollView>
+                            { this.state.query_objects.map((group, i) => { return(<GroupThumbnail key={ group._id } group={ group } navigation={ this.props.navigation } />) }) }                  
+                        </ScrollView>
+                    </View>
+                )
+            case 2:
+                // games
+                return(
+                    <View>
+                        <ScrollView>
+                            { this.state.query_objects.map((game, i) => { return(<GameThumbnail key={ game._id } game={ game } navigation={ this.props.navigation } />) }) }                  
+                        </ScrollView>
+                    </View>
+                )
+        }
+    }
+
+    updateIndex(index){
+        this.setState({ query_objects: [] }, () => {
+            this.setState({ selected_index: index }, async () => this.update_search_results())
+        })
     }
   
 render() {
@@ -51,7 +88,14 @@ render() {
         <Text>
             Search:
         </Text>
+        <Button title="Cancel" onPress={ () => this.props.navigation.dispatch(CommonActions.goBack()) }/>
+        <ButtonGroup
+          onPress={this.updateIndex}
+          selectedIndex={this.state.selected_index}
+          buttons={["User", "Group", "Game"]}
+        />
         <SearchBar
+            lightTheme
             placeholder="Type Here..."
             onChangeText={ (text) => this.update_query_string(text) }
             value={this.state.query_string}
