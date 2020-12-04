@@ -17,6 +17,7 @@ import GroupThumbnail from '../components/GroupThumbnail'
 // import LogoutButton from "../components/LogoutButton"
 
 class UserProfile extends Component {
+
 constructor(props) {
   super(props);
   this.state = { 

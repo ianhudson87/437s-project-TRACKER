@@ -262,6 +262,7 @@ export const getObjectsByIDs = async (req, res) => {
     // ids and type required in req.body
     console.log("GETTING objects FROM IDs")
     const {ids, type} = req.body;
+    console.log(type)
 
     // determine which type of object is being wanted
     let model_type
@@ -274,12 +275,21 @@ export const getObjectsByIDs = async (req, res) => {
             break
         case "user":
             model_type = Models.UserModel
+            break
+        case "tournament":
+            console.log("here!!!")
+            model_type = Models.TournamentModel
+            break
         default:
             model_type = Models.UserModel
     }
 
     try{
         let objects_with_given_id = await model_type.find({ '_id': {'$in': ids}})
+        if(type=="tournament"){
+            console.log("ERIEJWPOIRE")
+            console.log(objects_with_given_id)
+        }
         if(objects_with_given_id.length == 0){
             // there doesn't exist a group with the given id
             console.log("Object IDs: " + ids)

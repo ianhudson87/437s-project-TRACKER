@@ -34,7 +34,7 @@ class CreateNewGroupForm extends Component {
                 // put creator into group
                 joinGroup(this.props.loggedInUserID, data.group._id)
 
-                alert("Group"+ data.group.name+ "successfully created")
+                alert("Group "+ data.group.name+ " successfully created")
 
                 // redirect back to the user home page
                 this.props.navigation.dispatch(CommonActions.goBack());
@@ -43,7 +43,7 @@ class CreateNewGroupForm extends Component {
             else{
                 // group name repeated
                 console.log("Group name taken");
-                alert("Group name"+ this.state.group_name+ "is taken")
+                alert("Group name "+ this.state.group_name+ " is taken")
             }
             
         })

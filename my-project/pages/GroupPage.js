@@ -76,22 +76,29 @@ async refreshInfo(){
       console.log("set state for group page")
     }
     
-
-    let tournaments_info_list = []
     let tournament_ids_in_group = group.tournaments
-    tournament_ids_in_group.forEach((tournament_id) => {
-      // push game info into list
-      getObjectByID({id: tournament_id, type: "tournament"}).then((response)=>{
-        console.log("RESPONSE", response)
-        if(response.object_exists){
-          console.log("RESPONSE OBJECT", response.object)
-          tournaments_info_list.push(response.object)
-        }
-        newState.tournamentsInGroup = tournaments_info_list// this.setState({tournamentsInGroup: tournaments_info_list})
-        console.log(this.state.tournamentsInGroup)
-        console.log("tournamentsInGroup", this.state.tournamentsInGroup)
-      })
-    })
+    response = await getObjectsByIDs({ids: tournament_ids_in_group, type: "tournament"})
+    console.log("ERESPONES POIJAPODIJAWD", response)
+    if(response.objects_exist){
+      // console.log("RESPONSE OBJECT", response.object)
+      newState.tournamentsInGroup = response.objects// this.setState({tournamentsInGroup: response.objects})
+    }
+    // newState.tournamentsInGroup = tournaments_info_list// this.setState({tournamentsInGroup: tournaments_info_list})
+    // console.log(this.state.tournamentsInGroup)
+    // console.log("tournamentsInGroup", this.state.tournamentsInGroup)
+    // tournament_ids_in_group.forEach((tournament_id) => {
+    //   // push game info into list
+    //   response = getObjectByID({id: tournament_id, type: "tournament"})
+    //     console.log("RESPONSE", response)
+    //     if(response.object_exists){
+    //       console.log("RESPONSE OBJECT", response.object)
+    //       tournaments_info_list.push(response.object)
+    //     }
+    //     newState.tournamentsInGroup = tournaments_info_list// this.setState({tournamentsInGroup: tournaments_info_list})
+    //     console.log(this.state.tournamentsInGroup)
+    //     console.log("tournamentsInGroup", this.state.tournamentsInGroup)
+    //   })
+    // })
 
     this.setState(newState)
   })

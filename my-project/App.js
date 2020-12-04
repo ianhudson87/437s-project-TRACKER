@@ -53,13 +53,13 @@ class AppStack extends Component {
                 <Stack.Screen name="Welcome" component={Welcome} options={{ title: 'Login/Register' }}/>
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="Register" component={Register} />
-                <Stack.Screen name="UserHome" component={UserHomeDrawer} />
+                <Stack.Screen name="UserHome" component={UserHomeDrawer} options={{ title: 'Home'}}/>
 
-                <Stack.Screen name="GroupPage" component={GroupPage} />
-                <Stack.Screen name="AddUserToGroup" component={AddUserToGroup} />
-                <Stack.Screen name="CreateNewGame" component={CreateNewGame} />
+                <Stack.Screen name="GroupPage" component={GroupPage} options={{ title: 'Group Page'}}/>
+                <Stack.Screen name="AddUserToGroup" component={AddUserToGroup} options={{ title: 'Add User To Group'}}/>
+                <Stack.Screen name="CreateNewGame" component={CreateNewGame} options={{ title: 'Create New Game'}}/>
                 <Stack.Screen name="Game" component={Game} />
-                <Stack.Screen name="UserProfile" component={UserProfile} />
+                <Stack.Screen name="UserProfile" component={UserProfile} options={{title: 'User Profile'}}/>
                 <Stack.Screen name="Tournament" component={Tournament} />
             </Stack.Navigator>
         )
@@ -92,8 +92,8 @@ class UserHomeDrawer extends Component {
                     {props => <UserHome {...props} firstTimeUser={this.props.route.params.firstTimeUser}/>}
                 </Drawer.Screen>
                 {/* <Drawer.Screen name="Settings" component={UserHome}/> */}
-                <Drawer.Screen name="CreateNewGroup" component={CreateNewGroup} />
-                <Drawer.Screen name="JoinGroup" component={JoinGroup} />
+                <Drawer.Screen name="CreateNewGroup" component={CreateNewGroup} options={{ title: 'Create New Group'}}/>
+                <Drawer.Screen name="JoinGroup" component={JoinGroup} options={{ title: 'Join Group'}}/>
             </Drawer.Navigator>
         )
     }
