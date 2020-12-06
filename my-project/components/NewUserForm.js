@@ -136,11 +136,13 @@ class NewUserForm extends Component {
 
                 <Overlay isVisible={ this.state.overlay_visible } onBackdropPress={ this.toggleOverlay }>
                     <Text> A code has been sent to you email. Input below to verify your email </Text>
-                    <Input
-                        placeholder="code"
-                        value={this.state.verification_code}
-                        onChangeText={(text)=>{this.handleVerificationCodeChange(text)}}
-                    />
+                    <View>
+                        <Input
+                            placeholder="code"
+                            value={this.state.verification_code}
+                            onChangeText={(text)=>{this.handleVerificationCodeChange(text)}}
+                        />
+                    </View>
                     <View style={styles.button}>
                         <Button title="Submit" onPress={this.handleVerify}/>
                     </View>

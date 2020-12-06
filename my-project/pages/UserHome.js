@@ -157,7 +157,7 @@ render() {
 
         <View style={styles.groupsContainer}>
           <Title>My Groups:</Title>
-          <ScrollView>
+          <ScrollView horizontal={true}>
             { this.state.groups.map((group, key)=> (<GroupThumbnail group={group} key={group._id} navigation={this.props.navigation}/>)) }
           </ScrollView>
           
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   //   padding: 1,
   // },
   feedContainer: {
-    flex: 1,
+    flex: 3,
     padding: 3,
   },
   button: {
@@ -209,11 +209,11 @@ const styles = StyleSheet.create({
     padding: 1,
     marginBottom: 1
   },
-  welcomeMessage: {
-    borderColor: 'black',
-    borderStyle: 'solid',
-    borderWidth: 1,
-  },
+  // welcomeMessage: {
+  //   borderColor: 'black',
+  //   borderStyle: 'solid',
+  //   borderWidth: 1,
+  // },
   feedObjectContainer: {
     padding: 1,
   }

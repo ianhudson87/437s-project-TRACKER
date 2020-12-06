@@ -69,7 +69,7 @@ class Search extends Component {
                 return(
                     <View>
                         <ScrollView>
-                            { this.state.query_objects.map((game, i) => { return(<GameThumbnail key={ game._id } game={ game } navigation={ this.props.navigation } />) }) }                  
+                            { this.state.query_objects.map((game, i) => { return(<GameThumbnail key={ game._id } game={ game } type="standard" navigation={ this.props.navigation } />) }) }                  
                         </ScrollView>
                     </View>
                 )
@@ -84,26 +84,26 @@ class Search extends Component {
   
 render() {
     return (
-      <View style={styles.container}>
-        <Text>
-            Search:
-        </Text>
-        <Button title="Cancel" onPress={ () => this.props.navigation.dispatch(CommonActions.goBack()) }/>
-        <ButtonGroup
-          onPress={this.updateIndex}
-          selectedIndex={this.state.selected_index}
-          buttons={["User", "Group", "Game"]}
-        />
-        <SearchBar
-            lightTheme
-            placeholder="Type Here..."
-            onChangeText={ (text) => this.update_query_string(text) }
-            value={this.state.query_string}
-        />
+    <View style={styles.container}>
+        <View sytle={styles.searchBarContainer}>
+            <Button title="Cancel" onPress={ () => this.props.navigation.dispatch(CommonActions.goBack()) }/>
+            <ButtonGroup
+            onPress={this.updateIndex}
+            selectedIndex={this.state.selected_index}
+            buttons={["User", "Group", "Game"]}
+            />
+            <SearchBar
+                lightTheme
+                placeholder="Type Here..."
+                onChangeText={ (text) => this.update_query_string(text) }
+                value={this.state.query_string}
+            />
+        </View>
 
-        { this.result_objects() }
-        
-      </View>
+        <View style={styles.resultsContainer}>
+            { this.result_objects() }
+        </View>
+    </View>
     )
   }
 }
@@ -111,9 +111,13 @@ render() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
   },
+  searchBarContainer: {
+      flex: 1,
+  },
+  resultsContainer: {
+      flex: 4,
+  }
 })
 
 export default Search;
