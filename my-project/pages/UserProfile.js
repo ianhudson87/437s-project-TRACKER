@@ -133,14 +133,14 @@ friendDisplayHandler(isFriend, isCurrentUser){
   if(isCurrentUser){
     // looking at own profile
     return(
-      <View>
+      // <View>
         <Text> (You)</Text>
-      </View>
+      // </View>
     )
   }
   else if(isFriend === true){
     // looking at profile of friend
-    return <Text style={styles.friendMessage}>You are friends with {this.state.user.name}</Text>
+    return <Text>(Friends)</Text>
   }
   else if(isFriend === false){
     // looking at profile of stranger
@@ -152,28 +152,35 @@ friendDisplayHandler(isFriend, isCurrentUser){
   }
 }
 
+getTitle(){
+  return(
+    <View style={styles.nameContainer}>
+        <Text style={styles.nameContainer}>
+          {this.state.user.name}
+          {this.friendDisplayHandler(this.state.isFriend, this.state.profileUserID==this.state.loggedInUserID)}
+          <Button title="show stats" onPress={this.toggleOverlay} />
+        </Text>
+    </View>
+  )
+}
+
 toggleOverlay(){
   this.refreshInfo()
   this.setState({ overlay_visible: !this.state.overlay_visible })
 }
   
 render() {
+
+  this.props.navigation.setOptions({ title: this.getTitle() })
   console.log("state", this.state.user)
   let stats = this.state.user.stats || {}
   return (
     <View style={styles.container}>
-      <View style={styles.nameContainer}>
-        <Text style={styles.nameContainer}>
-          {this.state.user.name}
-          {this.friendDisplayHandler(this.state.isFriend, this.state.profileUserID==this.state.loggedInUserID)}
-          <Button title="show stats" onPress={this.toggleOverlay} />
-        </Text>
-      </View>
       
       <View style={styles.groupsContainer}>
         <Text>{this.state.user.name}'s Groups:</Text>
         <ScrollView style={styles.usersListContainer}>
-          {this.state.userGroups.map((group, key)=> (<GroupThumbnail group={group} key={group._id}>{group.name}</GroupThumbnail>))}
+          {this.state.userGroups.map((group, key)=> (<GroupThumbnail group={group} key={group._id} navigation={this.props.navigation}>{group.name}</GroupThumbnail>))}
           {/* {this.state.userGroups.map((group, key)=> (<Text key={group._id}>{group.name}</Text>))} */}
         </ScrollView>
       </View>
@@ -197,11 +204,13 @@ render() {
 
       <View style={styles.overlay}>
         <Overlay isVisible={ this.state.overlay_visible } onBackdropPress={ this.toggleOverlay }>
-          <Text> Total games: { stats.total_num_of_games } (completed: { stats.num_finished_games })</Text>
-          <Text> Average Score: { stats.avg_score_over_all_games } </Text>
-          <Text> Wins: { stats.total_num_of_wins }</Text>
-          <Text> Win percentage: { stats.total_num_of_wins / stats.num_finished_games * 100 }%</Text>
-          <Text> Average percentage of points out of max: { stats.avg_fraction_of_max_points_over_all_games * 100 }%</Text>
+          <View>
+            <Text> Total games: { stats.total_num_of_games } (completed: { stats.num_finished_games })</Text>
+            <Text> Average Score: { stats.avg_score_over_all_games } </Text>
+            <Text> Wins: { stats.total_num_of_wins }</Text>
+            <Text> Win percentage: { stats.total_num_of_wins / stats.num_finished_games * 100 }%</Text>
+            <Text> Average percentage of points out of max: { stats.avg_fraction_of_max_points_over_all_games * 100 }%</Text>
+          </View>
         </Overlay>
       </View>
     </View>
@@ -215,10 +224,6 @@ const styles = StyleSheet.create({
   },
   nameContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    fontSize: 30,
-    fontWeight: "bold",
   },
   groupsContainer: {
     flex: 3,

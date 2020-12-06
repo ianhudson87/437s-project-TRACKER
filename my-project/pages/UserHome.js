@@ -141,19 +141,12 @@ class UserHome extends Component {
 
   
 render() {
+  this.props.navigation.setOptions({ title: 'Welcome, ' + this.state.loggedInUser.name })
+  console.log("NAVIGATION", this.props.navigation)
   const navigation = this.props.navigation;
   const loggedInUser = this.state.loggedInUser;
     return (
       <View style={styles.container}>
-        <View style={styles.welcomeMessage}>
-          <Title>
-            Welcome, {this.state.loggedInUser.name}!
-            <Icon name="account-box" onPress={ ()=>{
-              // go to profile of the logged in user
-              this.props.navigation.navigate('UserProfile', {profileUserID: this.state.loggedInUserID})
-            } }/>
-          </Title>
-        </View>
 
         <View style={styles.groupsContainer}>
           <Title>My Groups:</Title>
@@ -177,7 +170,6 @@ render() {
           </ScrollView>
         </View>
 
-        <Button title='drawer toggle for desktop' onPress={()=>{this.props.navigation.toggleDrawer()}} />
 
       </View>
     )

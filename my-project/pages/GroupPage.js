@@ -164,15 +164,17 @@ render() {
 
         <View style={styles.overlay}>
           <Overlay isVisible={ this.state.overlay_visible } onBackdropPress={ this.toggleOverlay }>
-            <Text> Total Games: {this.state.stats.total_num_of_games} (completed: {this.state.stats.num_finished_games}) </Text>
-            <Text> Leaderboard: </Text>
-            {
-              Array.from(Object.values(this.state.stats.users_wins_dict)).sort((a,b) => {return a.wins < b.wins ? 1: -1}).map( (wins_user) => {
-                return(
-                  <Text> {wins_user.user_name}: {wins_user.wins} wins </Text>
-                )
-              })
-            }
+            <View>
+              <Text> Total Games: {this.state.stats.total_num_of_games} (completed: {this.state.stats.num_finished_games}) </Text>
+              <Text> Leaderboard: </Text>
+              {
+                Array.from(Object.values(this.state.stats.users_wins_dict)).sort((a,b) => {return a.wins < b.wins ? 1: -1}).map( (wins_user, index) => {
+                  return(
+                    <Text key={wins_user.user_name}> {wins_user.user_name}: {wins_user.wins} wins </Text>
+                  )
+                })
+              }
+            </View>
           </Overlay>
         </View>
 

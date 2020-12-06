@@ -119,9 +119,8 @@ class CreateNewGame extends Component {
           alert("tournament " + game.name + " was created")
 
           this.props.navigation.dispatch(
-            // reset the navigation so that you can't navigate back from the userhome page
             CommonActions.goBack()
-        );
+          );
         }
       })
     }
