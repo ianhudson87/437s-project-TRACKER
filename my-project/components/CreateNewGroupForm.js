@@ -25,14 +25,11 @@ class CreateNewGroupForm extends Component {
 
     handleSubmit(event) {
         // handler for when submit button gets pressed
-
-        createGroup(this.state.group_name).then((data)=>{
+        console.log("OVER HERE", this.props.loggedInUserID)
+        createGroup(this.state.group_name, this.props.loggedInUserID).then((data)=>{
             this.setState({response: data});
             if(data.repeatedGroup == false){ // group successfully created
                 console.log("Data: " + data.group);
-
-                // put creator into group
-                joinGroup(this.props.loggedInUserID, data.group._id)
 
                 alert("Group "+ data.group.name+ " successfully created")
 

@@ -135,7 +135,8 @@ render() {
         <View style={styles.nameContainer}>
           <Text style={styles.nameText}>
             {this.state.group.name}
-            <Button title="show stats" onPress={this.toggleOverlay} />
+            <Button title="stats" onPress={this.toggleOverlay} />
+            join code: {this.state.group.code}
           </Text>
         </View>
         
@@ -194,7 +195,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   nameText: {
-    fontSize: 30,
+    fontSize: 14,
     fontWeight: "bold",
   },
   nameContainer: {

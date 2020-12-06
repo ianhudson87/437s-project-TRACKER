@@ -36,7 +36,12 @@ class Search extends Component {
             console.log(this.state.selected_index)
             let type = this.state.type_table[this.state.selected_index]
             let res = await searchObjectsByString({ type: type, query_string: this.state.query_string })
-            this.setState({ query_objects: res.objects })
+            if(res.error){
+                this.setState({ query_objects: [] })
+            }
+            else{
+                this.setState({ query_objects: res.objects })
+            }
         }
         else{
             // query_string is empty
@@ -49,7 +54,7 @@ class Search extends Component {
             case 0:
                 // users
                 return(
-                    <View>
+                    <View style={{flex: 1}}>
                         <ScrollView>
                             { this.state.query_objects.map((user, i) => { return(<UserThumbnail key={ user._id } user={ user } navigation={ this.props.navigation } />) }) }                  
                         </ScrollView>
@@ -58,7 +63,7 @@ class Search extends Component {
             case 1:
                 // groups
                 return(
-                    <View>
+                    <View style={{flex: 1}}>
                         <ScrollView>
                             { this.state.query_objects.map((group, i) => { return(<GroupThumbnail key={ group._id } group={ group } navigation={ this.props.navigation } />) }) }                  
                         </ScrollView>
@@ -67,7 +72,7 @@ class Search extends Component {
             case 2:
                 // games
                 return(
-                    <View>
+                    <View style={{flex: 1}}>
                         <ScrollView>
                             { this.state.query_objects.map((game, i) => { return(<GameThumbnail key={ game._id } game={ game } type="standard" navigation={ this.props.navigation } />) }) }                  
                         </ScrollView>

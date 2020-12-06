@@ -26,7 +26,9 @@ const update_group_stats = async (group) => {
     for(const user_id of group.users){
         // populate everyone with 0 wins
         let user = await Models.UserModel.findOne({ '_id': user_id })
-        user_wins_dict[user_id] = {"wins": 0, "user_name": user.name}
+        if(user!=null){
+            user_wins_dict[user_id] = {"wins": 0, "user_name": user.name}
+        }
     }
     for(const game_id of group.games){
         // go through all finished games and populate the dictionary

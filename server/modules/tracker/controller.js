@@ -211,11 +211,11 @@ export const getAllUsers = async (req, res) => {
 
 export const createGroup = async (req, res) => {
     // req.body requires the name of the group that you are creating
-    const {name} = req.body;
-    const users = []
-    const games = []
-    const tournaments = []
-    const newGroup = new Models.GroupModel( {name, users, games, tournaments} );
+    const {name, creator_id} = req.body;
+    console.log(creator_id, "CREATOR_ID")
+    // https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
+    const code = Math.random().toString(36).substring(2,6)
+    const newGroup = new Models.GroupModel( {name: name, users: [creator_id], code: code} );
     
     try{
         let existingGroups  = await Models.GroupModel.find({});
@@ -226,7 +226,9 @@ export const createGroup = async (req, res) => {
             }
         }
         // name not taken yet
-        return res.status(203).json({ group: await newGroup.save(), error:false, repeatedGroup:false })
+        let group = await newGroup.save()
+        await Models.UserModel.updateOne({ '_id': creator_id }, { '$push': { groups: group._id } })
+        return res.status(203).json({ group: group, error:false, repeatedGroup:false })
     } catch(e) {
         return res.status(400).json({ error:true, message: "error with creating user", error_msg:e})
     }
@@ -317,7 +319,7 @@ export const searchObjectsByString = async (req, res) => {
         let objects_that_match_query_string = await model_type.find({ 'name': { '$regex': query_string, '$options': 'i' } })
         return res.status(200).json({ objects: objects_that_match_query_string, error: false})
     } catch(e) {
-        return res.status(500).json({ error:true, message: "error with searching objects by query_string"})
+        return res.status(500).json({ error:true, msg:e, message: "error with searching objects by query_string"})
     }
     
 
@@ -366,27 +368,30 @@ export const getUser = async (req, res) => {
 export const joinGroup = async (req, res) => {
     console.log("JOIN GROUP")
     // req.body requires the id of the user and the id of the group
-    const {user_id, group_id} = req.body;
+    const {user_id, group_code} = req.body;
+
 
     try{
         // check to make sure that user_id and group_id are valid
         let user_with_given_id = await Models.UserModel.find({ '_id': user_id})
-        let group_with_given_id = await Models.GroupModel.find({ '_id': group_id})
+        let group_with_given_code = await Models.GroupModel.find({ 'code': group_code})
         if(user_with_given_id.length == 0){
             // there doesn't exist a user with the given id
-            return res.status(200).json({ error: false, joined_group: false, message: "user_id DNE"})
+            return res.status(200).json({ error: false, joined_group: false, message: "Your user ID could not be found"})
         }
-        else if(group_with_given_id.length == 0){
+        else if(group_with_given_code.length == 0){
             // check to make sure the the group_id is valid
-            return res.status(200).json({ error: false, joined_group: false, message: "group_id DNE"})
+            return res.status(200).json({ error: false, joined_group: false, message: "Group code could not be found"})
         }
         else{
             // user_id is valid
             // check to make sure that user isn't already in the group
+            let group_id = group_with_given_code[0]._id
             let group_contains_user = await Models.GroupModel.find({ '_id': group_id, 'users': user_id })
+            // console.log(group_with_given_code['_id'])
             if(group_contains_user.length == 1){
                 // group that user is trying to join already contains the user
-                return res.status(200).json({ error: false, joined_group: false, message: "user_id is already in group"})
+                return res.status(200).json({ error: false, joined_group: false, message: "You are already in this group"})
             }
             else{
                 // push the user id to the list of users in the group with the correct group id
@@ -395,7 +400,7 @@ export const joinGroup = async (req, res) => {
                 await Models.UserModel.updateOne({ '_id': user_id }, { '$push': { groups: group_id } })
                 // push time stamp to list of times when user joinged group
                 await Models.UserModel.updateOne({ '_id': user_id }, { '$push': { group_time_joined: Date.now() } })
-                return res.status(200).json({ error: false, joined_group: true, message: "joined group!"})
+                return res.status(200).json({ error: false, joined_group: true, message: "joined group!", group: group_with_given_code[0]})
             }
         }
         

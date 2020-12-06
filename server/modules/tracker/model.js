@@ -74,24 +74,33 @@ const GroupSchema = new Schema({
     users: {
         // contains ids of Users in the Group
         type: Array,
-        required: true
+        required: true,
+        default: []
     },
     games: {
         // contains game ids that the users created 
         type: Array,
-        required: true
+        required: true,
+        default: []
     },
     tournaments: {
         // contains tournament ids that the users created 
         type: Array,
-        required: true
+        required: true,
+        default: []
     },
     stats: {
         // contains json of various stats
         type: Object,
         required: true,
         default: { },
+    },
+    code: {
+        // random code needed to join the group
+        type: String,
+        required: true,
     }
+
 }, { minimize: false })
 
 const GameSchema = new Schema({

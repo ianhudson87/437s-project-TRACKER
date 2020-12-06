@@ -1,74 +1,66 @@
 import React, { Component } from 'react'
 import AsyncStorage from '@react-native-community/async-storage'
 import { CommonActions } from '@react-navigation/native'
+import { Input, Button } from 'react-native-elements'
 import {
   StyleSheet,
   TouchableOpacity,
   Text,
-  Button,
   View,
 } from 'react-native'
-import { joinGroup, fetchGroups } from "../constants/api"
+import { joinGroup } from "../constants/api"
 
 class JoinGroup extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {groups: [], loggedInUserID: null}
+  constructor(props) {
+      super(props);
+      this.state = {
+        code: '',
+        loggedInUserID: null,
+      }
 
-        this.refreshInfo = this.refreshInfo.bind(this)
+      this.handleChangeCode = this.handleChangeCode.bind(this)
+      this.joinGroup = this.joinGroup.bind(this)
+  }
+
+  componentDidMount(){
+    AsyncStorage.getItem('loggedInUserID').then((value)=>{
+      this.setState({ loggedInUserID: value })
+    })
+  }
+
+  handleChangeCode(text){
+    this.setState({ code: text })
+  }
+
+  async joinGroup(){
+    let res = await joinGroup(this.state.loggedInUserID, this.state.code)
+    if(res.error){
+      alert("Error in joining group")
     }
-
-    componentDidMount(){
-      this.props.navigation.addListener('focus', ()=>{this.refreshInfo()}); // THIS REFRESHES THE PAGE EVERY TIME YOU GO BACK TO IT. 0.0
+    else{
+      if(res.joined_group == false){
+        alert(res.message)
+      }
+      else{
+        alert("Successfully joined group "+ res.group.name)
+        this.props.navigation.goBack()
+      }
     }
-
-    refreshInfo(){
-      AsyncStorage.getItem('loggedInUserID').then((value)=>{
-        this.setState({loggedInUserID: value})
-      })
-      // console.log("USERUSER:", this.state.loggedInUser)
-      let group_list = []
-      fetchGroups().then((response)=>{
-        let groups = response.groups
-        groups.forEach((group)=>{group_list.push(group)})
-        this.setState({groups: group_list})
-      })
-    }
-
-    handleGroupPress(group, event)
-    {    
-      joinGroup(this.state.loggedInUserID, group._id).then((data)=>{
-        console.log('reponse', data)
-        if(data.error){
-          alert('error in joining group')
-        }
-        else if(data.joined_group==false){
-          alert('You are already in this group')
-        }
-        else{
-          //alert('joined group:'+ group.name + 'successfully')
-          this.props.navigation.dispatch(CommonActions.goBack())
-        }
-      })
-    }
-
+    console.log(res)
+  }
   
 render() {
     return (
       <View style={styles.container}>
-        <Text>
-            Groups:
-        </Text>
-
-        <Text>
-        {
-            this.state.groups.map((group, key)=> (<Button title={group.name} key={key} 
-                onPress={(e) => this.handleGroupPress(group, e)}/>))
-        }
-        </Text>
-
-        <Button title="Cancel" onPress={()=>{ this.props.navigation.dispatch(CommonActions.goBack()) }}/>
-        
+        <Input
+          placeholder="Group join code"
+          value = {this.state.code}
+          onChangeText={(text) => this.handleChangeCode(text)}
+        />
+        <Button
+          title="join!"
+          onPress={this.joinGroup}
+        />
       </View>
     )
   }

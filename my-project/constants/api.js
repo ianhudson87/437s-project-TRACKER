@@ -182,9 +182,9 @@ export const getUser = async (name) =>{
 }
 
 //submits a request to the API to add user to group
-export const joinGroup = async (user_id, group_id) =>{
+export const joinGroup = async (user_id, group_code) =>{
     console.log("User: " + user_id)
-    console.log("Group: " + group_id)
+    console.log("Group: " + group_code)
     const res = await fetch(API_PATH + "joinGroup",{
         method: 'POST',
         headers: {
@@ -193,7 +193,7 @@ export const joinGroup = async (user_id, group_id) =>{
         },
         body: JSON.stringify({
             user_id: user_id,
-            group_id: group_id
+            group_code: group_code
         })
     })
     const data = await res.json();
@@ -226,7 +226,8 @@ export const fetchGroups = async () =>{
 }
 
 //submits a request to the API to create new group with specified name
-export const createGroup = async (name) =>{
+export const createGroup = async (name, creator_id) =>{
+    console.log(creator_id)
     const res = await fetch(API_PATH + "groups",{
         method: 'POST',
         headers: {
@@ -234,7 +235,8 @@ export const createGroup = async (name) =>{
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            name: name
+            name: name,
+            creator_id: creator_id
         })
     })
     const data = await res.json();
