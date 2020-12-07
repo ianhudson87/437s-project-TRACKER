@@ -18,9 +18,6 @@ class Tournament extends Component {
     super(props);
     // info about the group, scores, and users for the game
     this.state = {
-      game: this.props.route.params.game, // stores tournament object that we want to display
-      users: [], // stores user objects of users in the game (because the game object only stores user ids)
-      results: [], // contains id of user at each position in tournament
       results_objects: [], // contains name of user at each position in tournament
       first_round: [],
       second_round: [],
@@ -30,6 +27,9 @@ class Tournament extends Component {
       results_to_display: [[], [], [], [], []],
       numRounds: 0
     }
+    this.game = this.props.route.params.game // stores tournament object that we want to display
+    this.users = [] // stores user objects of users in the game (because the game object only stores user ids)
+    this.results = [], // contains id of user at each position in tournament
     
     this.populateUsersArray = this.populateUsersArray.bind(this)
     this.populateResultsArray = this.populateResultsArray.bind(this)
@@ -39,20 +39,20 @@ class Tournament extends Component {
   componentDidMount(){
     this.populateUsersArray()
     this.populateResultsArray()
-    console.log("data: game:", this.state.game)
+    console.log("data: game:", this.game)
 
     this.socket = getSocket()
     this.socket.emit('join_room', {
       // tell socket to put user into a room so that they can send/recieve updates to the game in real time
-      game_id: this.state.game._id
+      game_id: this.game._id
     })
 
     this.socket.on('refresh_score', (data)=>{
       console.log('REFRESH SCORE')
-      getObjectByID({id: this.state.game._id, type: 'tournament'}).then((response) => {
+      getObjectByID({id: this.game._id, type: 'tournament'}).then((response) => {
         console.log('RESPONSE', response)
         if(response.object_exists){
-          this.setState({ game: response.object })
+          this.game = response.object
           this.populateResultsArray() // updates the tournament results in the display
         }
       })
@@ -63,49 +63,58 @@ class Tournament extends Component {
     // populate the this.state.users array
     let user_object_list = []
     console.log("Populate Array")
-    console.log(this.state.game.results)
-    this.state.game.users.forEach((user_id, index) => {
+    console.log(this.game.results)
+    this.game.users.forEach((user_id, index) => {
       getObjectByID({id: user_id, type: 'user'}).then((response) => {
         if(response.object_exists){
           user_object_list.push(response.object)
         }
       })
     })
-    this.setState({users: user_object_list, results: this.state.game.results}) // update state of component
+    this.users = user_object_list
+    this.results = this.game.results
   }
 
-  populateResultsArray(){    
+  async populateResultsArray(){    
     console.log("POPULATE")
     let results = []
-    let numRounds = Math.log2(this.state.game.results.length+1)
+    let numRounds = Math.log2(this.game.results.length+1)
     this.setState({numRounds: numRounds})
     for(let i = 0; i < numRounds; i++){
       results[i] = []
     }
-    this.state.game.results.forEach((user_id, index) => {
+    let newState = {}
+    for(let index=0; index<this.game.results.length; index++){
+      let user_id = this.game.results[index]
+    // this.game.results.forEach((user_id, index) => {
       let added = false
       for(let i = numRounds-1; i >= 0; i--){
         if(index >= Math.pow(2, i)-1 && !added){
           added = true
           if(user_id != 0){
-            getObjectByID({id: user_id, type: 'user'}).then((response) => {
-              if(response.object_exists){  
-                results[(numRounds-1)-i][index-Math.pow(2, i)+1] = response.object
-              }
-              this.setState({results_to_display: results}, ()=>{
-                console.log(this.state.results_to_display)
-              }) // update state of component
-            })
+            
+            let response = await getObjectByID({id: user_id, type: 'user'})
+            if(response.object_exists){  
+              results[(numRounds-1)-i][index-Math.pow(2, i)+1] = response.object
+            }
+            newState.results_to_display = results
+            // this.setState({results_to_display: results}, ()=>{
+            //   console.log(this.state.results_to_display)
+            // }) // update state of component
+            console.log(newState)
           }
           else{
             results[(numRounds-1)-i][index-Math.pow(2, i)+1] = {name: '           ', _id: index}
-            this.setState({results_to_display: results}, ()=>{
-              console.log(this.state.results_to_display)
-            }) // update state of component
+            newState.results_to_display = results
+            // this.setState({results_to_display: results}, ()=>{
+            //   console.log(this.state.results_to_display)
+            // }) // update state of component
           }
         }
       }
-    })
+    }
+    this.setState(newState)
+    console.log('HERE')
   }
 
   handleClick(user, key, roundNum){
@@ -113,17 +122,17 @@ class Tournament extends Component {
     console.log(user)
     console.log(key + Math.pow(2, roundNum) - 1)
     let resultData = {
-      tournament_id: this.state.game._id,
+      tournament_id: this.game._id,
       index: key + Math.pow(2, roundNum) - 1
     }
     moveToNextRound(resultData).then((response)=>{
       console.log("MOVE ROUND RESPONSE", response)
       if(response.tournament_updated){
         this.socket.emit('changed_score', {
-          game_id: this.state.game._id
+          game_id: this.game._id
         }) // tells other people to change their scores
         // game is updated on server. display updated game
-        this.setState({game: response.updated_tournament})
+        this.game = response.updated_tournament
         this.populateUsersArray() // update the list of user just in case
       }
       else if(response.error){
@@ -161,11 +170,14 @@ class Tournament extends Component {
   }
 
   render() {
+    console.log("RENDER")
     return (
       <View style={styles.container}>
-        <View style={styles.bracketContainer}>
-          {this.generateBracket(this.state.numRounds)}
-        </View>
+        <ScrollView>
+          <View style={styles.bracketContainer}>
+            {this.generateBracket(this.state.numRounds)}
+          </View>
+        </ScrollView>
       </View>
     )
   }
