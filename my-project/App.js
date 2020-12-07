@@ -8,6 +8,7 @@ import { createDrawerNavigator, DrawerItem, DrawerItemList, DrawerContentScrollV
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { CommonActions } from '@react-navigation/native';
 import { Icon } from 'react-native-elements'
+// import NetworkGraph from 'react-native-network-graph';
 
 // need to make sure to import all pages
 
@@ -33,6 +34,22 @@ class Welcome extends Component {
     render(){
         // "navigation - the navigation prop is passed in to every screen component (definition) in stack navigator (more about this later in "The navigation prop in depth")."
         const navigation = this.props.navigation;
+        let connections = {
+            "1":[2,4], //node at index 1 is connected to nodes at index 2 and 4 respectively.
+            "2":[6,7] //node at index 2 is connected to nodes at index 6 and 7 respectively.
+        };
+        let circleTitles = ['C1','C2', 'C3', 'C4', 'C5','C6', 'C7', 'C8', 'C9'];
+        // <NetworkGraph
+        //   selectedCircleIndex={this.state.selectedCircleIndex} //so that clicks on the circles reflect results in real time.
+        //   circleTitles={circleTitles}
+        //   connections={connections}
+        //   containerHeight={300}
+        //   containerWidth={300}
+        //   centralCircleRadius={30}
+        //   otherCircleLinesColor="black"
+        //   otherCirclesRadius={20}
+        //   distanceFromCenter={100}
+        //   onCircleClick={this.onCircleClick.bind(this)}/>
         return(
             <View>
                 <Text>LOGIN/REGISTER SCREEN</Text>

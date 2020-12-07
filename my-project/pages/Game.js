@@ -78,7 +78,7 @@ class Game extends Component {
     
   }
 
-  handleIncrement(game_id, user_id){
+  handleIncrement(game_id, user_id, amount){
     console.log("INCREMENT SCORE: game_id:", game_id, "user_id", user_id)
     // send api request to increment score of user with the id, for a specific game_id
     let scoreData = {
@@ -86,7 +86,7 @@ class Game extends Component {
       game_id: game_id,
       user_id: user_id,
       type: "delta",
-      amount: 1
+      amount: amount
     }
     changeScore(scoreData).then((response)=>{
       console.log("CHANGE SCORE RESPONSE", response)
@@ -116,8 +116,11 @@ class Game extends Component {
     else{
       return(
         <View>
+          <Text>Goal: {this.state.game.goal_score} </Text>
           <Text>Add scores:</Text>
-          { this.state.users.map((user, key) => (<Button key={key} title={user.name} onPress={ () => {this.handleIncrement(this.state.game._id, user._id)} }/>))}
+          { this.state.users.map((user, key) => (<Button key={key} title={user.name} onPress={ () => {this.handleIncrement(this.state.game._id, user._id, 1)} }/>))}
+          <Text>Decrement scores:</Text>
+          { this.state.users.map((user, key) => (<Button key={key} title={user.name} onPress={ () => {this.handleIncrement(this.state.game._id, user._id, -1)} }/>))}
         </View>
       )
     }
