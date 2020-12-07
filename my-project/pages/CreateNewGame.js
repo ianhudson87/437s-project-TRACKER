@@ -76,7 +76,10 @@ class CreateNewGame extends Component {
 
   handleGoalScoreChange(text){
     // handler for goal score text box
-    this.setState({goal_score: text});
+    if(!isNaN(text)){
+      // if the input is a number
+      this.setState({goal_score: text});
+    }
   }
 
   updateIndex(selected_index){
