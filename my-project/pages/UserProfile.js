@@ -49,7 +49,7 @@ populateFriendsArrays(friendIDs){
   })
 }
 
-refreshInfo(){
+async refreshInfo(){
   // refresh all the information for the profile
 
   AsyncStorage.getItem('loggedInUserID').then((value)=>{
@@ -67,47 +67,60 @@ refreshInfo(){
   })
 
  
-  getObjectByID({id: this.state.profileUserID, type: "user"}).then((response)=>{
-    if(response.object_exists){
-      this.setState({user: response.object})
-      this.populateFriendsArrays(response.object.friends)
-      return response.object
-    }
-    else{
-      return null
-    }
-  }).then((user)=>{
-    console.log("USER:", user)
+  let response = await getObjectByID({id: this.state.profileUserID, type: "user"})
+  let user
+  if(response.object_exists){
+    this.setState({user: response.object})
+    this.populateFriendsArrays(response.object.friends)
+    user = response.object
+  }
+  else{
+    user = null
+  }
+  console.log("USER:", user)
 
-    let groups_info_list = []
-    let group_ids_for_user = user.groups
-    group_ids_for_user.forEach((group_id) => {
-      // push user info into list
-      getObjectByID({id: group_id, type: "group"}).then((response)=>{
-        if(response.object_exists){
-          groups_info_list.push(response.object)
-        }
-        this.setState({userGroups: groups_info_list})
-        console.log(this.state.userGroups)
-      })
-    })
+  let groups_info_list = []
+  let group_ids_for_user = user.groups
+  response = await getObjectsByIDs({ ids: group_ids_for_user, type:"group"})
+  if(!response.error){
+    if(response.objects_exist){
+      groups_info_list = response.objects
+      this.setState({ userGroups: groups_info_list })
+    }
+  }
+  // group_ids_for_user.forEach((group_id) => {
+  //   // push user info into list
+  //   getObjectByID({id: group_id, type: "group"}).then((response)=>{
+  //     if(response.object_exists){
+  //       groups_info_list.push(response.object)
+  //     }
+  //     this.setState({userGroups: groups_info_list})
+  //     console.log(this.state.userGroups)
+  //   })
+  // })
 
-    let games_info_list = []
-    let game_ids_for_user = user.games
-    game_ids_for_user.forEach((game_id) => {
-      // push game info into list
-      getObjectByID({id: game_id, type: "game"}).then((response)=>{
-        if(response.object_exists){
-          games_info_list.push(response.object)
-        }
-        this.setState({userGames: games_info_list})
-      })
-    })
-  })
+  let games_info_list = []
+  let game_ids_for_user = user.games
+  response = await getObjectsByIDs({ ids: game_ids_for_user, type:"game"})
+  if(!response.error){
+    if(response.objects_exist){
+      games_info_list = response.objects
+      this.setState({ userGames: games_info_list })
+    }
+  }
+  // game_ids_for_user.forEach((game_id) => {
+  //   // push game info into list
+  //   getObjectByID({id: game_id, type: "game"}).then((response)=>{
+  //     if(response.object_exists){
+  //       games_info_list.push(response.object)
+  //     }
+  //     this.setState({userGames: games_info_list})
+  //   })
+  // })
 }
 
 componentDidMount(){
-  this.props.navigation.addListener('focus', ()=>{this.refreshInfo()}); // THIS REFRESHES THE PAGE EVERY TIME YOU GO BACK TO IT. 0.0
+  this.props.navigation.addListener('focus', async ()=>{this.refreshInfo()}); // THIS REFRESHES THE PAGE EVERY TIME YOU GO BACK TO IT. 0.0
 }
 
 handleFriend(){
