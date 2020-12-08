@@ -5,7 +5,9 @@ import {
   Text,
   Button,
   View,
+  ScrollView,
 } from 'react-native'
+import { ListItem } from 'react-native-elements'
 import AddUserForm from '../components/AddUserForm'
 import { getObjectsByIDs } from '../constants/api'
 
@@ -31,20 +33,30 @@ componentDidMount(){
 
   
 render() {
+  console.log("IN SCROLL")
+  console.log(this.state.users)
     return (
       <View style={styles.container}>
+        <View style={styles.topContainer}>
         <Text>
           Add users to group {this.state.group.name}
         </Text>
         <Text>
             Current Users:
         </Text>
-        <Text>
+        </View>
+        <View style={styles.middleContainer}>
+        <ScrollView style={styles.scrollContainer}>
         {
-            this.state.users.map((user, key)=> (<Text key={key}>{user.name} </Text>))
+            this.state.users.map((user, key)=>(
+              <Text>{user.name}</Text>
+            ))
         }
-        </Text>
+        </ScrollView>
+        </View>
+        <View style={styles.bottomContainer}>
         <AddUserForm group={this.state.group} navigation={this.props.navigation} loggedInUser={this.props.loggedInUser}></AddUserForm>
+        </View>
       </View>
     )
   }
@@ -52,6 +64,26 @@ render() {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scrollContainer: {
+    flex: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  topContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bottomContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  middleContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',

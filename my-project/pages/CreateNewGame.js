@@ -173,10 +173,10 @@ class CreateNewGame extends Component {
           <Text>Opponent User ID: {this.state.opponent_id}</Text>
           <Text>Opponent User ID: {this.state.opponent_name}</Text>
 
-          <Text>game Name:</Text>
+          <Text>Game Name:</Text>
           <TextInput returnKeyType={ 'done' } value={this.state.game_name} onChangeText={(text)=>this.handleGameNameChange(text)} style={styles.textInput}/>
 
-          <Text>goal score:</Text>
+          <Text>Goal Score:</Text>
           <TextInput keyboardType="number-pad" returnKeyType={ 'done' } value={this.state.goal_score} onChangeText={(text)=>this.handleGoalScoreChange(text)} style={styles.textInput}/>
           <Button title='Create Game' onPress={this.handleNewGame}/>
         </View>
@@ -187,7 +187,7 @@ class CreateNewGame extends Component {
       <View style={styles.gameOptionsContainer}>
         <View style={styles.submitContainer}>
           <Text>All users in group will be put into the tournament!</Text>
-          <Text>game Name:</Text>
+          <Text>Game Name:</Text>
           <TextInput returnKeyType={ 'done' } value={this.state.game_name} onChangeText={(text)=>this.handleGameNameChange(text)} style={styles.textInput}/>
           <Button title='Create Game' onPress={this.handleNewGame}/>
         </View>
@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
     flex:1,
   },
   gameOptionsContainer:{
-    flex:5,
+    flex:2,
   },
   opponentsContainer:{
     flex:1,
