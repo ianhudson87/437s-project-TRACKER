@@ -14,8 +14,7 @@ import { getObjectByID, addFriend, checkFriends, getObjectsByIDs } from "../cons
 import GameThumbnail from "../components/GameThumbnail"
 import UserThumbnail from "../components/UserThumbnail"
 import GroupThumbnail from '../components/GroupThumbnail'
-import LogoutButton from '../components/LogoutButton'
-// import LogoutButton from "../components/LogoutButton"
+import LogoutButton from "../components/LogoutButton"
 
 class UserProfile extends Component {
 
@@ -134,9 +133,9 @@ friendDisplayHandler(isFriend, isCurrentUser){
   if(isCurrentUser){
     // looking at own profile
     return(
-      // <View>
-        <Text> (You)</Text>
-      // </View>
+       
+            <Text> (You)</Text>
+          
     )
   }
   else if(isFriend === true){
@@ -215,8 +214,8 @@ render() {
             <Text> Total games: { stats.total_num_of_games } (completed: { stats.num_finished_games })</Text>
             <Text> Average Score: { stats.avg_score_over_all_games } </Text>
             <Text> Wins: { stats.total_num_of_wins }</Text>
-            <Text> Win percentage: { stats.total_num_of_wins / stats.num_finished_games * 100 }%</Text>
-            <Text> Average percentage of points out of max: { stats.avg_fraction_of_max_points_over_all_games * 100 }%</Text>
+            <Text> Win percentage: { Math.round(stats.total_num_of_wins / stats.num_finished_games * 100) }%</Text>
+            <Text> Average percentage of points out of max: { Math.round(stats.avg_fraction_of_max_points_over_all_games * 100) }%</Text>
           </View>
         </Overlay>
       </View>

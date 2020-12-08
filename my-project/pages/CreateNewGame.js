@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import AsyncStorage from '@react-native-community/async-storage'
 import { CommonActions } from '@react-navigation/native'
 import { StyleSheet, ScrollView, Text, TextInput, Button, View} from 'react-native'
-import { ButtonGroup } from 'react-native-elements'
+import { ButtonGroup, Overlay } from 'react-native-elements'
 import { Title } from 'react-native-paper'
 import { createGame, getObjectsByIDs, fetchUsers} from "../constants/api"
 
@@ -27,12 +27,16 @@ class CreateNewGame extends Component {
       goal_score: "",
       users: [], // contains user objects
       user_ids: this.props.route.params.group.users, //contains user id's
+      game_overlay_visible: false,
+      tournament_overlay_visible: false,
     }
 
     this.handleSelectOpponent = this.handleSelectOpponent.bind(this);
     this.handleGameNameChange = this.handleGameNameChange.bind(this);
     this.handleNewGame = this.handleNewGame.bind(this);
     this.updateIndex = this.updateIndex.bind(this);
+    this.toggleGameOverlay = this.toggleGameOverlay.bind(this);
+    this.toggleTournamentOverlay = this.toggleTournamentOverlay.bind(this);
   }
 
   componentDidMount(){
@@ -156,11 +160,20 @@ class CreateNewGame extends Component {
     }    
   }
 
+  toggleGameOverlay(){
+    this.setState({ game_overlay_visible: !this.state.game_overlay_visible })
+  }
+
+  toggleTournamentOverlay(){
+    this.setState({ tournament_overlay_visible: !this.state.tournament_overlay_visible })
+  }
+
   showGameOptions(game_type){
     if(game_type == "standard"){
     return(
       <View style={styles.gameOptionsContainer}>
         <View style={styles.opponentsContainer}>
+          <Button title="Counter Type Info" onPress={this.toggleGameOverlay} />
           <Text>Select Opponent:</Text>
           <ScrollView style={styles.scrollView}>
             {/* buttons that show each user */}
@@ -176,12 +189,20 @@ class CreateNewGame extends Component {
           <Text>Opponent User ID: {this.state.opponent_id}</Text>
           <Text>Opponent User ID: {this.state.opponent_name}</Text>
 
-          <Text>game Name:</Text>
+          <Text>Game Name:</Text>
           <TextInput returnKeyType={ 'done' } value={this.state.game_name} onChangeText={(text)=>this.handleGameNameChange(text)} style={styles.textInput}/>
 
-          <Text>goal score:</Text>
+          <Text>Goal Score:</Text>
           <TextInput keyboardType="number-pad" returnKeyType={ 'done' } value={this.state.goal_score} onChangeText={(text)=>this.handleGoalScoreChange(text)} style={styles.textInput}/>
           <Button title='Create Game' onPress={this.handleNewGame}/>
+
+          <View style={styles.overlay}>
+            <Overlay isVisible={ this.state.game_overlay_visible } onBackdropPress={ this.toggleGameOverlay }>
+              <View>
+                <Text>Counter games track the scores of two players until they reach a goal score.</Text>
+              </View>
+            </Overlay>
+          </View>
         </View>
       </View>
     )}
@@ -189,10 +210,18 @@ class CreateNewGame extends Component {
     return(
       <View style={styles.gameOptionsContainer}>
         <View style={styles.submitContainer}>
+        <Button title="Tournament Type Info" onPress={this.toggleTournamentOverlay} />
           <Text>All users in group will be put into the tournament!</Text>
-          <Text>game Name:</Text>
+          <Text>Game Name:</Text>
           <TextInput returnKeyType={ 'done' } value={this.state.game_name} onChangeText={(text)=>this.handleGameNameChange(text)} style={styles.textInput}/>
           <Button title='Create Game' onPress={this.handleNewGame}/>
+          <View style={styles.overlay}>
+            <Overlay isVisible={ this.state.tournament_overlay_visible } onBackdropPress={ this.toggleTournamentOverlay }>
+              <View>
+                <Text>Tournament games produce a bracket. Click on users to advance them to the next round.</Text>
+              </View>
+            </Overlay>
+          </View>
         </View>
       </View>
     )}
@@ -229,7 +258,7 @@ const styles = StyleSheet.create({
     flex:1,
   },
   gameOptionsContainer:{
-    flex:5,
+    flex:2,
   },
   opponentsContainer:{
     flex:1,
