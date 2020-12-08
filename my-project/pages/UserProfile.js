@@ -14,6 +14,7 @@ import { getObjectByID, addFriend, checkFriends, getObjectsByIDs } from "../cons
 import GameThumbnail from "../components/GameThumbnail"
 import UserThumbnail from "../components/UserThumbnail"
 import GroupThumbnail from '../components/GroupThumbnail'
+import LogoutButton from '../components/LogoutButton'
 // import LogoutButton from "../components/LogoutButton"
 
 class UserProfile extends Component {
@@ -153,12 +154,19 @@ friendDisplayHandler(isFriend, isCurrentUser){
 }
 
 getTitle(){
+  let logoutButton = <View />
+  console.log("PARENT NAV3", this.props.route.params.parentNavigation)
+  if(this.props.route.params.parentNavigation){
+    // if coming from CurrentProfile.js
+    logoutButton = <LogoutButton navigation={this.props.route.params.parentNavigation}/>
+  }
   return(
     <View style={styles.nameContainer}>
         <Text style={styles.nameContainer}>
           {this.state.user.name}
           {this.friendDisplayHandler(this.state.isFriend, this.state.profileUserID==this.state.loggedInUserID)}
           <Button title="show stats" onPress={this.toggleOverlay} />
+          {logoutButton}
         </Text>
     </View>
   )
@@ -170,7 +178,6 @@ toggleOverlay(){
 }
   
 render() {
-
   this.props.navigation.setOptions({ title: this.getTitle() })
   console.log("state", this.state.user)
   let stats = this.state.user.stats || {}

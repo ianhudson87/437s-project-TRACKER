@@ -149,7 +149,7 @@ render() {
       <View style={styles.container}>
 
         <View style={styles.groupsContainer}>
-          <Title>My Groups:<Icon raised reverse size={12} name="plus-one" onPress={() => this.props.navigation.navigate('JoinGroup')} /></Title>
+          <Title>My Groups: <Icon size={19} name="plus-one" onPress={() => this.props.navigation.navigate('JoinGroup')} /></Title>
           <ScrollView horizontal={true}>
             { this.state.groups.map((group, key)=> (<GroupThumbnail group={group} key={group._id} navigation={this.props.navigation}/>)) }
           </ScrollView>

@@ -13,9 +13,11 @@ class LogoutButton extends Component {
     }
 
     handleClick() {
+        console.log(this.props.navigation)
         // handler for logout button change
         this.props.navigation.dispatch(
             // reset the navigation so that you can't navigate back from the userhome page
+            // StackActions.pop()
             CommonActions.reset({
                 index: 1,
                 routes: [

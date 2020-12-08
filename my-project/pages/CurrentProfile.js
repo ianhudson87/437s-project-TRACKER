@@ -15,6 +15,7 @@ constructor(props) {
 }
 
 componentDidMount(){
+    console.log("PARENT NAV1", this.props.parentNavigation)
     AsyncStorage.getItem('loggedInUserID').then((value)=>{
         // get the id of the logged in user
         // this.setState({profileUserID: value})
@@ -23,7 +24,7 @@ componentDidMount(){
             // reset the navigation so that you can't navigate back from the userhome page
             CommonActions.reset({
                 index: 1,
-                routes: [{ name: 'UserProfile', params: {profileUserID: value} }]
+                routes: [{ name: 'UserProfile', params: {profileUserID: value, parentNavigation: this.props.parentNavigation} }]
             })
         );
     })

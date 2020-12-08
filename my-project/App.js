@@ -68,6 +68,7 @@ const Tab = createBottomTabNavigator();
 
 class AppStack extends Component {
     render(){
+        console
         console.log("HEREEHRIJOIWPJE", this.props, this)
         // welcome screen, login, register, home_drawer
         return(
@@ -86,7 +87,9 @@ class AppStack extends Component {
                 <Stack.Screen name="CreateNewGame" component={CreateNewGame} options={{ title: 'Create New Game'}}/>
                 <Stack.Screen name="Game" component={Game} />
                 <Stack.Screen name="UserProfile" component={UserProfile} options={{ title: 'User Profile' }}/>
-                <Stack.Screen name="CurrentProfile" component={CurrentProfile}/>
+                <Stack.Screen name="CurrentProfile">
+                    {props => <CurrentProfile {...props} parentNavigation={this.props.navigation}/>}
+                </Stack.Screen>
                 <Stack.Screen name="Tournament" component={Tournament} />
             </Stack.Navigator>
         )
@@ -95,6 +98,7 @@ class AppStack extends Component {
 
 class MainAppTabs extends Component {
     render(){
+        console.log("PARENT NAV2", this.props.navigation)
         return(
             <Tab.Navigator>
                 {/* <Tab.Screen name="Home">
@@ -125,7 +129,7 @@ class MainAppTabs extends Component {
                       <Icon name="account-box" size={30} color="#900" />
                     )
                 }}>
-                    {props => <AppStack {...props} initialRouteName="CurrentProfile" />}
+                    {props => <AppStack {...props} initialRouteName="CurrentProfile" parentNavigation={this.props.navigation}/>}
                 </Tab.Screen>
                 {/* <Tab.Screen name="Home" component={AppStack} options={{ initialRouteName: "Search" }}/> */}
                 {/* <Tab.Screen name="Search" component={AppStack} />
@@ -141,7 +145,7 @@ class App extends Component {
     render(){
         return(
             <NavigationContainer>
-                <Stack.Navigator mode="modal">
+                <Stack.Navigator>
                     <Stack.Screen name="Welcome" component={Welcome} options={{ title: 'Login/Register' }}/>
                     <Stack.Screen name="Login" component={Login} />
                     <Stack.Screen name="Register" component={Register} />

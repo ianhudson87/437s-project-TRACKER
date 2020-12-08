@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import AsyncStorage from '@react-native-community/async-storage'
 import { StyleSheet, TouchableOpacity, Text, Button, View, ScrollView } from 'react-native'
-import { Icon, Overlay } from 'react-native-elements'
+import { Icon, Overlay, Divider } from 'react-native-elements'
 import { Title } from 'react-native-paper'
 import { getObjectByID, getObjectsByIDs } from "../constants/api"
 import GameThumbnail from "../components/GameThumbnail"
@@ -155,12 +155,14 @@ render() {
             { this.state.gamesInGroup.map((game, key)=> (<GameThumbnail key={game._id} game={game} type="standard" navigation={this.props.navigation}/>)) }
           </ScrollView>
         </View>
+
+        <Divider />
         
         <View style={styles.gamesContainer}>
-          <Text>Tournaments in the group:</Text>
-            <ScrollView>
-              { this.state.tournamentsInGroup.map((tournament, key)=> (<GameThumbnail key={tournament._id} game={tournament} type="tournament" navigation={this.props.navigation}/>)) }
-            </ScrollView>
+          {/* <Text>Tournaments in the group:</Text> */}
+          <ScrollView>
+            { this.state.tournamentsInGroup.map((tournament, key)=> (<GameThumbnail key={tournament._id} game={tournament} type="tournament" navigation={this.props.navigation}/>)) }
+          </ScrollView>
         </View>
 
         <View style={styles.overlay}>
@@ -179,7 +181,7 @@ render() {
           </Overlay>
         </View>
 
-        <Button title='Create new game' onPress={() => this.handleNewGame()} />
+        {/* <Button title='Create new game' onPress={() => this.handleNewGame()} /> */}
       </View>
     )
   }
