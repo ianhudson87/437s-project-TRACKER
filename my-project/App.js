@@ -99,7 +99,12 @@ class MainAppTabs extends Component {
                 }}>
                     {props => <AppStack {...props} initialRouteName="Search" />}
                 </Tab.Screen>
-                <Tab.Screen name="CreateNewGroupStack">
+                <Tab.Screen name="CreateNewGroupStack" options={{
+                    tabBarLabel:"Create Group",
+                    tabBarIcon: ({ tintColor }) => (
+                      <Icon name="group" size={30} color="#900" />
+                    )
+                }}>
                     {props => <AppStack {...props} initialRouteName="CreateNewGroup" />}
                 </Tab.Screen>
                 <Tab.Screen name="CurrentProfileStack" options={{
