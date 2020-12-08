@@ -224,16 +224,41 @@ class Tournament extends Component {
       return(
         <View style={styles.bracketContainer}>
           <View style={styles.first_round}>
-            {this.state.results_to_display[0].map((user, key)=> (<Button title={user.name} key={user._id} 
-                  onPress={(e) => this.handleClick(user, key, 2, e)}/>))} 
+            <Text style={styles.roundNum}>Round 1</Text>
+            {this.state.results_to_display[0].map((user, key)=> {
+            if(key%2==0)
+              return (
+                <View style={styles.button}>
+                  <Button title={user.name} key={user._id} 
+                    onPress={(e) => this.handleClick(user, key, 2, e)}/>
+                </View>
+              )
+              return (
+                <View style={styles.buttonOdd}>
+                  <Button title={user.name} key={user._id} 
+                    onPress={(e) => this.handleClick(user, key, 2, e)}/>
+                </View>
+              )
+            })} 
+    
           </View>
           <View style={styles.second_round}>
-            {this.state.results_to_display[1].map((user, key)=> (<Button title={user.name} key={user._id} 
-                  onPress={(e) => this.handleClick(user, key, 1, e)}/>))} 
+            <Text style={styles.roundNum}>Round 2</Text>
+            {this.state.results_to_display[1].map((user, key)=> (
+              <View style={styles.button}>
+                <Button title={user.name} key={user._id} 
+                  onPress={(e) => this.handleClick(user, key, 1, e)}/>
+              </View>
+            ))}  
           </View>
           <View style={styles.third_round}>
-            {this.state.results_to_display[2].map((user, key)=> (<Button title={user.name} key={user._id} 
-                  onPress={(e) => this.handleClick(user, key, 0, e)}/>))} 
+            <Text style={styles.roundNum}>Round 3</Text>
+            {this.state.results_to_display[2].map((user, key)=> (
+              <View style={styles.button}>
+                <Button title={user.name} key={user._id} 
+                  onPress={(e) => this.handleClick(user, key, 0, e)}/>
+              </View>
+            ))}  
           </View>
         </View>
       )
@@ -243,20 +268,58 @@ class Tournament extends Component {
       return(
         <View style={styles.bracketContainer}>
           <View style={styles.first_round}>
-            {this.state.results_to_display[0].map((user, key)=> (<Button title={user.name} key={user._id} 
-                  onPress={(e) => this.handleClick(user, key, 3, e)}/>))} 
+            <Text style={styles.roundNum}>Round 1</Text>
+            {this.state.results_to_display[0].map((user, key)=> {
+            if(key%2==0)
+              return (
+                <View style={styles.button}>
+                  <Button title={user.name} key={user._id} 
+                    onPress={(e) => this.handleClick(user, key, 3, e)}/>
+                </View>
+              )
+              return (
+                <View style={styles.buttonOdd}>
+                  <Button title={user.name} key={user._id} 
+                    onPress={(e) => this.handleClick(user, key, 3, e)}/>
+                </View>
+              )
+            })} 
           </View>
           <View style={styles.second_round}>
-            {this.state.results_to_display[1].map((user, key)=> (<Button title={user.name} key={user._id} 
-                  onPress={(e) => this.handleClick(user, key, 2, e)}/>))} 
+            <Text style={styles.roundNum}>Round 2</Text>
+            {this.state.results_to_display[1].map((user, key)=> {
+            if(key%2==0)
+              return (
+                <View style={styles.button}>
+                  <Button title={user.name} key={user._id} 
+                    onPress={(e) => this.handleClick(user, key, 2, e)}/>
+                </View>
+              )
+              return (
+                <View style={styles.buttonOdd}>
+                  <Button title={user.name} key={user._id} 
+                    onPress={(e) => this.handleClick(user, key, 2, e)}/>
+                </View>
+              )
+            })} 
           </View>
           <View style={styles.third_round}>
-            {this.state.results_to_display[2].map((user, key)=> (<Button title={user.name} key={user._id} 
-                  onPress={(e) => this.handleClick(user, key, 1, e)}/>))} 
+            <Text style={styles.roundNum}>Round 3</Text>
+            {this.state.results_to_display[2].map((user, key)=> (
+              <View style={styles.button}>
+                <Button title={user.name} key={user._id} 
+                  onPress={(e) => this.handleClick(user, key, 1, e)}/>
+              </View>
+            ))}  
           </View>
           <View style={styles.fourth_round}>
-            {this.state.results_to_display[3].map((user, key)=> (<Button title={user.name} key={user._id} 
-                  onPress={(e) => this.handleClick(user, key, 0, e)}/>))} 
+            <Text style={styles.roundNum}>Round 4</Text>
+            {this.state.results_to_display[3].map((user, key)=> (
+              <View style={styles.button}>
+                <Button title={user.name} key={user._id} 
+                  onPress={(e) => this.handleClick(user, key, 0, e)}/>
+              </View>
+            ))} 
           </View>
         </View>
       )
@@ -265,22 +328,27 @@ class Tournament extends Component {
       return(
         <View style={styles.bracketContainer}>
           <View style={styles.first_round}>
+            <Text style={styles.roundNum}>Round 1</Text>
             {this.state.results_to_display[0].map((user, key)=> (<Button title={user.name} key={user._id} 
                   onPress={(e) => this.handleClick(user, key, 4, e)}/>))} 
           </View>
           <View style={styles.second_round}>
+            <Text style={styles.roundNum}>Round 2</Text>
             {this.state.results_to_display[1].map((user, key)=> (<Button title={user.name} key={user._id} 
                   onPress={(e) => this.handleClick(user, key, 3, e)}/>))} 
           </View>
           <View style={styles.third_round}>
+            <Text style={styles.roundNum}>Round 3</Text>
             {this.state.results_to_display[2].map((user, key)=> (<Button title={user.name} key={user._id} 
                   onPress={(e) => this.handleClick(user, key, 2, e)}/>))} 
           </View>
           <View style={styles.fourth_round}>
+            <Text style={styles.roundNum}>Round 4</Text>
             {this.state.results_to_display[3].map((user, key)=> (<Button title={user.name} key={user._id} 
                   onPress={(e) => this.handleClick(user, key, 1, e)}/>))} 
           </View>
           <View style={styles.fifth_round}>
+            <Text style={styles.roundNum}>Round 5</Text>
             {this.state.results_to_display[4].map((user, key)=> (<Button title={user.name} key={user._id} 
                   onPress={(e) => this.handleClick(user, key, 0, e)}/>))} 
           </View>
@@ -337,10 +405,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    alignItems: 'center',
-    backgroundColor: '#DDDDDD',
-    padding: 10,
-    marginBottom: 30,
+    // alignItems: 'center',
+    // backgroundColor: '#DDDDDD',
+    // padding: 10,
+    // marginBottom: 30,
+    borderColor: 'black',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    backgroundColor: 'pink',
+    fontColor: 'green',
+    marginBottom: 4
+  },
+  buttonOdd: {
+    // alignItems: 'center',
+    // backgroundColor: '#DDDDDD',
+    // padding: 10,
+    // marginBottom: 30,
+    borderColor: 'black',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    backgroundColor: 'pink',
+    fontColor: 'green',
+    marginBottom: 12
   },
   text: {
     borderColor: 'black',
@@ -370,15 +456,18 @@ const styles = StyleSheet.create({
   },
   first_round: {
     flex: 5,
-    flexDirection: "column"
+    flexDirection: "column",
+    padding: 10
   },
   second_round: {
     flex: 5,
-    flexDirection: "column"
+    flexDirection: "column",
+    padding: 10
   },
   third_round: {
     flex: 5,
-    flexDirection: "column"
+    flexDirection: "column",
+    padding: 10
   },
   fourth_round: {
     flex: 5,
@@ -388,6 +477,10 @@ const styles = StyleSheet.create({
     flex: 5,
     flexDirection: "column"
   },
+  roundNum: {
+    textAlign: "center",
+    fontWeight: "bold",
+  }
 })
 
 export default Tournament;

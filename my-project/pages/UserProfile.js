@@ -14,7 +14,7 @@ import { getObjectByID, addFriend, checkFriends, getObjectsByIDs } from "../cons
 import GameThumbnail from "../components/GameThumbnail"
 import UserThumbnail from "../components/UserThumbnail"
 import GroupThumbnail from '../components/GroupThumbnail'
-// import LogoutButton from "../components/LogoutButton"
+import LogoutButton from "../components/LogoutButton"
 
 class UserProfile extends Component {
 
@@ -133,9 +133,9 @@ friendDisplayHandler(isFriend, isCurrentUser){
   if(isCurrentUser){
     // looking at own profile
     return(
-      // <View>
-        <Text> (You)</Text>
-      // </View>
+       
+            <Text> (You)</Text>
+          
     )
   }
   else if(isFriend === true){
