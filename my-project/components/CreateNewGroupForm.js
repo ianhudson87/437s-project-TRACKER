@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput, Button, StyleSheet} from 'react-native'
+import { View, Text, TextInput, Button, StyleSheet, Switch } from 'react-native'
 import { CommonActions } from '@react-navigation/native';
 import { createGroup, joinGroup } from "../constants/api"
 
@@ -11,11 +11,15 @@ class CreateNewGroupForm extends Component {
     constructor(props) {
         super(props);
         // user id is in this.props.loggedInUserID
-        this.state = {group_name: ''};
+        this.state = {
+            group_name: '',
+            games_require_accept: true,
+        };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
+        this.handleSwitchChange = this.handleSwitchChange.bind(this);
     }
 
     handleChange(text) {
@@ -26,7 +30,7 @@ class CreateNewGroupForm extends Component {
     handleSubmit(event) {
         // handler for when submit button gets pressed
         console.log("OVER HERE", this.props.loggedInUserID)
-        createGroup(this.state.group_name, this.props.loggedInUserID).then((data)=>{
+        createGroup(this.state.group_name, this.props.loggedInUserID, this.state.games_require_accept).then((data)=>{
             this.setState({response: data});
             if(data.repeatedGroup == false){ // group successfully created
                 console.log("Data: " + data.group);
@@ -54,6 +58,10 @@ class CreateNewGroupForm extends Component {
         this.props.navigation.dispatch(CommonActions.goBack());
     }
 
+    handleSwitchChange(value){
+        this.setState({ games_require_accept: value })
+    }
+
     render() {
         console.log("RENDER2")
         console.log(this.state)
@@ -61,7 +69,7 @@ class CreateNewGroupForm extends Component {
         return (
             <View>
                 <TextInput value={this.state.group_name} onChangeText={(text) => {this.handleChange(text)}} style={styles.text}/>
-                
+                <Text>Games require acceptance: <Switch value = {this.state.games_require_accept} onValueChange={this.handleSwitchChange} /> </Text>
                 <Button title="Create Group" onPress={(e) => this.handleSubmit(e)} />
                 <Button title="Cancel" onPress={(e) => this.handleCancel(e)} />
             </View>

@@ -6,7 +6,7 @@ import { CommonActions } from '@react-navigation/native'
 import { StyleSheet, ScrollView, Text, TextInput, Button, View} from 'react-native'
 import { ButtonGroup, Overlay } from 'react-native-elements'
 import { Title } from 'react-native-paper'
-import { createGame, getObjectsByIDs, fetchUsers} from "../constants/api"
+import { createGame, getObjectsByIDs, fetchUsers } from "../constants/api"
 
 class CreateNewGame extends Component {
   // need to know the user who wants to create the game. Need to know the group that the user is creating the game in
@@ -110,7 +110,8 @@ class CreateNewGame extends Component {
         for(let i=0; i<this.state.users.length; i++){
           user_ids.push(this.state.users[i]._id)
         }
-        createGame(this.state.game_name, user_ids, this.state.group, "tournament", 0).then((data)=>{
+        let pending = true
+        createGame(pending, this.state.game_name, user_ids, this.state.group, "tournament", 0).then((data)=>{
         console.log("response", data)
         if(data.error){
           // error in creating game
@@ -136,7 +137,8 @@ class CreateNewGame extends Component {
       let goal_score_int = parseInt(this.state.goal_score)
       console.log(goal_score_int)
       let user_ids = [this.state.loggedInUserID, this.state.opponent_id] // hard coded for 2 players
-      createGame(this.state.game_name, user_ids, this.state.group, "standard", goal_score_int).then((data)=>{
+      let pending = true
+      createGame(pending, this.state.game_name, user_ids, this.state.group, "standard", goal_score_int).then((data)=>{
         console.log("response", data)
         if(data.error){
           // error in creating game

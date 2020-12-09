@@ -83,6 +83,12 @@ const GroupSchema = new Schema({
         required: true,
         default: []
     },
+    pending_games: {
+        // contains pending game ids 
+        type: Array,
+        required: true,
+        default: []
+    },
     tournaments: {
         // contains tournament ids that the users created 
         type: Array,
@@ -99,6 +105,12 @@ const GroupSchema = new Schema({
         // random code needed to join the group
         type: String,
         required: true,
+    },
+    games_require_accept: {
+        // whether games created in the group require all users to accept them
+        type: Boolean,
+        required: true,
+        default: true,
     }
 
 }, { minimize: false })
@@ -137,6 +149,40 @@ const GameSchema = new Schema({
 }, {timestamps: true}
 )
 
+const PendingGameSchema = new Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    group: {
+        // id of group that the game is being created for
+        type: String,
+        required: true
+    },
+    game_type: {
+        // type of game "standard" or "tournament"
+        type: String,
+        required: true
+    },
+    users: {
+        // contains ids of Users in the Group
+        type: Array,
+        required: true
+    },
+    users_accepted: {
+        // contains ids of users in users list that has accepted
+        type: Array,
+        required: true,
+        default: [],
+    },
+    goal_score: {
+        // contains the score that users are trying to reach
+        type: Number,
+        require: true,
+        default: 1,
+    },
+})
+
 const TournamentSchema = new Schema({
     name: {
         type: String,
@@ -158,4 +204,5 @@ export const UserModel =  mongoose.model('users', UserSchema)
 export const PendingUserModel =  mongoose.model('pendingUsers', PendingUserSchema)
 export const GroupModel = mongoose.model('groups', GroupSchema)
 export const GameModel = mongoose.model('games', GameSchema)
+export const PendingGameModel = mongoose.model('pendingGames', PendingGameSchema)
 export const TournamentModel = mongoose.model('tournaments', TournamentSchema)

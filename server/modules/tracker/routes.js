@@ -36,6 +36,7 @@ routes.post('/games', TrackerController.joinGame)
 
 routes.post('/getUser', TrackerController.getUser)
 routes.post('/createGame', TrackerController.createGame)
+routes.post('/createPendingGame', TrackerController.createPendingGame)
 routes.get('/games', TrackerController.getAllGames)
 
 routes.post('/changeScore', TrackerController.changeScore)

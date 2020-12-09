@@ -226,7 +226,7 @@ export const fetchGroups = async () =>{
 }
 
 //submits a request to the API to create new group with specified name
-export const createGroup = async (name, creator_id) =>{
+export const createGroup = async (name, creator_id, games_require_accept) =>{
     console.log(creator_id)
     const res = await fetch(API_PATH + "groups",{
         method: 'POST',
@@ -236,7 +236,8 @@ export const createGroup = async (name, creator_id) =>{
         },
         body: JSON.stringify({
             name: name,
-            creator_id: creator_id
+            creator_id: creator_id,
+            games_require_accept,
         })
     })
     const data = await res.json();
@@ -246,24 +247,46 @@ export const createGroup = async (name, creator_id) =>{
 
 //submits a request to the API to create new game with certain parameters
 
-export const createGame = async (name, user_ids, group_id, game_type, goal_score) =>{
-    console.log('send api')
-    const res = await fetch(API_PATH + "createGame",{
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            name: name,
-            user_ids: user_ids,
-            group_id: group_id,
-            game_type: game_type,
-            goal_score: goal_score
+export const createGame = async (pending, name, user_ids, group_id, game_type, goal_score) =>{
+    if(!pending){
+        // group doesn't require acceptance from users
+        console.log('send api')
+        const res = await fetch(API_PATH + "createGame",{
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: name,
+                user_ids: user_ids,
+                group_id: group_id,
+                game_type: game_type,
+                goal_score: goal_score
+            })
         })
-    })
-    const data = await res.json();
-    return data
+        const data = await res.json();
+        return data
+    }
+    else{
+        // group requires acceptance from users, make pending game
+        const res = await fetch(API_PATH + "createPendingGame",{
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: name,
+                user_ids: user_ids,
+                group_id: group_id,
+                game_type: game_type,
+                goal_score: goal_score
+            })
+        })
+        const data = await res.json();
+        return data
+    }
 }
 
 //submits a request to the API to change score of certain user

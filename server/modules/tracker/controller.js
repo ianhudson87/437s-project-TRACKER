@@ -211,11 +211,11 @@ export const getAllUsers = async (req, res) => {
 
 export const createGroup = async (req, res) => {
     // req.body requires the name of the group that you are creating
-    const {name, creator_id} = req.body;
+    const {name, creator_id, games_require_accept} = req.body;
     console.log(creator_id, "CREATOR_ID")
     // https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
     const code = Math.random().toString(36).substring(2,6)
-    const newGroup = new Models.GroupModel( {name: name, users: [creator_id], code: code} );
+    const newGroup = new Models.GroupModel({ name: name, users: [creator_id], code: code, games_require_accept: games_require_accept });
     
     try{
         let existingGroups  = await Models.GroupModel.find({});
@@ -479,6 +479,22 @@ export const loginUser = async (req, res) => {
         return res.status(400).json({ error:true, message: "ERROR LOGGING IN USER", error_msg:e})
     }
 
+}
+
+export const createPendingGame = async (req, res) => {
+    const {name, user_ids, group_id, game_type, goal_score} = req.body;
+    let users_accepted = [user_ids[0]] // only the user who created the game has accepted
+    let handled_goal_score = Number.isInteger(goal_score) ? goal_score : 1
+    let newPendingGame = new Models.PendingGameModel({ name: name, group: group_id, game_type: game_type, users: user_ids, users_accepted: users_accepted, goal_score: handled_goal_score });
+
+    try{
+        let pendingGame = await newPendingGame.save()
+        await Models.GroupModel.updateOne({ '_id': group_id }, { '$push': { pending_games: pendingGame._id } })
+        return res.status(200).json({ error: false, game_created: true, game_info: pendingGame, message: "created pending game"})
+    }
+    catch(e){
+        return res.status(200).json({ error: true, game_created: false, message: "could not create pending game"})
+    }
 }
 
 // creates a game based on the users that are in the game
