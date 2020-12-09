@@ -385,6 +385,21 @@ export const checkFriends = async (checkFriendsData) =>{
     return data
 }
 
+export const getPendingGamesOfUser = async (user_id) =>{
+    const res = await fetch(API_PATH + "getPendingGamesOfUser",{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            user_id: user_id,
+        })
+    })
+    const data = await res.json();
+    return data
+}
+
 // CAUTION!!!!!!!!!!!!!!!!!!!
 // CAUTION!!!!!!!!!!!!!!!!!!!
 // CAUTION!!!!!!!!!!!!!!!!!!!

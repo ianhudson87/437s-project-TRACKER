@@ -25,6 +25,7 @@ import Tournament from "./pages/Tournament"
 import JoinGroup from './pages/JoinGroup'
 import UserProfile from './pages/UserProfile'
 import Search from './pages/Search'
+import Notifications from './pages/Notifications'
 import CurrentProfile from './pages/CurrentProfile'
 
 
@@ -75,6 +76,7 @@ class AppStack extends Component {
                     {props => <CurrentProfile {...props} parentNavigation={this.props.navigation}/>}
                 </Stack.Screen>
                 <Stack.Screen name="Tournament" component={Tournament} />
+                <Stack.Screen name="Notifications" component={Notifications} />
             </Stack.Navigator>
         )
     }
@@ -111,6 +113,14 @@ class MainAppTabs extends Component {
                     )
                 }}>
                     {props => <AppStack {...props} initialRouteName="CreateNewGroup" />}
+                </Tab.Screen>
+                <Tab.Screen name="Notifications" options={{
+                    tabBarLabel:"Notifications",
+                    tabBarIcon: ({ tintColor }) => (
+                      <Icon name="bell" size={30} color="#900" />
+                    )
+                }}>
+                    {props => <AppStack {...props} initialRouteName="Notifications" />}
                 </Tab.Screen>
                 <Tab.Screen name="CurrentProfileStack" options={{
                     tabBarLabel:"Profile",

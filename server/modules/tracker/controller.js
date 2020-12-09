@@ -493,7 +493,21 @@ export const createPendingGame = async (req, res) => {
         return res.status(200).json({ error: false, game_created: true, game_info: pendingGame, message: "created pending game"})
     }
     catch(e){
-        return res.status(200).json({ error: true, game_created: false, message: "could not create pending game"})
+        return res.status(400).json({ error: true, game_created: false, message: "could not create pending game"})
+    }
+}
+
+export const getPendingGamesOfUser  = async (req, res) => {
+    const {user_id} = req.body
+    // console.log(typeof user_id)
+    try{
+        let pendingGamesOfUser = await Models.PendingGameModel.find({ users: user_id })
+        // console.log(pendingGamesOfUser)
+        return res.status(200).json({ error: false, pending_games: pendingGamesOfUser})
+    }
+    catch(e){
+        // console.log(e)
+        return res.status(400).json({ error: true, e: e})
     }
 }
 
