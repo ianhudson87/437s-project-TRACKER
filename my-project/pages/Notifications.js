@@ -10,6 +10,7 @@ import {
 import { getPendingGamesOfUser } from '../constants/api'
 import { Card } from 'react-native-elements'
 import { ScrollView } from 'react-native-gesture-handler'
+import GameRequest from '../components/GameRequest'
 
 class Notifications extends Component {
   constructor(props) {
@@ -20,7 +21,7 @@ class Notifications extends Component {
       this.loggedInUserID
 
       this.getUserID = this.getUserID.bind(this)
-
+      this.getPendingGames = this.getPendingGames.bind(this)
   }
 
   componentDidMount(){
@@ -37,6 +38,7 @@ class Notifications extends Component {
   }
 
   getNotifications(){
+      console.log("REFRESHING!!!")
       this.getPendingGames()
   }
 
@@ -58,13 +60,7 @@ render() {
         <ScrollView>
             {this.state.pending_games.map((pending_game) => {
                 return(
-                    <Card>
-                        <Card.Title> Pending game: {pending_game.name} </Card.Title>
-                        <Card.Divider />
-                        <Text>Group: {pending_game.group}</Text>
-                        <Text>Users: {pending_game.users}</Text>
-                        <Text>accepted: {pending_game.users_accepted}</Text>
-                    </Card>
+                    <GameRequest key={pending_game._id} pending_game={pending_game} loggedInUserID={this.loggedInUserID} refresh_parent={this.getPendingGames}/>
                 )
             })}
 

@@ -487,6 +487,13 @@ export const createPendingGame = async (req, res) => {
     let handled_goal_score = Number.isInteger(goal_score) ? goal_score : 1
     let newPendingGame = new Models.PendingGameModel({ name: name, group: group_id, game_type: game_type, users: user_ids, users_accepted: users_accepted, goal_score: handled_goal_score });
 
+    if(game_type=="tournament"){
+        // checks for tournament
+        if(user_ids.length < 4 || user_ids > 16){ //eventually might support larger tournaments
+            return res.status(200).json({ error: false, game_created: false, message: "Need more users in group"})
+        }
+    }
+
     try{
         let pendingGame = await newPendingGame.save()
         await Models.GroupModel.updateOne({ '_id': group_id }, { '$push': { pending_games: pendingGame._id } })
@@ -511,6 +518,29 @@ export const getPendingGamesOfUser  = async (req, res) => {
     }
 }
 
+export const acceptGame  = async (req, res) => {
+    const {user_id, pending_game_id} = req.body
+    console.log(req.body)
+    try{
+        await Models.PendingGameModel.updateOne({ '_id': pending_game_id }, { '$push': { users_accepted: user_id }})
+        let updatedPendingGame = await Models.PendingGameModel.findOne({ '_id': pending_game_id })
+        // check to see if everyone has accepted:
+        console.log(updatedPendingGame)
+        let users = updatedPendingGame.users
+        let users_accepted = updatedPendingGame.users_accepted
+        let not_all_users_have_accepted = users.some(r=> !users_accepted.includes(r)) // if there is some user that isn't in users_accepted
+        if (!not_all_users_have_accepted){
+            // all users accepted
+            await Models.PendingGameModel.deleteOne({ '_id': pending_game_id })
+        }
+        return res.status(200).json({ error: false, updated_pending_game: updatedPendingGame, all_users_have_accepted: !not_all_users_have_accepted})
+    }
+    catch(e){
+        //console.log(e)
+        return res.status(400).json({ error: true, e: e})
+    }
+}
+
 // creates a game based on the users that are in the game
 export const createGame = async (req, res) => {
     // req.body requires:
@@ -520,6 +550,7 @@ export const createGame = async (req, res) => {
     //  game_type of the game that you are creating
     //  goal_score for standard game, or 0 for tournament
     const {name, user_ids, group_id, game_type, goal_score} = req.body;
+    console.log(req.body)
     let newGame;
     if(game_type == "tournament"){
         // CREATING TOURNAMENT GAME

@@ -3,8 +3,8 @@
 import React, { Component } from 'react'
 import AsyncStorage from '@react-native-community/async-storage'
 import { CommonActions } from '@react-navigation/native'
-import { StyleSheet, ScrollView, Text, TextInput, Button, View} from 'react-native'
-import { ButtonGroup, Overlay } from 'react-native-elements'
+import { StyleSheet, ScrollView, Text, TextInput, View} from 'react-native'
+import { ButtonGroup, Overlay, Icon, Button } from 'react-native-elements'
 import { Title } from 'react-native-paper'
 import { createGame, getObjectsByIDs, fetchUsers } from "../constants/api"
 
@@ -111,7 +111,7 @@ class CreateNewGame extends Component {
           user_ids.push(this.state.users[i]._id)
         }
         let pending = true
-        createGame(pending, this.state.game_name, user_ids, this.state.group, "tournament", 0).then((data)=>{
+        createGame(pending, this.state.game_name, user_ids, this.state.group._id, "tournament", 0).then((data)=>{
         console.log("response", data)
         if(data.error){
           // error in creating game
@@ -119,7 +119,7 @@ class CreateNewGame extends Component {
         }
         else if(data.game_created==false){
           // no error, but game not created
-          alert("tournament was not created")
+          alert(data.message)
         }
         else{
           // game was created
@@ -137,28 +137,33 @@ class CreateNewGame extends Component {
       let goal_score_int = parseInt(this.state.goal_score)
       console.log(goal_score_int)
       let user_ids = [this.state.loggedInUserID, this.state.opponent_id] // hard coded for 2 players
-      let pending = true
-      createGame(pending, this.state.game_name, user_ids, this.state.group, "standard", goal_score_int).then((data)=>{
-        console.log("response", data)
-        if(data.error){
-          // error in creating game
-          alert("error in creating game")
-        }
-        else if(data.game_created==false){
-          // no error, but game not created
-          alert("game was not created")
-        }
-        else{
-          // game was created
-          let game = data.game_info
-          alert("game " + game.name + " was created")
-
-          this.props.navigation.dispatch(
-            // reset the navigation so that you can't navigate back from the userhome page
-            CommonActions.goBack()
-        );
-        }
-      })
+      if(this.state.opponent_id == ""){
+        alert("select opponent")
+      }
+      else{
+        let pending = true
+        createGame(pending, this.state.game_name, user_ids, this.state.group, "standard", goal_score_int).then((data)=>{
+          console.log("response", data)
+          if(data.error){
+            // error in creating game
+            alert("error in creating game")
+          }
+          else if(data.game_created==false){
+            // no error, but game not created
+            alert("game was not created")
+          }
+          else{
+            // game was created
+            let game = data.game_info
+            alert("game " + game.name + " was created")
+  
+            this.props.navigation.dispatch(
+              // reset the navigation so that you can't navigate back from the userhome page
+              CommonActions.goBack()
+          );
+          }
+        })
+      }
     }    
   }
 
@@ -174,8 +179,8 @@ class CreateNewGame extends Component {
     if(game_type == "standard"){
     return(
       <View style={styles.gameOptionsContainer}>
+        <Button style={{ alignSelf:"center" }} icon={ <Icon name="help-circle-outline" type="material-community" size={20} color="white" /> } title="Info" onPress={this.toggleGameOverlay} />
         <View style={styles.opponentsContainer}>
-          <Button title="Counter Type Info" onPress={this.toggleGameOverlay} />
           <Text>Select Opponent:</Text>
           <ScrollView style={styles.scrollView}>
             {/* buttons that show each user */}
@@ -211,8 +216,8 @@ class CreateNewGame extends Component {
     else if(game_type == "tournament"){
     return(
       <View style={styles.gameOptionsContainer}>
+        <Button style={{ alignSelf:"center" }} icon={ <Icon name="help-circle-outline" type="material-community" size={20} color="white" /> } title="Info" onPress={this.toggleTournamentOverlay} />
         <View style={styles.submitContainer}>
-        <Button title="Tournament Type Info" onPress={this.toggleTournamentOverlay} />
           <Text>All users in group will be put into the tournament!</Text>
           <Text>Game Name:</Text>
           <TextInput returnKeyType={ 'done' } value={this.state.game_name} onChangeText={(text)=>this.handleGameNameChange(text)} style={styles.textInput}/>
@@ -260,7 +265,7 @@ const styles = StyleSheet.create({
     flex:1,
   },
   gameOptionsContainer:{
-    flex:2,
+    flex: 4,
   },
   opponentsContainer:{
     flex:1,

@@ -38,6 +38,7 @@ routes.post('/getUser', TrackerController.getUser)
 routes.post('/createGame', TrackerController.createGame)
 routes.post('/createPendingGame', TrackerController.createPendingGame)
 routes.post('/getPendingGamesOfUser', TrackerController.getPendingGamesOfUser)
+routes.post('/acceptGame', TrackerController.acceptGame)
 
 routes.get('/games', TrackerController.getAllGames)
 

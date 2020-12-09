@@ -248,6 +248,7 @@ export const createGroup = async (name, creator_id, games_require_accept) =>{
 //submits a request to the API to create new game with certain parameters
 
 export const createGame = async (pending, name, user_ids, group_id, game_type, goal_score) =>{
+    console.log(pending, name, user_ids, group_id, game_type, goal_score)
     if(!pending){
         // group doesn't require acceptance from users
         console.log('send api')
@@ -394,6 +395,23 @@ export const getPendingGamesOfUser = async (user_id) =>{
         },
         body: JSON.stringify({
             user_id: user_id,
+        })
+    })
+    const data = await res.json();
+    return data
+}
+
+export const acceptGame = async (user_id, pending_game_id) => {
+    console.log("accept game")
+    const res = await fetch(API_PATH + "acceptGame",{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            user_id: user_id,
+            pending_game_id: pending_game_id
         })
     })
     const data = await res.json();

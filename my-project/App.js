@@ -117,7 +117,7 @@ class MainAppTabs extends Component {
                 <Tab.Screen name="Notifications" options={{
                     tabBarLabel:"Notifications",
                     tabBarIcon: ({ tintColor }) => (
-                      <Icon name="bell" size={30} color="#900" />
+                      <Icon name="bell" type="material-community" size={30} color="#900" />
                     )
                 }}>
                     {props => <AppStack {...props} initialRouteName="Notifications" />}
