@@ -87,6 +87,7 @@ class CreateNewGame extends Component {
   }
 
   updateIndex(selected_index){
+    console.log("Update index")
     let selected_game_type
     switch(selected_index){
       case 0:
@@ -179,7 +180,9 @@ class CreateNewGame extends Component {
     if(game_type == "standard"){
     return(
       <View style={styles.gameOptionsContainer}>
-        <Button style={{ alignSelf:"center" }} icon={ <Icon name="help-circle-outline" type="material-community" size={20} color="white" /> } title="Info" onPress={this.toggleGameOverlay} />
+        <View style={{ alignSelf:"center", marginTop: 40 }}>
+        <Button  icon={ <Icon name="help-circle-outline" type="material-community" size={20} color="white" /> } title="Info" onPress={this.toggleGameOverlay} />
+        </View>
         <View style={styles.opponentsContainer}>
           <Text>Select Opponent:</Text>
           <ScrollView style={styles.scrollView}>
@@ -194,7 +197,7 @@ class CreateNewGame extends Component {
         
         <View style={styles.submitContainer}>
           <Text>Opponent User ID: {this.state.opponent_id}</Text>
-          <Text>Opponent User ID: {this.state.opponent_name}</Text>
+          <Text>Opponent User Name: {this.state.opponent_name}</Text>
 
           <Text>Game Name:</Text>
           <TextInput returnKeyType={ 'done' } value={this.state.game_name} onChangeText={(text)=>this.handleGameNameChange(text)} style={styles.textInput}/>
@@ -216,7 +219,7 @@ class CreateNewGame extends Component {
     else if(game_type == "tournament"){
     return(
       <View style={styles.gameOptionsContainer}>
-        <Button style={{ alignSelf:"center" }} icon={ <Icon name="help-circle-outline" type="material-community" size={20} color="white" /> } title="Info" onPress={this.toggleTournamentOverlay} />
+        <Button style={{ alignSelf:"center", marginTop: 40 }} icon={ <Icon name="help-circle-outline" type="material-community" size={20} color="white" /> } title="Info" onPress={this.toggleTournamentOverlay} />
         <View style={styles.submitContainer}>
           <Text>All users in group will be put into the tournament!</Text>
           <Text>Game Name:</Text>
@@ -243,14 +246,18 @@ render() {
 
         <Title>Game Type:</Title>
         {/* buttons that show each game type */}
+        <View>
         <ButtonGroup
           onPress={this.updateIndex}
           selectedIndex={this.state.selected_index}
           buttons={["Counter", "Tournament"]}
         />
+        </View>
       </View>
+      
 
       {this.showGameOptions(this.state.game_type)}
+      
       
     </View>
   )
@@ -266,6 +273,8 @@ const styles = StyleSheet.create({
   },
   gameOptionsContainer:{
     flex: 4,
+    position: "relative",
+    top: 50
   },
   opponentsContainer:{
     flex:1,
