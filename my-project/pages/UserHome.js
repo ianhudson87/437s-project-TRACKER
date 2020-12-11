@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useEffect } from 'react'
 import AsyncStorage from '@react-native-community/async-storage'
 import { StyleSheet, TouchableOpacity, Text, Button, View } from 'react-native'
 import { Card, ListItem, Icon, Divider } from 'react-native-elements'
@@ -35,6 +35,10 @@ class UserHome extends Component {
       console.log('first time user')
       this.props.navigation.openDrawer();
     }
+
+    //useEffect(() => {
+    this.props.navigation.setOptions({ title: 'Welcome, ' + this.state.loggedInUser.name })
+    //});
   }
 
   refreshUserInfo(){
@@ -141,7 +145,8 @@ class UserHome extends Component {
 
   
 render() {
-  this.props.navigation.setOptions({ title: 'Welcome, ' + this.state.loggedInUser.name })
+  
+  //this.props.navigation.setOptions({ title: 'Welcome, ' + this.state.loggedInUser.name })
   console.log("NAVIGATION", this.props.navigation)
   const navigation = this.props.navigation;
   const loggedInUser = this.state.loggedInUser;

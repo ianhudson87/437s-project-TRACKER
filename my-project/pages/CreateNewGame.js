@@ -20,6 +20,8 @@ class CreateNewGame extends Component {
       loggedInUserID: null,
       opponent_id: "",
       opponent_name: "",
+      opponent_ids: [],
+      opponent_names: [],
       game_name: "",
       game_type:"standard",
       selected_index: 0, // this corresponds to game_type. Is used for the button group
@@ -75,6 +77,25 @@ class CreateNewGame extends Component {
 
   handleSelectOpponent(user){
     // handler for when user clicks on user to be opponent
+    let original_ids = this.state.opponent_ids;
+    let original_names = this.state.opponent_names;
+    let isInGame = false;
+    for(let i=0; i<original_ids.length; i++){
+      if(original_ids[i] === user._id){
+        isInGame = true;
+        original_ids.splice(i, 1)
+        original_names.splice(i, 1)
+        this.setState({opponent_ids: original_ids})
+        this.setState({opponent_names: original_names})
+      }
+    }
+    if(!isInGame){
+      original_ids.push(user._id)
+      original_names.push(user.name)
+      this.setState({opponent_ids: original_ids})
+      this.setState({opponent_names: original_names})
+    }
+    console.log(this.state.opponent_names)
     this.setState({opponent_id: user._id, opponent_name: user.name})
   }
 
@@ -137,9 +158,11 @@ class CreateNewGame extends Component {
       // handler for create new game button press
       let goal_score_int = parseInt(this.state.goal_score)
       console.log(goal_score_int)
-      let user_ids = [this.state.loggedInUserID, this.state.opponent_id] // hard coded for 2 players
-      if(this.state.opponent_id == ""){
-        alert("select opponent")
+      //let user_ids = [this.state.loggedInUserID, this.state.opponent_id] // hard coded for 2 players
+      let initial_user_ids = [this.state.loggedInUserID]
+      let user_ids = initial_user_ids.concat(this.state.opponent_ids)
+      if(this.state.opponent_ids == []){
+        alert("select at least one opponent")
       }
       else{
         let pending = true
@@ -157,6 +180,7 @@ class CreateNewGame extends Component {
             // game was created
             let game = data.game_info
             alert("game " + game.name + " was created")
+            console.log(game)
   
             this.props.navigation.dispatch(
               // reset the navigation so that you can't navigate back from the userhome page
