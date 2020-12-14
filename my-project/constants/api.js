@@ -420,6 +420,22 @@ export const acceptGame = async (user_id, pending_game_id) => {
     return data
 }
 
+export const addInfo = async (user_id, info) => {
+    const res = await fetch(API_PATH + "addInfo",{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            user_id: user_id,
+            info: info
+        })
+    })
+    const data = await res.json();
+    return data
+}
+
 // CAUTION!!!!!!!!!!!!!!!!!!!
 // CAUTION!!!!!!!!!!!!!!!!!!!
 // CAUTION!!!!!!!!!!!!!!!!!!!

@@ -10,8 +10,8 @@ import {
   Modal,
 } from 'react-native'
 import { Title } from 'react-native-paper'
-import { Overlay, Icon } from 'react-native-elements'
-import { getObjectByID, addFriend, checkFriends, getObjectsByIDs } from "../constants/api"
+import { Overlay, Icon, Input } from 'react-native-elements'
+import { getObjectByID, addFriend, checkFriends, getObjectsByIDs, addInfo } from "../constants/api"
 import GameThumbnail from "../components/GameThumbnail"
 import UserThumbnail from "../components/UserThumbnail"
 import GroupThumbnail from '../components/GroupThumbnail'
@@ -30,7 +30,9 @@ constructor(props) {
     isFriend: null, // friend status of logged in user and user whose profile is displayed
     friends: [], // contains list of user objects that are friends of the user
     stats_overlay_visible: false, // visibility of overlay
-    friends_overlay_visible: false // visibility of overlay
+    friends_overlay_visible: false, // visibility of overlay
+    info_visible: false,  //visibility of user info text entry
+    info: '',   //value of user info entered
   }
 
   this.handleFriend = this.handleFriend.bind(this);
@@ -41,6 +43,9 @@ constructor(props) {
   this.toggleFriendsOverlay = this.toggleFriendsOverlay.bind(this);
   this.getLogout = this.getLogout.bind(this)
   this.getIcons = this.getIcons.bind(this)
+  this.toggleInfo = this.toggleInfo.bind(this);
+  this.addInfo = this.addInfo.bind(this);
+  this.handleChangeInfo = this.handleChangeInfo.bind(this);
 }
 
 populateFriendsArrays(friendIDs){
@@ -154,9 +159,10 @@ friendDisplayHandler(isFriend, isCurrentUser){
   if(isCurrentUser){
     // looking at own profile
     return(
-       
+       <View>
             <Text> (You) </Text>
-          
+            <Button title='Add info' onPress={() => this.toggleInfo()} />
+      </View>
     )
   }
   else if(isFriend === true){
@@ -175,7 +181,7 @@ friendDisplayHandler(isFriend, isCurrentUser){
 
 getTitle(){
   return(
-    <View style={styles.nameContainer}>
+    
         <Text style={styles.nameContainer}>
           {this.state.user.name}
           {this.friendDisplayHandler(this.state.isFriend, this.state.profileUserID==this.state.loggedInUserID)}
@@ -186,7 +192,7 @@ getTitle(){
             <Icon reverse size={15} style={{margin: -2, padding: -2}} name="baby-face-outline" type="material-community" onPress={this.toggleFriendsOverlay} />
           </View>
         </Text>
-    </View>
+    
   )
 }
 
@@ -223,18 +229,54 @@ toggleFriendsOverlay(){
   this.refreshInfo()
   this.setState({ friends_overlay_visible: !this.state.friends_overlay_visible })
 }
+
+toggleInfo(){
+  this.refreshInfo()
+  this.setState({ info_visible: !this.state.info_visible })
+}
+
+handleChangeInfo(text){
+  this.refreshInfo()
+  this.setState({info: text})
+}
+
+addInfo(){
+  addInfo(this.state.loggedInUserID, this.state.info).then((data)=>{
+    console.log(data)
+    // if(data.info_added){
+    //   this.setState({friends: data.objects})
+    // }
+  })
+  this.setState({info: '', info_visible: false})
+}
+
+infoDisplayHandler(){
+  if(this.state.info_visible){
+    return (
+      <View>
+        <Input 
+          placeholder="New Info"
+          value={this.state.info}
+          onChangeText={(text)=>{this.handleChangeInfo(text)}}
+        />
+        <Button title="Add" onPress={this.addInfo} />
+      </View>
+    )
+  }
+}
   
 render() {
   this.props.navigation.setOptions({headerTitle: this.getTitle(), headerRight: this.getLogout })
-  console.log("state", this.state.user)
+  //console.log("state", this.state.user)
   let stats = this.state.user.stats || {}
   return (
     <View style={styles.container} onPress={ ()=>{alert("asdf")}} >
 
       {/* {this.getIcons()} */}
+      {this.infoDisplayHandler()}
       
       <View style={styles.groupsContainer}>
-        <Title> Groups</Title>
+        <Title>  Groups:</Title>
         <ScrollView style={styles.usersListContainer}>
           {this.state.userGroups.map((group, key)=> (<GroupThumbnail group={group} key={group._id} navigation={this.props.navigation}>{group.name}</GroupThumbnail>))}
           {/* {this.state.userGroups.map((group, key)=> (<Text key={group._id}>{group.name}</Text>))} */}
@@ -258,7 +300,7 @@ render() {
       </Modal>
         
       <View style={styles.gamesContainer}>
-        <Title>Games:</Title>
+        <Title>  Games:</Title>
         <ScrollView >
           { this.state.userGames.map((game, key)=> (<GameThumbnail key={game._id} game={game} type={'standard'} navigation={this.props.navigation}/>)) }
         </ScrollView>

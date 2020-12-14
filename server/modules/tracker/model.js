@@ -13,6 +13,10 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
+    info: {
+        type: String,
+        required: true
+    },
     groups: {
         // contains ids of Groups that User is in
         type: Array,
@@ -155,6 +159,10 @@ const GameSchema = new Schema({
 
 const PendingGameSchema = new Schema({
     name: {
+        type: String,
+        required: true
+    },
+    info: {
         type: String,
         required: true
     },

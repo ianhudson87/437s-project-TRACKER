@@ -15,6 +15,8 @@ routes.post('/getUser', TrackerController.getUser)
 
 routes.post('/verifyEmail', TrackerController.verifyEmail)
 
+routes.post('/addInfo', TrackerController.addInfo)
+
 //Groups
 routes.post('/groups', TrackerController.createGroup)
 routes.get('/groups', TrackerController.getAllGroups)

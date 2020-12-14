@@ -75,6 +75,7 @@ export const createPendingUser = async (req, res) => {
         name: name,
         email: email,
         password: hash,
+        info: 'none',
         email_verification_code: verify_hash
     });
 
@@ -118,6 +119,7 @@ export const createUser = async (req, res) => {
         name: name,
         email: email,
         password: password,
+        info: 'none',
         email_verification_code: email_verification_code
     });
 
@@ -182,6 +184,7 @@ export const verifyEmail = async (req, res) => {
                 const newUser = new Models.UserModel( {
                     name: pendingUser.name,
                     email: pendingUser.email,
+                    info: 'none',
                     password: pendingUser.password
                 });
                 let user = await newUser.save()
@@ -829,5 +832,34 @@ export const checkFriends = async (req, res) => {
     } catch(e) {
         return res.status(400).json({ error:true, error_message: "error with checking friends"})
     }
+}
+
+export const addInfo = async (req, res) => {
+    try{
+        console.log('adding info')
+        console.log(req.body)
+        const {user_id, info} = req.body;
+        console.log(user_id)
+        console.log(info)
+        let userObject = await Models.UserModel.find({ '_id': user_id })
+        console.log('1')
+        // console.log(group_with_given_code['_id'])
+        if(userObject.length == 0){
+            // group that user is trying to join already contains the user
+            console.log('2')
+            return res.status(200).json({ error: false, info_added: false, message: "User does not exist"})
+        }
+        else{
+            // push group id to the list of groups for the user
+            console.log('3')
+            await Models.UserModel.updateOne({ '_id': user_id }, { '$set': { info: info } })
+            console.log('4')
+            return res.status(200).json({ error: false, info_added: true, message: "info added"})
+        }
+    }
+    
+    catch(e) {
+        return res.status(400).json({ error:true, error_message: "error with adding info"})
+    }  
 }
 

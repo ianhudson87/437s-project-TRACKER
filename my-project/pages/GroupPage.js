@@ -28,6 +28,7 @@ constructor(props) {
   this.toggleOverlay = this.toggleOverlay.bind(this);
   this.toggleCodeOverlay = this.toggleCodeOverlay.bind(this);
   this.getTitle = this.getTitle.bind(this);
+  this.objectsHandler = this.objectsHandler.bind(this);
 }
 
 componentDidMount(){
@@ -152,6 +153,33 @@ getLeaderboardIcon(pos){
     return icon_table['else']
   }
 }
+
+objectsHandler(){
+  if(typeof(this.state.stats.users_wins_dict) != 'undefined' && this.state.stats.users_wins_dict !== null){
+    return(
+      <ScrollView>
+            {Array.from(Object.values(this.state.stats.users_wins_dict)).sort((a,b) => {return a.wins < b.wins ? 1: -1}).map( (wins_user, index) => {
+              return(
+                <ListItem key={index} bottomDivider>
+                  <ListItem.Content>
+                    <Icon name={this.getLeaderboardIcon(index)} type="material-community" />
+                    <ListItem.Title>{wins_user.user_name}</ListItem.Title>
+                    <ListItem.Subtitle>{wins_user.wins} wins</ListItem.Subtitle>
+                  </ListItem.Content>
+                </ListItem>
+                // <Text key={wins_user.user_name}> {wins_user.user_name}: {wins_user.wins} wins </Text>
+              )
+            })}
+            </ScrollView>
+    )
+    
+  }
+  else{
+    return(
+      <ScrollView></ScrollView>
+    )
+  }
+}
   
 render() {
 
@@ -200,7 +228,7 @@ render() {
         {/* <View> */}
           <Title> Total Games: {this.state.stats.total_num_of_games} (completed: {this.state.stats.num_finished_games}) </Title>
           <View style={{height: 500}}>
-            <ScrollView>
+            {/* <ScrollView>
             {Array.from(Object.values(this.state.stats.users_wins_dict)).sort((a,b) => {return a.wins < b.wins ? 1: -1}).map( (wins_user, index) => {
               return(
                 <ListItem key={index} bottomDivider>
@@ -213,7 +241,8 @@ render() {
                 // <Text key={wins_user.user_name}> {wins_user.user_name}: {wins_user.wins} wins </Text>
               )
             })}
-            </ScrollView>
+            </ScrollView> */}
+            {this.objectsHandler}
           </View>
         {/* </View> */}
       </Overlay>
