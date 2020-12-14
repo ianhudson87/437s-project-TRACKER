@@ -125,7 +125,7 @@ class NewUserForm extends Component {
         else{
             return (
                 <View>
-                    <Text style={{color: 'red'}}>Please enter a valid email address</Text>
+                    <Text style={{color: 'red', marginLeft: 20}}>Please enter a valid email address</Text>
                 </View>
             )
         }

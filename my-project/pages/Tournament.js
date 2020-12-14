@@ -189,18 +189,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  button: {
-    // alignItems: 'center',
-    // backgroundColor: '#DDDDDD',
-    // padding: 10,
-    // marginBottom: 30,
-    borderColor: 'black',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    backgroundColor: 'pink',
-    fontColor: 'green',
-    marginBottom: 4
-  },
+  // button: { 
+  //   // alignItems: 'center',
+  //   // backgroundColor: '#DDDDDD',
+  //   // padding: 10,
+  //   // marginBottom: 30,
+  //   borderColor: 'black',
+  //   borderStyle: 'solid',
+  //   borderWidth: 1,
+  //   backgroundColor: 'pink',
+  //   fontColor: 'green',
+  //   marginBottom: 4
+  // },
   // buttonOdd: {
   //   // alignItems: 'center',
   //   // backgroundColor: '#DDDDDD',
