@@ -79,7 +79,7 @@ class CreateNewGroupForm extends Component {
         console.log(this.state)
         console.log(this.props.loggedInUserID)
         return (
-            <View style={{width: 400}}>
+            <View style={{width: 400, alignSelf:'center'}}>
                 {/* <TextInput value={this.state.group_name} onChangeText={(text) => {this.handleChange(text)}} style={styles.text}/> */}
                 <Input 
                     placeholder="New Group Name"

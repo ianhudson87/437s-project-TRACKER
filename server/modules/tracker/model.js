@@ -162,10 +162,6 @@ const PendingGameSchema = new Schema({
         type: String,
         required: true
     },
-    info: {
-        type: String,
-        required: true
-    },
     group: {
         // id of group that the game is being created for
         type: String,

@@ -498,11 +498,14 @@ export const createPendingGame = async (req, res) => {
     }
 
     try{
+        console.log()
         let pendingGame = await newPendingGame.save()
+        console.log("here")
         await Models.GroupModel.updateOne({ '_id': group_id }, { '$push': { pending_games: pendingGame._id } })
         return res.status(200).json({ error: false, game_created: true, game_info: pendingGame, message: "created pending game"})
     }
     catch(e){
+        console.log(e)
         return res.status(400).json({ error: true, game_created: false, message: "could not create pending game"})
     }
 }

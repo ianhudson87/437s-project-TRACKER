@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: 400,
+    alignSelf: 'center',
   },
   button: {
     alignItems: 'center',

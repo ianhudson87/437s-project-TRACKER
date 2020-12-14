@@ -53,4 +53,4 @@ io.on("connection", socket => {
 /**
  * Updating stats of users and groups
  */
-//setInterval(UpdateStats, 3*1000)
+setInterval(UpdateStats, 5*1000)

@@ -63,16 +63,17 @@ populateFriendsArrays(friendIDs){
 async refreshInfo(){
   // refresh all the information for the profile
 
+  let newState = {}
   AsyncStorage.getItem('loggedInUserID').then((value)=>{
     // get the id of the logged in user
-    this.setState({loggedInUserID: value})
+    newState.loggedInUserID = value // this.setState({loggedInUserID: value})
   }).then(()=> {
-    checkFriends({user1_id: this.state.loggedInUserID, user2_id: this.state.profileUserID}).then((response)=>{
+    checkFriends({user1_id: newState.loggedInUserID, user2_id: this.state.profileUserID}).then((response)=>{
         if(response.friends == true){
-            this.setState({isFriend: true});
+          newState.isFriend = true // this.setState({isFriend: true});
         }
         else{
-          this.setState({isFriend: false})
+          newState.isFriend = false // this.setState({isFriend: false})
         }
     })
   })
@@ -81,7 +82,7 @@ async refreshInfo(){
   let response = await getObjectByID({id: this.state.profileUserID, type: "user"})
   let user
   if(response.object_exists){
-    this.setState({user: response.object})
+    newState.user = response.object // this.setState({user: response.object})
     this.populateFriendsArrays(response.object.friends)
     user = response.object
   }
@@ -96,7 +97,7 @@ async refreshInfo(){
   if(!response.error){
     if(response.objects_exist){
       groups_info_list = response.objects
-      this.setState({ userGroups: groups_info_list })
+      newState.userGroups = groups_info_list.reverse()// this.setState({ userGroups: groups_info_list })
     }
   }
   // group_ids_for_user.forEach((group_id) => {
@@ -116,9 +117,11 @@ async refreshInfo(){
   if(!response.error){
     if(response.objects_exist){
       games_info_list = response.objects
-      this.setState({ userGames: games_info_list })
+      newState.userGames = games_info_list.reverse() // this.setState({ userGames: games_info_list })
     }
   }
+
+  this.setState(newState)
   // game_ids_for_user.forEach((game_id) => {
   //   // push game info into list
   //   getObjectByID({id: game_id, type: "game"}).then((response)=>{
@@ -183,7 +186,8 @@ addInfoHandler(isCurrentUser){
   if(isCurrentUser){
     return(
       <View>
-        <Button title='Add info' onPress={() => this.toggleInfo()} />
+        <Icon reverse size={20} style={{margin: -2, padding: -2}} name="create" onPress={() => this.toggleInfo()} />
+        {/* <Button title='Add info' onPress={() => this.toggleInfo()} /> */}
       </View>
     )
   }
@@ -198,10 +202,10 @@ getTitle(){
           {this.friendDisplayHandler(this.state.isFriend, this.state.profileUserID==this.state.loggedInUserID)}
           {this.addInfoHandler(this.state.profileUserID==this.state.loggedInUserID)}
           <View>
-            <Icon reverse size={15} style={{margin: -2, padding: -2}} name="chart-areaspline" type="material-community" onPress={this.toggleStatsOverlay} />
+            <Icon reverse size={20} style={{margin: -2, padding: -2}} name="chart-areaspline" type="material-community" onPress={this.toggleStatsOverlay} />
           </View>
           <View>
-            <Icon reverse size={15} style={{margin: -2, padding: -2}} name="baby-face-outline" type="material-community" onPress={this.toggleFriendsOverlay} />
+            <Icon reverse size={20} style={{margin: -2, padding: -2}} name="baby-face-outline" type="material-community" onPress={this.toggleFriendsOverlay} />
           </View>
         </Text>
     
@@ -248,7 +252,7 @@ toggleInfo(){
 }
 
 handleChangeInfo(text){
-  this.refreshInfo()
+  // this.refreshInfo()
   this.setState({info: text})
 }
 
@@ -321,7 +325,7 @@ render() {
       <Overlay isVisible={ this.state.stats_overlay_visible } onBackdropPress={ this.toggleStatsOverlay }>
         <View>
           <Text> Total games: { stats.total_num_of_games } (completed: { stats.num_finished_games })</Text>
-          <Text> Average Score: { stats.avg_score_over_all_games } </Text>
+          <Text> Average Score: { Math.round(stats.avg_score_over_all_games) } </Text>
           <Text> Wins: { stats.total_num_of_wins }</Text>
           <Text> Win percentage: { Math.round(stats.total_num_of_wins / stats.num_finished_games * 100) }%</Text>
           <Text> Average percentage of points out of max: { Math.round(stats.avg_fraction_of_max_points_over_all_games * 100) }%</Text>
