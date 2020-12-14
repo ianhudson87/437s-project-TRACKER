@@ -248,7 +248,7 @@ export const createGroup = async (name, description, creator_id, games_require_a
 
 //submits a request to the API to create new game with certain parameters
 
-export const createGame = async (pending, name, user_ids, group_id, game_type, goal_score) =>{
+export const createGame = async (pending, name, user_ids, group_id, game_type, goal_score, requester_id) =>{
     console.log(pending, name, user_ids, group_id, game_type, goal_score)
     if(!pending){
         // group doesn't require acceptance from users
@@ -264,7 +264,7 @@ export const createGame = async (pending, name, user_ids, group_id, game_type, g
                 user_ids: user_ids,
                 group_id: group_id,
                 game_type: game_type,
-                goal_score: goal_score
+                goal_score: goal_score,
             })
         })
         const data = await res.json();
@@ -283,7 +283,8 @@ export const createGame = async (pending, name, user_ids, group_id, game_type, g
                 user_ids: user_ids,
                 group_id: group_id,
                 game_type: game_type,
-                goal_score: goal_score
+                goal_score: goal_score,
+                requester_id: requester_id
             })
         })
         const data = await res.json();

@@ -137,11 +137,9 @@ toggleCodeOverlay(){
 
 getTitle(){
   return(
-    <View>
-      <Text>
-        {this.state.group.name} <Icon reverse size={15} name="chart-areaspline" type="material-community" onPress={this.toggleOverlay} />
-      </Text>
-    </View>
+    <Text>
+        <Icon size={30} name="chart-areaspline" type="material-community" onPress={this.toggleOverlay} />
+    </Text>
   )
 }
 
@@ -157,7 +155,7 @@ getLeaderboardIcon(pos){
   
 render() {
 
-  this.props.navigation.setOptions({ headerTitle: this.getTitle(), headerRight: this.getLogout })
+  this.props.navigation.setOptions({ headerTitle: this.state.group.name, headerRight: this.getTitle })
   // console.log("STATE", this.state)
   return (
     <View style={styles.container}>
@@ -170,14 +168,14 @@ render() {
       
       <View style={styles.usersContainer}>
         {/* {console.log("USERS HERE", this.state.usersInGroup)} */}
-        <Title>Players <Icon size={15} reverse name="person-add" onPress={this.toggleCodeOverlay}/></Title>
+        <Title>Players <Icon size={15} name="person-add" onPress={this.toggleCodeOverlay}/></Title>
         <ScrollView>
           { this.state.usersInGroup.map((user, key)=> (<UserThumbnail key={user._id} user={user} navigation={this.props.navigation} />)) }
         </ScrollView>
       </View>
         
       <View style={styles.gamesContainer}>
-        <Title>Games <Icon size={15} name="create" reverse onPress={() => this.handleNewGame()} /></Title>
+        <Title>Games <Icon size={15} name="create" onPress={() => this.handleNewGame()} /></Title>
         <ScrollView style={{flex:1}}>
           {/* { console.log("GamesInGroup", this.state.gamesInGroup)} */}
           { this.state.gamesInGroup.map((game, key)=> (<GameThumbnail key={game._id} game={game} type="standard" navigation={this.props.navigation}/>)) }
@@ -199,10 +197,10 @@ render() {
       </View>
       
       <Overlay isVisible={ this.state.overlay_visible } onBackdropPress={ this.toggleOverlay }>
-        <View>
+        {/* <View> */}
           <Title> Total Games: {this.state.stats.total_num_of_games} (completed: {this.state.stats.num_finished_games}) </Title>
-          <View>
-            <ScrollView style={{height: 500}}>
+          <View style={{height: 500}}>
+            <ScrollView>
             {Array.from(Object.values(this.state.stats.users_wins_dict)).sort((a,b) => {return a.wins < b.wins ? 1: -1}).map( (wins_user, index) => {
               return(
                 <ListItem key={index} bottomDivider>
@@ -217,7 +215,7 @@ render() {
             })}
             </ScrollView>
           </View>
-        </View>
+        {/* </View> */}
       </Overlay>
 
       <Overlay isVisible={ this.state.code_overlay_visible } onBackdropPress={ this.toggleCodeOverlay }>

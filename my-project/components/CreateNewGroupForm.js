@@ -79,7 +79,7 @@ class CreateNewGroupForm extends Component {
         console.log(this.state)
         console.log(this.props.loggedInUserID)
         return (
-            <View>
+            <View style={{width: 400}}>
                 {/* <TextInput value={this.state.group_name} onChangeText={(text) => {this.handleChange(text)}} style={styles.text}/> */}
                 <Input 
                     placeholder="New Group Name"
@@ -91,9 +91,9 @@ class CreateNewGroupForm extends Component {
                     value={this.state.group_description} 
                     onChangeText={(text) => {this.handleChangeDescription(text)}}
                 /> 
-                <Text>Games require acceptance: <Switch value = {this.state.games_require_accept} onValueChange={this.handleSwitchChange} /> </Text>
+                {/* <Text>Games require acceptance: <Switch value = {this.state.games_require_accept} onValueChange={this.handleSwitchChange} /> </Text> */}
                 <Button title="Create Group" onPress={(e) => this.handleSubmit(e)} />
-                <Button title="Cancel" onPress={(e) => this.handleCancel(e)} />
+                {/* <Button title="Cancel" onPress={(e) => this.handleCancel(e)} /> */}
             </View>
            
         )

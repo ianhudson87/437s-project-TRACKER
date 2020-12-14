@@ -135,15 +135,29 @@ render() {
   console.log(this.state)
     return (
         <View style={styles.container}>
+          <View style={{width: 500}}>
             <Card>
                 <Card.Title> Pending game: {this.game_name} {this.accept_button()}</Card.Title>
                 <Card.Divider />
                 <Text>Group: {this.state.group_name}</Text>
                 <Text>Type: {this.game_type}</Text>
                 <Text>Goal Score: {this.goal_score}</Text>
-                <Text>Users: {this.state.users_names}</Text>
-                <Text>accepted: {this.state.users_accepted_names}</Text>
+                <Text>
+                  Users:
+                  {
+                    this.state.users_names.map((name) => {
+                      if(this.state.users_accepted_names.includes(name)){
+                        return(<Text style={{color: 'green'}}> [{name}] </Text>)
+                      }
+                      else{
+                        return(<Text style={{color: 'red'}}> [{name}] </Text>)
+                      }
+                    })
+                  }
+                </Text>
+                {/* <Text>: {this.state.users_accepted_names}</Text> */}
             </Card>
+          </View>
         </View>
     )
   }

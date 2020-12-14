@@ -186,33 +186,21 @@ class Tournament extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    // justifyContent: 'center',
+    // alignItems: 'center',
   },
-  // button: { 
-  //   // alignItems: 'center',
-  //   // backgroundColor: '#DDDDDD',
-  //   // padding: 10,
-  //   // marginBottom: 30,
-  //   borderColor: 'black',
-  //   borderStyle: 'solid',
-  //   borderWidth: 1,
-  //   backgroundColor: 'pink',
-  //   fontColor: 'green',
-  //   marginBottom: 4
-  // },
-  // buttonOdd: {
-  //   // alignItems: 'center',
-  //   // backgroundColor: '#DDDDDD',
-  //   // padding: 10,
-  //   // marginBottom: 30,
-  //   borderColor: 'black',
-  //   borderStyle: 'solid',
-  //   borderWidth: 1,
-  //   backgroundColor: 'pink',
-  //   fontColor: 'green',
-  //   marginBottom: 12
-  // },
+  button: {
+    // alignItems: 'center',
+    // backgroundColor: '#DDDDDD',
+    // padding: 10,
+    // marginBottom: 30,
+    borderColor: 'black',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    backgroundColor: 'pink',
+    fontColor: 'green',
+    marginBottom: 4,
+  },
   text: {
     borderColor: 'black',
     borderStyle: 'solid',
@@ -230,12 +218,13 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
     // alignItems: 'center',
     // height: "20%",
+    alignSelf: 'center',
     flexDirection: 'row',
-    // backgroundColor: 'blue'
+    backgroundColor: 'blue'
   },
   usersListContainer: {
     flex: 1,
-    // backgroundColor: 'lightblue',
+    backgroundColor: 'lightblue',
     marginHorizontal: 0,
     //height: "30%",
     width: "120%"
@@ -243,13 +232,12 @@ const styles = StyleSheet.create({
   round: {
     flex: 5,
     flexDirection: "column",
-    backgroundColor: '#AAAAAA',
+    backgroundColor: "#AAAAAA",
     padding: 2,
   },
   buttonContainer: {
     borderWidth: 1,
     flex: 1,
-    // backgroundColor: 'pink',
     padding: 2,
     alignItems: 'center',
     justifyContent: 'center',

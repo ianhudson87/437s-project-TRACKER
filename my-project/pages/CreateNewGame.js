@@ -129,31 +129,37 @@ class CreateNewGame extends Component {
   handleNewGame(event) {
     console.log('button click')
     if(this.state.game_type == "tournament"){ // for now I'm adding all group members to tournament
+      if(this.state.game_name==""){
+        alert("Input a game name")
+      }
+      else{
         let user_ids = []
         for(let i=0; i<this.state.users.length; i++){
           user_ids.push(this.state.users[i]._id)
         }
         let pending = true
-        createGame(pending, this.state.game_name, user_ids, this.state.group._id, "tournament", 0).then((data)=>{
-        console.log("response", data)
-        if(data.error){
-          // error in creating game
-          alert("error in creating tournament")
-        }
-        else if(data.game_created==false){
-          // no error, but game not created
-          alert(data.message)
-        }
-        else{
-          // game was created
-          let game = data.game_info
-          alert("tournament " + game.name + " was created")
+        let requester_id = this.state.loggedInUserID
+        createGame(pending, this.state.game_name, user_ids, this.state.group._id, "tournament", 0, requester_id).then((data)=>{
+          console.log("response", data)
+          if(data.error){
+            // error in creating game
+            alert("error in creating tournament")
+          }
+          else if(data.game_created==false){
+            // no error, but game not created
+            alert(data.message)
+          }
+          else{
+            // game was created
+            let game = data.game_info
+            alert("tournament " + game.name + " was created")
 
-          this.props.navigation.dispatch(
-            CommonActions.goBack()
-          );
-        }
-      })
+            this.props.navigation.dispatch(
+              CommonActions.goBack()
+            );
+          }
+        })
+      }
     }
     else{
       // handler for create new game button press
@@ -162,12 +168,19 @@ class CreateNewGame extends Component {
       //let user_ids = [this.state.loggedInUserID, this.state.opponent_id] // hard coded for 2 players
       let initial_user_ids = [this.state.loggedInUserID]
       let user_ids = initial_user_ids.concat(this.state.opponent_ids)
-      if(this.state.opponent_ids == []){
+      if(this.state.opponent_ids.length == 0){
         alert("select at least one opponent")
+      }
+      else if(this.state.game_name == ""){
+        alert("Input a game name")
+      }
+      else if(this.state.goal_score == ""){
+        alert("Input a goal score")
       }
       else{
         let pending = true
-        createGame(pending, this.state.game_name, user_ids, this.state.group, "standard", goal_score_int).then((data)=>{
+        let requester_id = this.state.loggedInUserID
+        createGame(pending, this.state.game_name, user_ids, this.state.group, "standard", goal_score_int, requester_id).then((data)=>{
           console.log("response", data)
           if(data.error){
             // error in creating game
@@ -221,7 +234,7 @@ class CreateNewGame extends Component {
         <Button  icon={ <Icon name="help-circle-outline" type="material-community" size={20} color="white" /> } title="Info" onPress={this.toggleGameOverlay} />
         </View>
         <View style={styles.opponentsContainer}>
-          <Text>Select Opponent:</Text>
+          <Title>Opponents</Title>
           <ScrollView style={styles.scrollView}>
             {/* buttons that show each user */}
             {this.state.users.map((user, key)=> {
@@ -242,10 +255,6 @@ class CreateNewGame extends Component {
         </View>
         
         <View style={styles.submitContainer}>
-          <Text>Opponent User ID: {this.state.opponent_ids}</Text>
-          <Text>Opponent User Name: {this.state.opponent_names}</Text>
-
-
           <Input
             returnKeyType={ 'done' }
             placeholder="Game Name:"
@@ -289,7 +298,6 @@ class CreateNewGame extends Component {
             onChangeText={(text)=>this.handleGameNameChange(text)}
             // leftIcon={<Icon name='fingerprint'/>}
           />
-          <TextInput returnKeyType={ 'done' } value={this.state.game_name} onChangeText={(text)=>this.handleGameNameChange(text)} style={styles.textInput}/>
           <Button title='Create Game' onPress={this.handleNewGame}/>
           <View style={styles.overlay}>
             <Overlay isVisible={ this.state.tournament_overlay_visible } onBackdropPress={ this.toggleTournamentOverlay }>

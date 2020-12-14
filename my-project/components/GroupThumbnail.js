@@ -47,7 +47,7 @@ render() {
     //   <Button color="#00aa00" title={this.state.name} onPress={this.goToGroup}/>
     // </View>
     <Card>
-        <Card.Title>{this.state.name} <Icon size={20} name="chevron-right" onPress={this.goToGroup} /></Card.Title>
+        <Card.Title>{this.state.name} <Icon size={15} name="chevron-right" onPress={this.goToGroup}/></Card.Title>
         <Card.Divider/>
         <Text style={{marginBottom: 10}}>
             {/* Description for {this.state.name} */}

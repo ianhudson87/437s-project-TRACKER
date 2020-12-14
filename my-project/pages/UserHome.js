@@ -164,7 +164,7 @@ render() {
 
         <View style={styles.feedContainer}>
         <Title>Activity Feed</Title>
-        <ScrollView pagingEnabled>
+        <ScrollView>
           {
             this.state.feed.map((feed, key)=> (
               <View key={key} style={styles.feedObjectContainer}>

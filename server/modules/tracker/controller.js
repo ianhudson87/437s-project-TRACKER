@@ -482,8 +482,8 @@ export const loginUser = async (req, res) => {
 }
 
 export const createPendingGame = async (req, res) => {
-    const {name, user_ids, group_id, game_type, goal_score} = req.body;
-    let users_accepted = [user_ids[0]] // only the user who created the game has accepted
+    const {name, user_ids, group_id, game_type, goal_score, requester_id} = req.body;
+    let users_accepted = [requester_id] // only the user who created the game has accepted
     let handled_goal_score = Number.isInteger(goal_score) ? goal_score : 1
     let newPendingGame = new Models.PendingGameModel({ name: name, group: group_id, game_type: game_type, users: user_ids, users_accepted: users_accepted, goal_score: handled_goal_score });
 

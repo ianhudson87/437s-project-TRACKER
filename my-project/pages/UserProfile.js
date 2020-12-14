@@ -7,6 +7,7 @@ import {
   Button,
   View,
   ScrollView,
+  Modal,
 } from 'react-native'
 import { Title } from 'react-native-paper'
 import { Overlay, Icon } from 'react-native-elements'
@@ -39,6 +40,7 @@ constructor(props) {
   this.toggleStatsOverlay = this.toggleStatsOverlay.bind(this);
   this.toggleFriendsOverlay = this.toggleFriendsOverlay.bind(this);
   this.getLogout = this.getLogout.bind(this)
+  this.getIcons = this.getIcons.bind(this)
 }
 
 populateFriendsArrays(friendIDs){
@@ -199,6 +201,19 @@ getLogout(){
   )
 }
 
+getIcons(){
+  return(
+    <View style={{flexDirection: 'row'}}>
+      <View style={{paddingHorizontal: 10}}>
+        <Icon size={30} name="chart-areaspline" type="material-community" onPress={this.toggleStatsOverlay} />
+      </View>
+      <View style={{paddingHorizontal: 10}}>
+        <Icon size={30} name="baby-face-outline" type="material-community" onPress={this.toggleFriendsOverlay} />
+      </View>
+    </View>
+  )
+}
+
 toggleStatsOverlay(){
   this.refreshInfo()
   this.setState({ stats_overlay_visible: !this.state.stats_overlay_visible })
@@ -210,50 +225,54 @@ toggleFriendsOverlay(){
 }
   
 render() {
-  this.props.navigation.setOptions({ headerTitle: this.getTitle(), headerRight: this.getLogout })
+  this.props.navigation.setOptions({headerTitle: this.getTitle(), headerRight: this.getLogout })
   console.log("state", this.state.user)
   let stats = this.state.user.stats || {}
   return (
     <View style={styles.container} onPress={ ()=>{alert("asdf")}} >
+
+      {/* {this.getIcons()} */}
       
       <View style={styles.groupsContainer}>
-        <Title> Group</Title>
-        <ScrollView pagingEnabled style={styles.usersListContainer}>
+        <Title> Groups</Title>
+        <ScrollView style={styles.usersListContainer}>
           {this.state.userGroups.map((group, key)=> (<GroupThumbnail group={group} key={group._id} navigation={this.props.navigation}>{group.name}</GroupThumbnail>))}
           {/* {this.state.userGroups.map((group, key)=> (<Text key={group._id}>{group.name}</Text>))} */}
         </ScrollView>
       </View>
 
-      <Overlay isVisible={ this.state.friends_overlay_visible } onBackdropPress={ this.toggleFriendsOverlay }>
-        <View style={styles.friendsContainer} >
-          <Title> Friends </Title>
-          <ScrollView pagingEnabled >
-            { this.state.friends.map((user, key)=> (
-              <UserThumbnail user={user} key={user._id} navigation={this.props.navigation}/>
-            )) }
-          </ScrollView>
+      <Modal animationType="slide" visible={ this.state.friends_overlay_visible } onBackdropPress={ this.toggleFriendsOverlay }>
+        <View style={{padding: 20}}>
+          <View style={{padding: 20}}>
+            <Title> Friends <Button title="back" onPress={ this.toggleFriendsOverlay } /></Title>
+          </View>
+          <View>
+            <ScrollView >
+              { this.state.friends.map((user, key)=> (
+                <UserThumbnail user={user} key={user._id} navigation={this.props.navigation}/>
+              )) }
+            </ScrollView>
+          </View>
 
         </View>
-      </Overlay>
+      </Modal>
         
       <View style={styles.gamesContainer}>
-        <Title>{this.state.user.name}'s Games:</Title>
-        <ScrollView pagingEnabled>
+        <Title>Games:</Title>
+        <ScrollView >
           { this.state.userGames.map((game, key)=> (<GameThumbnail key={game._id} game={game} type={'standard'} navigation={this.props.navigation}/>)) }
         </ScrollView>
       </View>
 
-      <View style={styles.overlay}>
-        <Overlay isVisible={ this.state.stats_overlay_visible } onBackdropPress={ this.toggleStatsOverlay }>
-          <View>
-            <Text> Total games: { stats.total_num_of_games } (completed: { stats.num_finished_games })</Text>
-            <Text> Average Score: { stats.avg_score_over_all_games } </Text>
-            <Text> Wins: { stats.total_num_of_wins }</Text>
-            <Text> Win percentage: { Math.round(stats.total_num_of_wins / stats.num_finished_games * 100) }%</Text>
-            <Text> Average percentage of points out of max: { Math.round(stats.avg_fraction_of_max_points_over_all_games * 100) }%</Text>
-          </View>
-        </Overlay>
-      </View>
+      <Overlay isVisible={ this.state.stats_overlay_visible } onBackdropPress={ this.toggleStatsOverlay }>
+        <View>
+          <Text> Total games: { stats.total_num_of_games } (completed: { stats.num_finished_games })</Text>
+          <Text> Average Score: { stats.avg_score_over_all_games } </Text>
+          <Text> Wins: { stats.total_num_of_wins }</Text>
+          <Text> Win percentage: { Math.round(stats.total_num_of_wins / stats.num_finished_games * 100) }%</Text>
+          <Text> Average percentage of points out of max: { Math.round(stats.avg_fraction_of_max_points_over_all_games * 100) }%</Text>
+        </View>
+      </Overlay>
     </View>
   )
 }
@@ -263,14 +282,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  nameContainer: {
-    flex: 1,
-  },
   groupsContainer: {
     flex: 3,
   },
   friendsContainer: {
-    flex: 3,
+    height: 500,
+    widht: 400,
   },
   gamesContainer: {
     flex: 3,
