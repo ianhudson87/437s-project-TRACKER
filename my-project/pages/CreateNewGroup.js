@@ -33,7 +33,7 @@ render() {
   console.log("RENDER")
   console.log(this.state)
     return (
-      <View style={styles.container}>
+      <View>
         <CreateNewGroupForm navigation={this.props.navigation} loggedInUserID={this.state.loggedInUserID}></CreateNewGroupForm>
       </View>
     )

@@ -8,7 +8,7 @@ import {
   View,
   ScrollView
 } from 'react-native'
-import { ListItem} from 'react-native-elements'
+import { ListItem, Icon } from 'react-native-elements'
 import { List } from 'react-native-paper'
 import { getObjectByID, changeScore, getObjectsByIDs } from '../constants/api'
 import { getSocket } from '../constants/socketio'
@@ -33,7 +33,7 @@ class Game extends Component {
 
   componentDidMount(){
     this.props.navigation.addListener('focus', ()=>{this.updateGame()}); // THIS REFRESHES THE PAGE EVERY TIME YOU GO BACK TO IT. 0.0
-    console.log("data: game:", this.state.game)
+    // console.log("data: game:", this.state.game)
 
     this.socket = getSocket()
     this.socket.emit('join_room', {
@@ -42,7 +42,7 @@ class Game extends Component {
     })
 
     this.socket.on('refresh_score', (data)=>{
-      console.log('REFRESH SCORE')
+      // console.log('REFRESH SCORE')
       this.updateGame()
     })
   }
@@ -50,7 +50,7 @@ class Game extends Component {
   updateGame(){
     getObjectByID({id: this.state.game._id, type: 'game'}).then((response) => {
       // GETTING ALL INFO ABOUT GAME
-      console.log('REPSPONSE', response)
+      // console.log('REPSPONSE', response)
       if(response.object_exists){
         this.setState({ game: response.object })
         this.updateDisplay() // updates the scores of the players in the display
@@ -65,7 +65,7 @@ class Game extends Component {
     let user_ids = this.state.game.users
     getObjectsByIDs({ids: user_ids, type: 'user'}).then((response)=>{
       if(response.objects_exist){
-        let user_object_list = response.objects.sort((a,b)=>{console.log('here'); return (a._id > b._id) ? 1 : -1})
+        let user_object_list = response.objects.sort((a,b)=>{return (a._id > b._id) ? 1 : -1})
         // we have list of user objects that always come in the same order
         this.setState({users: user_object_list})
       }
@@ -81,7 +81,10 @@ class Game extends Component {
   }
 
   handleIncrement(game_id, user_id, amount){
-    console.log("INCREMENT SCORE: game_id:", game_id, "user_id", user_id)
+    let new_user_scores = this.state.user_scores
+    new_user_scores[user_id] += amount
+    this.setState({user_scores: new_user_scores})
+    // console.log("INCREMENT SCORE: game_id:", game_id, "user_id", user_id)
     // send api request to increment score of user with the id, for a specific game_id
     let scoreData = {
       // info about how to change the score
@@ -91,7 +94,7 @@ class Game extends Component {
       amount: amount
     }
     changeScore(scoreData).then((response)=>{
-      console.log("CHANGE SCORE RESPONSE", response)
+      // console.log("CHANGE SCORE RESPONSE", response)
       if(response.game_updated){
         this.socket.emit('changed_score', {
           game_id: this.state.game._id
@@ -106,24 +109,30 @@ class Game extends Component {
     })
   }
 
-  game_buttons(){
+  game_buttons(user, key){
     if(this.state.game.game_ended){
       // game has ended
       return(
-        <View>
-          <Text>Game has ended!</Text>
-        </View>
+        <ListItem key={key}>
+          <ListItem.Content>
+            <ListItem.Title>{user.name}</ListItem.Title>
+            <ListItem.Subtitle>{this.state.user_scores[user._id]}</ListItem.Subtitle>
+          </ListItem.Content>
+          {/* { user.name } { this.state.user_scores[user._id] } */}
+        </ListItem>
       )
     }
     else{
       return(
-        <View>
-          <Text>Goal: {this.state.game.goal_score} </Text>
-          <Text>Add scores:</Text>
-          { this.state.users.map((user, key) => (<Button key={key} title={user.name} onPress={ () => {this.handleIncrement(this.state.game._id, user._id, 1)} }/>))}
-          <Text>Decrement scores:</Text>
-          { this.state.users.map((user, key) => (<Button key={key} title={user.name} onPress={ () => {this.handleIncrement(this.state.game._id, user._id, -1)} }/>))}
-        </View>
+        <ListItem key={key}>
+          <Icon name="minus-circle-outline" type="material-community" onPress={ () => {this.handleIncrement(this.state.game._id, user._id, -1)} } />
+          <ListItem.Content>
+            <ListItem.Title>{user.name}</ListItem.Title>
+            <ListItem.Subtitle>{this.state.user_scores[user._id]}</ListItem.Subtitle>
+          </ListItem.Content>
+          <Icon name="plus-circle-outline" type="material-community" onPress={ () => {this.handleIncrement(this.state.game._id, user._id, 1)} } />
+          {/* { user.name } { this.state.user_scores[user._id] } */}
+        </ListItem>
       )
     }
   }
@@ -131,29 +140,24 @@ class Game extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.nameContainer}>
-          Game: {this.state.game.name}
-        </Text>
+        <View>
+          <Text style={styles.nameContainer}>
+            Game: {this.state.game.name}
+          </Text>
 
-      <View style={styles.usersContainer}>
-        <Text>Players:</Text>
-        <ScrollView style={styles.usersListContainer}>
-        {this.state.users.map((user, key)=> (
-            <ListItem key={key}>
-              <ListItem.Content>
-                <ListItem.Title>{user.name}</ListItem.Title>
-                <ListItem.Subtitle>{this.state.user_scores[user._id]}</ListItem.Subtitle>
-              </ListItem.Content>
-              {/* { user.name } { this.state.user_scores[user._id] } */}
-            </ListItem>
-          )
-        )}
-        </ScrollView>
-      </View>
+          <Text>Goal: {this.state.game.goal_score}</Text>
+        </View>
 
-      <View>
-        {this.game_buttons()}
-      </View>
+        <View style={styles.usersContainer}>
+          <ScrollView>
+          {this.state.users.map((user, key)=> (
+              <View>
+                {this.game_buttons(user, key)}
+              </View>
+            )
+          )}
+          </ScrollView>
+        </View>
 
       </View>
     )
@@ -163,8 +167,8 @@ class Game extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    // justifyContent: 'center',
+    // alignItems: 'center',
   },
   button: {
     alignItems: 'center',
@@ -185,13 +189,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   usersContainer: {
+    flex: 1,
   },
   usersListContainer: {
     flex: 1,
     backgroundColor: 'lightblue',
-    marginHorizontal: 0,
-    //height: "30%",
-    width: "120%"
   },
 })
 
