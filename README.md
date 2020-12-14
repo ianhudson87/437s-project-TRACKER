@@ -32,12 +32,18 @@ Our semester long project for 437S: Software Engineering Workshop. Idea is to ma
     - Activity feed:
 	    - displayes when friends join a group or finish a game
 - Games:
-    - simple counter:
+    - Request users in your group to join a game
+	    - game created upon all users accepting    
+    - Simple counter:
 	    - has maximum score, first person to reach max wins
-    - tournament:
-	    - bracket style game
+    - Tournament:
+	    - bracket style
+    - Stats:
+    	    - display stats for games for each group and each users.
+		    - eg: win rate, leader board, avg score
 - Navigation:
     - Navigation stack
-    - Navigation drawer on home page
+    - Navigation tabs on home page
+    - Search features for games, users, and groups
 - Email confirmation on registration
 - Cross platform: ios, android, web
