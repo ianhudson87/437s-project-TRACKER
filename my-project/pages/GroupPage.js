@@ -242,7 +242,7 @@ render() {
               )
             })}
             </ScrollView> */}
-            {this.objectsHandler}
+            {this.objectsHandler()}
           </View>
         {/* </View> */}
       </Overlay>
