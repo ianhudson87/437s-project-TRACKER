@@ -8,6 +8,7 @@ import {
   View,
   ScrollView
 } from 'react-native'
+import {ListItem} from 'react-native-elements'
 import { getObjectByID, moveToNextRound } from '../constants/api'
 import { getSocket } from '../constants/socketio'
 
@@ -160,7 +161,14 @@ class Tournament extends Component {
           {roundDescription}
           {this.state.results_to_display[i].map((user, key)=> (
             <View style={styles.buttonContainer}>
-              <Button style={styles.button} title={user.name} key={user._id} onPress={(e) => this.handleClick(user, key, numRounds-1-i, e)}/>
+              <ListItem style={{width: 150}} onPress={(e) => this.handleClick(user, key, numRounds-1-i, e)}>
+                <ListItem.Content>
+                  <ListItem.Title style={{alignSelf: 'center'}}>{user.name}</ListItem.Title>
+                  {/* <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle> */}
+                </ListItem.Content>
+                <ListItem.Chevron />
+              </ListItem>
+              {/* <Button style={styles.button} title={user.name} key={user._id} onPress={(e) => this.handleClick(user, key, numRounds-1-i, e)}/> */}
             </View>
           ))} 
         </View>
@@ -200,6 +208,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'pink',
     fontColor: 'green',
     marginBottom: 4,
+    padding: 2,
   },
   text: {
     borderColor: 'black',
@@ -210,6 +219,7 @@ const styles = StyleSheet.create({
     //flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 2,
     fontSize: 30,
     fontWeight: "bold",
   },
@@ -218,9 +228,10 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
     // alignItems: 'center',
     // height: "20%",
+    padding: 2,
     alignSelf: 'center',
     flexDirection: 'row',
-    backgroundColor: 'blue'
+    // backgroundColor: 'blue'
   },
   usersListContainer: {
     flex: 1,
@@ -232,13 +243,14 @@ const styles = StyleSheet.create({
   round: {
     flex: 5,
     flexDirection: "column",
-    backgroundColor: "#AAAAAA",
+    backgroundColor: "#EEEEEE",
     padding: 2,
   },
   buttonContainer: {
+    borderColor: '#CCCCCC',
     borderWidth: 1,
     flex: 1,
-    padding: 2,
+    padding: 5,
     alignItems: 'center',
     justifyContent: 'center',
   }

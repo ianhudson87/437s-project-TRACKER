@@ -161,7 +161,7 @@ class CreateNewGame extends Component {
             else{
               // game was created
               let game = data.game_info
-              alert("tournament " + game.name + " was created")
+              alert("tournament " + game.name + " request was sent")
 
               this.props.navigation.dispatch(
                 CommonActions.goBack()
@@ -348,7 +348,7 @@ class CreateNewGame extends Component {
             // leftIcon={<Icon name='fingerprint'/>}
           />
           {this.invalidNumberHandler()}
-          <Button title='Create Game' onPress={this.handleNewGame}/>
+          <Button title='Create Tournament' onPress={this.handleNewGame}/>
           <View style={styles.overlay}>
             <Overlay isVisible={ this.state.tournament_overlay_visible } onBackdropPress={ this.toggleTournamentOverlay }>
               <View>

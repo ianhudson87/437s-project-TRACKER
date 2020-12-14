@@ -324,7 +324,7 @@ render() {
 
       <Overlay isVisible={ this.state.stats_overlay_visible } onBackdropPress={ this.toggleStatsOverlay }>
         <View>
-          <Text> Total games: { stats.total_num_of_games } (completed: { stats.num_finished_games })</Text>
+          <Title> Total games: { stats.total_num_of_games } (completed: { stats.num_finished_games })</Title>
           <Text> Average Score: { Math.round(stats.avg_score_over_all_games) } </Text>
           <Text> Wins: { stats.total_num_of_wins }</Text>
           <Text> Win percentage: { Math.round(stats.total_num_of_wins / stats.num_finished_games * 100) }%</Text>

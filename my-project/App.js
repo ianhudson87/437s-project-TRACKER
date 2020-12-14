@@ -37,12 +37,12 @@ class Welcome extends Component {
         // "navigation - the navigation prop is passed in to every screen component (definition) in stack navigator (more about this later in "The navigation prop in depth")."
         const navigation = this.props.navigation;
         return(
-            <View>
+            <View style={{alignItems: 'center'}}>
                 {/* use the navigation prop to go to other screens */}
-                <View style={{ padding: 5 }}>
+                <View style={{ padding: 5, width: 500}}>
                     <Button title="Login" onPress={ () => navigation.navigate("Login") }></Button>
                 </View>
-                <View style={{ padding: 5 }}>
+                <View style={{ padding: 5, width: 500 }}>
                     <Button title="Register" onPress={ () => navigation.navigate("Register") }></Button>
                 </View>
             </View>
