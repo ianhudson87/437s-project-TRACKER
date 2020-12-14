@@ -36,6 +36,7 @@ Our semester long project for 437S: Software Engineering Workshop. Idea is to ma
 - Games:
     - Request users in your group to join a game
 	    - game created upon all users accepting    
+	    - scores update real time
     - Simple counter:
 	    - has maximum score, first person to reach max wins
     - Tournament:
