@@ -63,7 +63,7 @@ render() {
           <Text>Each group has a join code that is displayed on the group page. Ask someone in the group for the code!</Text>
         </View>
         <Button
-          title="join!"
+          title="Join!"
           onPress={this.joinGroup}
         />
       </View>
