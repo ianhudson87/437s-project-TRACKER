@@ -18,10 +18,12 @@ class JoinGroup extends Component {
       this.state = {
         code: '',
         loggedInUserID: null,
+        validCode: true
       }
 
       this.handleChangeCode = this.handleChangeCode.bind(this)
       this.joinGroup = this.joinGroup.bind(this)
+      this.invalidHandler = this.invalidHandler.bind(this)
   }
 
   componentDidMount(){
@@ -35,13 +37,15 @@ class JoinGroup extends Component {
   }
 
   async joinGroup(){
+    this.setState({validCode: true})
     let res = await joinGroup(this.state.loggedInUserID, this.state.code)
     if(res.error){
       alert("Error in joining group")
     }
     else{
       if(res.joined_group == false){
-        alert(res.message)
+        //alert(res.message)
+        this.setState({validCode: false})
       }
       else{
         alert("Successfully joined group "+ res.group.name)
@@ -49,6 +53,19 @@ class JoinGroup extends Component {
       }
     }
     console.log(res)
+  }
+
+  invalidHandler(){
+    if(this.state.validCode){
+      return (<View></View>)
+    }
+    else{
+      return (
+          <View>
+              <Text style={{color: 'red', }}>The code you entered is incorrect</Text>
+          </View>
+      )
+    }
   }
   
 render() {
@@ -66,6 +83,7 @@ render() {
           title="Join!"
           onPress={this.joinGroup}
         />
+        {this.invalidHandler()}
       </View>
     )
   }

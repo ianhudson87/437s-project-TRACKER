@@ -16,6 +16,7 @@ class CreateNewGroupForm extends Component {
             group_name: '',
             group_description: '',
             games_require_accept: true,
+            valid_name: true
         };
 
         this.handleChangeName = this.handleChangeName.bind(this);
@@ -23,6 +24,7 @@ class CreateNewGroupForm extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.handleSwitchChange = this.handleSwitchChange.bind(this);
+        this.invalidNameHandler = this.invalidNameHandler.bind(this);
     }
 
     handleChangeName(text) {
@@ -40,6 +42,7 @@ class CreateNewGroupForm extends Component {
         console.log("OVER HERE", this.props.loggedInUserID)
         console.log(this.state.group_name)
         console.log(this.state.group_description)
+        this.setState({valid_name: true})
         let description = this.state.group_description === '' ? 'none' : this.state.group_description
         createGroup(this.state.group_name, description, this.props.loggedInUserID, this.state.games_require_accept).then((data)=>{
             this.setState({response: data});
@@ -55,7 +58,8 @@ class CreateNewGroupForm extends Component {
             else{
                 // group name repeated
                 console.log("Group name taken");
-                alert("Group name "+ this.state.group_name+ " is taken")
+                //alert("Group name "+ this.state.group_name+ " is taken")
+                this.setState({valid_name: false})
             }
             
         })
@@ -72,6 +76,19 @@ class CreateNewGroupForm extends Component {
 
     handleSwitchChange(value){
         this.setState({ games_require_accept: value })
+    }
+
+    invalidNameHandler(){
+        if(this.state.valid_name){
+          return (<View></View>)
+        }
+        else{
+          return (
+              <View>
+                  <Text style={{color: 'red', }}>The group name you entered has been taken</Text>
+              </View>
+          )
+        }
     }
 
     render() {
@@ -94,6 +111,7 @@ class CreateNewGroupForm extends Component {
                 {/* <Text>Games require acceptance: <Switch value = {this.state.games_require_accept} onValueChange={this.handleSwitchChange} /> </Text> */}
                 <Button title="Create Group" onPress={(e) => this.handleSubmit(e)} />
                 {/* <Button title="Cancel" onPress={(e) => this.handleCancel(e)} /> */}
+                {this.invalidNameHandler()}
             </View>
            
         )

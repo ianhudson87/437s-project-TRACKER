@@ -12,11 +12,18 @@ class LoginForm extends Component {
       }
     constructor(props) {
         super(props);
-        this.state = {username: '', password: ''};
+        this.state = {
+            username: '', 
+            password: '',
+            validUser: true,
+            validPassword: true
+        };
 
         this.handleChangeName = this.handleChangeName.bind(this);
         this.handleChangePass = this.handleChangePass.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.wrongUserHandler = this.wrongUserHandler.bind(this);
+        this.wrongPasswordHandler = this.wrongPasswordHandler.bind(this);
     }
 
     handleChangeName(text) {
@@ -34,6 +41,7 @@ class LoginForm extends Component {
 
         loginUser(this.state.username, this.state.password).then((data)=>{
             this.setState({response: data});
+            this.setState({validUser: true, validPassword: true})
             if(data.userExists && data.correctPassword){ // user exists and password correct
                 console.log(data.user.name + " logged in");
                 console.log("THIS IS WHAT I WANT", data.user._id)
@@ -55,11 +63,13 @@ class LoginForm extends Component {
             }
             else if(data.userExists){ // user exists but password is incorrect
                 console.log("Wrong password");
-                alert("Wrong password")
+                //alert("Wrong password")
+                this.setState({validPassword: false})
             }
             else{ // user does not exist
                 console.log("User does not exist");
-                alert("User does not exist")
+                //alert("User does not exist")
+                this.setState({validUser: false})
             }
             
         })
@@ -67,6 +77,32 @@ class LoginForm extends Component {
         this.setState({username: ''});
         this.setState({password: ''});
         event.preventDefault();
+    }
+
+    wrongUserHandler(){
+        if(this.state.validUser){
+            return (<View></View>)
+        }
+        else{
+            return (
+                <View>
+                    <Text style={{color: 'red', }}>The username you entered does not exist</Text>
+                </View>
+            )
+        }
+    }
+
+    wrongPasswordHandler(){
+        if(this.state.validPassword){
+            return (<View></View>)
+        }
+        else{
+            return (
+                <View>
+                    <Text style={{color: 'red', }}>The password you entered is incorrect</Text>
+                </View>
+            )
+        }
     }
 
     render() {
@@ -88,6 +124,8 @@ class LoginForm extends Component {
                     leftIcon={<Icon name='lock'/>}
                 />
                 <Button title="Login" onPress={(e) => this.handleSubmit(e)} />
+                {this.wrongUserHandler()}
+                {this.wrongPasswordHandler()}
             </View>
            
         )
