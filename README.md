@@ -27,10 +27,12 @@ Our semester long project for 437S: Software Engineering Workshop. Idea is to ma
 	    - can add users to group
 	    - can create games within the group
 	    - people within the group are the people that can be involved in a game
+	    - group descriptions
     - User profile
 	    - displays friends, groups, games
+	    - user status
     - Activity feed:
-	    - displayes when friends join a group or finish a game
+	    - displays when friends join a group or finish a game
 - Games:
     - Request users in your group to join a game
 	    - game created upon all users accepting    
