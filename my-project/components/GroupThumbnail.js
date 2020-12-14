@@ -19,7 +19,8 @@ class GroupThumbnail extends Component {
 
     this.state = {
       group_info: this.props.group,
-      name: this.props.group.name
+      name: this.props.group.name,
+      description: this.props.group.description
     }
 
     this.goToGroup = this.goToGroup.bind(this);
@@ -34,6 +35,13 @@ class GroupThumbnail extends Component {
 
   
 render() {
+  let description = ''
+  if(typeof(this.state.description) == "undefined"){
+    description = '';
+  }
+  else{
+    description = this.state.description == 'none' ? '' : this.state.description;
+  }
   return (
     // <View style={styles.container}>
     //   <Button color="#00aa00" title={this.state.name} onPress={this.goToGroup}/>
@@ -42,7 +50,8 @@ render() {
         <Card.Title>{this.state.name} <Icon size={15} name="chevron-right" onPress={this.goToGroup}/></Card.Title>
         <Card.Divider/>
         <Text style={{marginBottom: 10}}>
-            Description for {this.state.name}
+            {/* Description for {this.state.name} */}
+            {description}
         </Text>
     </Card>
   )

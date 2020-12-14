@@ -17,7 +17,7 @@ class UserHome extends Component {
       this.state = {
         groups: [], // group objects
         loggedInUserID: null,
-        loggedInUser: {name: "default"}, // user object
+        loggedInUser: {name: "Loading..."}, // user object
         friends: [], // user objects
         feed: [] // feed objects {time: 78912, type: 1, data: [object]}
       };

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, Button, StyleSheet, Switch } from 'react-native'
+import { Input, Icon } from 'react-native-elements';
 import { CommonActions } from '@react-navigation/native';
-import { Input } from 'react-native-elements'
 import { createGroup, joinGroup } from "../constants/api"
 
 
@@ -14,24 +14,34 @@ class CreateNewGroupForm extends Component {
         // user id is in this.props.loggedInUserID
         this.state = {
             group_name: '',
+            group_description: '',
             games_require_accept: true,
         };
 
-        this.handleChange = this.handleChange.bind(this);
+        this.handleChangeName = this.handleChangeName.bind(this);
+        this.handleChangeDescription = this.handleChangeDescription.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.handleSwitchChange = this.handleSwitchChange.bind(this);
     }
 
-    handleChange(text) {
+    handleChangeName(text) {
         // handler for name box change
         this.setState({group_name: text});
+    }
+
+    handleChangeDescription(text) {
+        // handler for name box change
+        this.setState({group_description: text});
     }
 
     handleSubmit(event) {
         // handler for when submit button gets pressed
         console.log("OVER HERE", this.props.loggedInUserID)
-        createGroup(this.state.group_name, this.props.loggedInUserID, this.state.games_require_accept).then((data)=>{
+        console.log(this.state.group_name)
+        console.log(this.state.group_description)
+        let description = this.state.group_description === '' ? 'none' : this.state.group_description
+        createGroup(this.state.group_name, description, this.props.loggedInUserID, this.state.games_require_accept).then((data)=>{
             this.setState({response: data});
             if(data.repeatedGroup == false){ // group successfully created
                 console.log("Data: " + data.group);
@@ -52,6 +62,7 @@ class CreateNewGroupForm extends Component {
 
         
         this.setState({group_name: ''});
+        this.setState({group_description: ''});
         event.preventDefault();
     }
 
@@ -68,8 +79,18 @@ class CreateNewGroupForm extends Component {
         console.log(this.state)
         console.log(this.props.loggedInUserID)
         return (
-            <View style={{alignItems: 'center'}}>
-                <Input style={{width: 300}} placeholder="Group name" value={this.state.group_name} onChangeText={(text) => {this.handleChange(text)}} />
+            <View style={{width: 400}}>
+                {/* <TextInput value={this.state.group_name} onChangeText={(text) => {this.handleChange(text)}} style={styles.text}/> */}
+                <Input 
+                    placeholder="New Group Name"
+                    value={this.state.group_name} 
+                    onChangeText={(text) => {this.handleChangeName(text)}}
+                /> 
+                <Input 
+                    placeholder="Group Description"
+                    value={this.state.group_description} 
+                    onChangeText={(text) => {this.handleChangeDescription(text)}}
+                /> 
                 {/* <Text>Games require acceptance: <Switch value = {this.state.games_require_accept} onValueChange={this.handleSwitchChange} /> </Text> */}
                 <Button title="Create Group" onPress={(e) => this.handleSubmit(e)} />
                 {/* <Button title="Cancel" onPress={(e) => this.handleCancel(e)} /> */}

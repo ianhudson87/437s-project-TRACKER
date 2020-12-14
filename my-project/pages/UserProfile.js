@@ -23,7 +23,7 @@ constructor(props) {
   super(props);
   this.state = { 
     profileUserID: this.props.route.params.profileUserID,
-    user: {name: "default"}, // contains user "object". get this from api
+    user: {name: "Loading..."}, // contains user "object". get this from api
     loggedInUserID: null, // contains userID. get this from local storage
     userGroups: [], // contains list of group objects
     userGames: [], // contains list of game objects
@@ -250,7 +250,7 @@ render() {
       </Modal>
         
       <View style={styles.gamesContainer}>
-        <Text>{this.state.user.name}'s Games:</Text>
+        <Title>Games:</Title>
         <ScrollView >
           { this.state.userGames.map((game, key)=> (<GameThumbnail key={game._id} game={game} type={'standard'} navigation={this.props.navigation}/>)) }
         </ScrollView>

@@ -211,11 +211,11 @@ export const getAllUsers = async (req, res) => {
 
 export const createGroup = async (req, res) => {
     // req.body requires the name of the group that you are creating
-    const {name, creator_id, games_require_accept} = req.body;
+    const {name, description, creator_id, games_require_accept} = req.body;
     console.log(creator_id, "CREATOR_ID")
     // https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
     const code = Math.random().toString(36).substring(2,6)
-    const newGroup = new Models.GroupModel({ name: name, users: [creator_id], code: code, games_require_accept: games_require_accept });
+    const newGroup = new Models.GroupModel({ name: name, description: description, users: [creator_id], code: code, games_require_accept: games_require_accept });
     
     try{
         let existingGroups  = await Models.GroupModel.find({});
