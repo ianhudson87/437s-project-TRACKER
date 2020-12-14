@@ -19,7 +19,8 @@ class UserThumbnail extends Component {
 
     this.state = {
       user_info: this.props.user,
-      name: this.props.user.name
+      name: this.props.user.name,
+      id: this.props.user._id
     }
 
     this.goToUser = this.goToUser.bind(this);
@@ -34,8 +35,11 @@ class UserThumbnail extends Component {
 
   
 render() {
+  
+
+  
   return (
-    <ListItem bottomDivider onPress={this.goToUser}>
+    <ListItem key={this.state.user_info._id} bottomDivider onPress={this.goToUser}>
         <Icon name="face" />
         <ListItem.Content>
             <ListItem.Title>{this.state.name}</ListItem.Title>
@@ -47,6 +51,7 @@ render() {
     //   <Button color="#ff5c5c" title={this.state.name} onPress={this.goToUser}/>
     // </View>
   )
+  
 }
 }
 

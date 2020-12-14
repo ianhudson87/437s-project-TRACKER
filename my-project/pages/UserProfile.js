@@ -177,8 +177,12 @@ getTitle(){
         <Text style={styles.nameContainer}>
           {this.state.user.name}
           {this.friendDisplayHandler(this.state.isFriend, this.state.profileUserID==this.state.loggedInUserID)}
-          <Icon reverse size={15} name="chart-areaspline" type="material-community" onPress={this.toggleStatsOverlay} />
-          <Icon reverse size={15} name="baby-face-outline" type="material-community" onPress={this.toggleFriendsOverlay} />
+          <View>
+            <Icon reverse size={15} style={{margin: -2, padding: -2}} name="chart-areaspline" type="material-community" onPress={this.toggleStatsOverlay} />
+          </View>
+          <View>
+            <Icon reverse size={15} style={{margin: -2, padding: -2}} name="baby-face-outline" type="material-community" onPress={this.toggleFriendsOverlay} />
+          </View>
         </Text>
     </View>
   )

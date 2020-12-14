@@ -191,7 +191,7 @@ render() {
       </View>
 
       <View style={styles.gamesContainer}>
-        <Title>Tournaments <Icon size={15} name="create" reverse onPress={() => this.handleNewGame()} /></Title>
+        <Title>Tournaments <Icon size={15} name="tournament" type="material-community" reverse onPress={() => this.handleNewGame()} /></Title>
         <ScrollView style={{flex:1}}>
           {/* { console.log("GamesInGroup", this.state.gamesInGroup)} */}
           { this.state.tournamentsInGroup.map((tournament, key)=> (<GameThumbnail key={tournament._id} game={tournament} type="tournament" navigation={this.props.navigation}/>)) }
