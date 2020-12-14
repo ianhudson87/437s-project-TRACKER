@@ -70,19 +70,19 @@ class GameRequest extends Component {
         group_name: this.group.name,
         users_names: this.users.map((user, key) => { 
           if(key != this.users.length - 1){
-            return (user.name + ', ') 
+            return (user.name) 
           }
           else{
-            return (user.name + ' ') 
+            return (user.name) 
           }
           
         }),
         users_accepted_names: this.users_accepted.map((user, key) => { 
           if(key != this.users_accepted.length - 1){
-            return (user.name + ', ') 
+            return (user.name) 
           }
           else{
-            return (user.name + ' ') 
+            return (user.name) 
           }
           
         }),
