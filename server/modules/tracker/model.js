@@ -71,6 +71,10 @@ const GroupSchema = new Schema({
         type: String,
         required: true
     },
+    description: {
+        type: String,
+        required: true
+    },
     users: {
         // contains ids of Users in the Group
         type: Array,

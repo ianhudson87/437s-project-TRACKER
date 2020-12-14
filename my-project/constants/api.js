@@ -226,7 +226,7 @@ export const fetchGroups = async () =>{
 }
 
 //submits a request to the API to create new group with specified name
-export const createGroup = async (name, creator_id, games_require_accept) =>{
+export const createGroup = async (name, description, creator_id, games_require_accept) =>{
     console.log(creator_id)
     const res = await fetch(API_PATH + "groups",{
         method: 'POST',
@@ -236,6 +236,7 @@ export const createGroup = async (name, creator_id, games_require_accept) =>{
         },
         body: JSON.stringify({
             name: name,
+            description: description,
             creator_id: creator_id,
             games_require_accept,
         })
