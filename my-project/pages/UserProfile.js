@@ -46,6 +46,7 @@ constructor(props) {
   this.toggleInfo = this.toggleInfo.bind(this);
   this.addInfo = this.addInfo.bind(this);
   this.handleChangeInfo = this.handleChangeInfo.bind(this);
+  this.addInfoHandler = this.addInfoHandler.bind(this);
 }
 
 populateFriendsArrays(friendIDs){
@@ -161,7 +162,6 @@ friendDisplayHandler(isFriend, isCurrentUser){
     return(
        <View>
             <Text> (You) </Text>
-            <Button title='Add info' onPress={() => this.toggleInfo()} />
       </View>
     )
   }
@@ -179,12 +179,24 @@ friendDisplayHandler(isFriend, isCurrentUser){
   }
 }
 
+addInfoHandler(isCurrentUser){
+  if(isCurrentUser){
+    return(
+      <View>
+        <Button title='Add info' onPress={() => this.toggleInfo()} />
+      </View>
+    )
+  }
+
+}
+
 getTitle(){
   return(
     
         <Text style={styles.nameContainer}>
           {this.state.user.name}
           {this.friendDisplayHandler(this.state.isFriend, this.state.profileUserID==this.state.loggedInUserID)}
+          {this.addInfoHandler(this.state.profileUserID==this.state.loggedInUserID)}
           <View>
             <Icon reverse size={15} style={{margin: -2, padding: -2}} name="chart-areaspline" type="material-community" onPress={this.toggleStatsOverlay} />
           </View>
