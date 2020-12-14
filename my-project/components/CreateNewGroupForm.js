@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, Button, StyleSheet, Switch } from 'react-native'
 import { CommonActions } from '@react-navigation/native';
+import { Input } from 'react-native-elements'
 import { createGroup, joinGroup } from "../constants/api"
 
 
@@ -68,10 +69,10 @@ class CreateNewGroupForm extends Component {
         console.log(this.props.loggedInUserID)
         return (
             <View>
-                <TextInput value={this.state.group_name} onChangeText={(text) => {this.handleChange(text)}} style={styles.text}/>
-                <Text>Games require acceptance: <Switch value = {this.state.games_require_accept} onValueChange={this.handleSwitchChange} /> </Text>
+                <Input placeholder="Group name" value={this.state.group_name} onChangeText={(text) => {this.handleChange(text)}} />
+                {/* <Text>Games require acceptance: <Switch value = {this.state.games_require_accept} onValueChange={this.handleSwitchChange} /> </Text> */}
                 <Button title="Create Group" onPress={(e) => this.handleSubmit(e)} />
-                <Button title="Cancel" onPress={(e) => this.handleCancel(e)} />
+                {/* <Button title="Cancel" onPress={(e) => this.handleCancel(e)} /> */}
             </View>
            
         )

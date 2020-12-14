@@ -8,6 +8,8 @@ import {
   View,
   ScrollView
 } from 'react-native'
+import { ListItem} from 'react-native-elements'
+import { List } from 'react-native-paper'
 import { getObjectByID, changeScore, getObjectsByIDs } from '../constants/api'
 import { getSocket } from '../constants/socketio'
 
@@ -136,7 +138,16 @@ class Game extends Component {
       <View style={styles.usersContainer}>
         <Text>Players:</Text>
         <ScrollView style={styles.usersListContainer}>
-        {this.state.users.map((user, key)=> (<Text key={key}> { user.name } { this.state.user_scores[user._id] } </Text>))}
+        {this.state.users.map((user, key)=> (
+            <ListItem key={key}>
+              <ListItem.Content>
+                <ListItem.Title>{user.name}</ListItem.Title>
+                <ListItem.Subtitle>{this.state.user_scores[user._id]}</ListItem.Subtitle>
+              </ListItem.Content>
+              {/* { user.name } { this.state.user_scores[user._id] } */}
+            </ListItem>
+          )
+        )}
         </ScrollView>
       </View>
 
@@ -174,10 +185,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   usersContainer: {
-    //flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: "20%",
   },
   usersListContainer: {
     flex: 1,

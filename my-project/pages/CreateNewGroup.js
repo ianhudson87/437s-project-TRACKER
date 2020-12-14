@@ -34,10 +34,6 @@ render() {
   console.log(this.state)
     return (
       <View style={styles.container}>
-        <Text>
-          New group
-        </Text>
-       
         <CreateNewGroupForm navigation={this.props.navigation} loggedInUserID={this.state.loggedInUserID}></CreateNewGroupForm>
       </View>
     )
