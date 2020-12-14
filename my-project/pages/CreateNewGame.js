@@ -31,6 +31,7 @@ class CreateNewGame extends Component {
       user_ids: this.props.route.params.group.users, //contains user id's
       game_overlay_visible: false,
       tournament_overlay_visible: false,
+      invalid_tournament_number: false,
     }
 
     this.handleSelectOpponent = this.handleSelectOpponent.bind(this);
@@ -40,6 +41,7 @@ class CreateNewGame extends Component {
     this.toggleGameOverlay = this.toggleGameOverlay.bind(this);
     this.toggleTournamentOverlay = this.toggleTournamentOverlay.bind(this);
     this.getUserSelectButton = this.getUserSelectButton.bind(this);
+    this.invalidNumberHandler = this.invalidNumberHandler.bind(this)
   }
 
   componentDidMount(){
@@ -133,32 +135,41 @@ class CreateNewGame extends Component {
         alert("Input a game name")
       }
       else{
-        let user_ids = []
-        for(let i=0; i<this.state.users.length; i++){
-          user_ids.push(this.state.users[i]._id)
+        // let user_ids = []
+        // for(let i=0; i<this.state.users.length; i++){
+        //   user_ids.push(this.state.users[i]._id)
+        // }
+        this.setState({invalid_tournament_number: false})
+        let initial_user_ids = [this.state.loggedInUserID]
+        let user_ids = initial_user_ids.concat(this.state.opponent_ids)
+        if(user_ids.length < 4){
+          this.setState({invalid_tournament_number: true})
         }
-        let pending = true
-        let requester_id = this.state.loggedInUserID
-        createGame(pending, this.state.game_name, user_ids, this.state.group._id, "tournament", 0, requester_id).then((data)=>{
-          console.log("response", data)
-          if(data.error){
-            // error in creating game
-            alert("error in creating tournament")
-          }
-          else if(data.game_created==false){
-            // no error, but game not created
-            alert(data.message)
-          }
-          else{
-            // game was created
-            let game = data.game_info
-            alert("tournament " + game.name + " was created")
+        else{
+          let pending = true
+          let requester_id = this.state.loggedInUserID
+          createGame(pending, this.state.game_name, user_ids, this.state.group._id, "tournament", 0, requester_id).then((data)=>{
+            console.log("response", data)
+            if(data.error){
+              // error in creating game
+              alert("error in creating tournament")
+            }
+            else if(data.game_created==false){
+              // no error, but game not created
+              alert(data.message)
+            }
+            else{
+              // game was created
+              let game = data.game_info
+              alert("tournament " + game.name + " was created")
 
-            this.props.navigation.dispatch(
-              CommonActions.goBack()
-            );
-          }
-        })
+              this.props.navigation.dispatch(
+                CommonActions.goBack()
+              );
+            }
+          })
+        }
+        
       }
     }
     else{
@@ -226,6 +237,19 @@ class CreateNewGame extends Component {
     )
   }
 
+  invalidNumberHandler(){
+    if(!this.state.invalid_tournament_number){
+      return (<View></View>)
+    }
+    else{
+        return (
+            <View>
+                <Text style={{color: 'red', }}>Tournaments need at least 4 players</Text>
+            </View>
+        )
+    }
+  }
+
   showGameOptions(game_type){
     if(game_type == "standard"){
     return(
@@ -289,8 +313,33 @@ class CreateNewGame extends Component {
     return(
       <View style={styles.gameOptionsContainer}>
         <Button style={{ alignSelf:"center", marginTop: 40 }} icon={ <Icon name="help-circle-outline" type="material-community" size={20} color="white" /> } title="Info" onPress={this.toggleTournamentOverlay} />
+        
+        
+        
+        <View style={styles.opponentsContainer}>
+          <Title>Opponents</Title>
+          <ScrollView style={styles.scrollView}>
+            {/* buttons that show each user */}
+            {this.state.users.map((user, key)=> {
+              if(user._id != this.state.loggedInUserID){
+                return(
+                  this.getUserSelectButton(user, key)
+                  // <ListItem key={key} bottomDivider onPress={()=>{this.handleSelectOpponent(user)}}>
+                  //   <Icon name={'checkbox-blank-circle-outline'} type="material-community" />
+                  //   <ListItem.Content>
+                  //     <ListItem.Title>{user.name}</ListItem.Title>
+                  //   </ListItem.Content>
+                  // </ListItem>
+                )
+                // return (<Button title={user.name} key={key} onPress={()=>{this.handleSelectOpponent(user)}} />)
+              }
+            })}
+          </ScrollView>
+        </View>
+
+
+
         <View style={styles.submitContainer}>
-          <Text>All users in group will be put into the tournament!</Text>
           <Input
             returnKeyType={ 'done' }
             placeholder="Tournament name"
@@ -298,6 +347,7 @@ class CreateNewGame extends Component {
             onChangeText={(text)=>this.handleGameNameChange(text)}
             // leftIcon={<Icon name='fingerprint'/>}
           />
+          {this.invalidNumberHandler()}
           <Button title='Create Game' onPress={this.handleNewGame}/>
           <View style={styles.overlay}>
             <Overlay isVisible={ this.state.tournament_overlay_visible } onBackdropPress={ this.toggleTournamentOverlay }>
