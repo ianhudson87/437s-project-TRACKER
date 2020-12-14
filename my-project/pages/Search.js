@@ -91,7 +91,7 @@ render() {
     return (
     <View style={styles.container}>
         <View sytle={styles.searchBarContainer}>
-            <Button title="Cancel" onPress={ () => this.props.navigation.dispatch(CommonActions.goBack()) }/>
+            {/* <Button title="Cancel" onPress={ () => this.props.navigation.dispatch(CommonActions.goBack()) }/> */}
             <ButtonGroup
             onPress={this.updateIndex}
             selectedIndex={this.state.selected_index}

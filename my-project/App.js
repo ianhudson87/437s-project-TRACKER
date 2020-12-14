@@ -27,6 +27,7 @@ import UserProfile from './pages/UserProfile'
 import Search from './pages/Search'
 import Notifications from './pages/Notifications'
 import CurrentProfile from './pages/CurrentProfile'
+import Groups from './pages/Groups'
 
 
 // docs: https://reactnavigation.org/docs/hello-react-navigation
@@ -37,10 +38,13 @@ class Welcome extends Component {
         const navigation = this.props.navigation;
         return(
             <View>
-                <Text>LOGIN/REGISTER SCREEN</Text>
                 {/* use the navigation prop to go to other screens */}
-                <Button title="Login" onPress={ () => navigation.navigate("Login") }></Button>
-                <Button title="Register" onPress={ () => navigation.navigate("Register") }></Button>
+                <View style={{ padding: 5 }}>
+                    <Button title="Login" onPress={ () => navigation.navigate("Login") }></Button>
+                </View>
+                <View style={{ padding: 5 }}>
+                    <Button title="Register" onPress={ () => navigation.navigate("Register") }></Button>
+                </View>
             </View>
         )
     }
@@ -77,6 +81,7 @@ class AppStack extends Component {
                 </Stack.Screen>
                 <Stack.Screen name="Tournament" component={Tournament} />
                 <Stack.Screen name="Notifications" component={Notifications} />
+                <Stack.Screen name="Groups" component={Groups} />
             </Stack.Navigator>
         )
     }
@@ -106,16 +111,16 @@ class MainAppTabs extends Component {
                 }}>
                     {props => <AppStack {...props} initialRouteName="Search" />}
                 </Tab.Screen>
-                <Tab.Screen name="CreateNewGroupStack" options={{
-                    tabBarLabel:"Create Group",
+                <Tab.Screen name="GroupStack" options={{
+                    tabBarLabel:"Groups",
                     tabBarIcon: ({ tintColor }) => (
                       <Icon name="group" size={30} color="#900" />
                     )
                 }}>
-                    {props => <AppStack {...props} initialRouteName="CreateNewGroup" />}
+                    {props => <AppStack {...props} initialRouteName="Groups" />}
                 </Tab.Screen>
-                <Tab.Screen name="Notifications" options={{
-                    tabBarLabel:"Notifications",
+                <Tab.Screen name="NotificationsStack" options={{
+                    tabBarLabel:"Game Requests",
                     tabBarIcon: ({ tintColor }) => (
                       <Icon name="bell" type="material-community" size={30} color="#900" />
                     )

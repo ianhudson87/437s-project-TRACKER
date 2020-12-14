@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, Button, StyleSheet} from 'react-native'
+import { Icon } from 'react-native-elements'
 import { CommonActions } from '@react-navigation/native';
 
 
@@ -30,7 +31,7 @@ class LogoutButton extends Component {
     render() {
         return (
             <View>
-                <Button title="Logout" onPress={(e) => this.handleClick(e)} />
+                <Icon name="logout" type='material-community' onPress={(e) => this.handleClick(e)} />
             </View>
            
         )

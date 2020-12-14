@@ -9,7 +9,7 @@ import {
   ScrollView,
 } from 'react-native'
 import { Title } from 'react-native-paper'
-import { Overlay } from 'react-native-elements'
+import { Overlay, Icon } from 'react-native-elements'
 import { getObjectByID, addFriend, checkFriends, getObjectsByIDs } from "../constants/api"
 import GameThumbnail from "../components/GameThumbnail"
 import UserThumbnail from "../components/UserThumbnail"
@@ -28,14 +28,17 @@ constructor(props) {
     userGames: [], // contains list of game objects
     isFriend: null, // friend status of logged in user and user whose profile is displayed
     friends: [], // contains list of user objects that are friends of the user
-    overlay_visible: false // visibility of overlay
+    stats_overlay_visible: false, // visibility of overlay
+    friends_overlay_visible: false // visibility of overlay
   }
 
   this.handleFriend = this.handleFriend.bind(this);
   this.refreshInfo = this.refreshInfo.bind(this);
   this.populateFriendsArrays = this.populateFriendsArrays.bind(this);
   this.friendDisplayHandler = this.friendDisplayHandler.bind(this);
-  this.toggleOverlay = this.toggleOverlay.bind(this);
+  this.toggleStatsOverlay = this.toggleStatsOverlay.bind(this);
+  this.toggleFriendsOverlay = this.toggleFriendsOverlay.bind(this);
+  this.getLogout = this.getLogout.bind(this)
 }
 
 populateFriendsArrays(friendIDs){
@@ -121,6 +124,9 @@ async refreshInfo(){
 
 componentDidMount(){
   this.props.navigation.addListener('focus', async ()=>{this.refreshInfo()}); // THIS REFRESHES THE PAGE EVERY TIME YOU GO BACK TO IT. 0.0
+  this.props.navigation.addListener('blur', ()=>{
+    this.setState({stats_overlay_visible: false, friends_overlay_visible: false})
+  })
 }
 
 handleFriend(){
@@ -147,13 +153,13 @@ friendDisplayHandler(isFriend, isCurrentUser){
     // looking at own profile
     return(
        
-            <Text> (You)</Text>
+            <Text> (You) </Text>
           
     )
   }
   else if(isFriend === true){
     // looking at profile of friend
-    return <Text>(Friends)</Text>
+    return <Text> (Friended) </Text>
   }
   else if(isFriend === false){
     // looking at profile of stranger
@@ -166,63 +172,75 @@ friendDisplayHandler(isFriend, isCurrentUser){
 }
 
 getTitle(){
-  let logoutButton = <View />
-  console.log("PARENT NAV3", this.props.route.params.parentNavigation)
-  if(this.props.route.params.parentNavigation){
-    // if coming from CurrentProfile.js
-    logoutButton = <LogoutButton navigation={this.props.route.params.parentNavigation}/>
-  }
   return(
     <View style={styles.nameContainer}>
         <Text style={styles.nameContainer}>
           {this.state.user.name}
           {this.friendDisplayHandler(this.state.isFriend, this.state.profileUserID==this.state.loggedInUserID)}
-          <Button title="show stats" onPress={this.toggleOverlay} />
-          {logoutButton}
+          <Icon reverse size={15} name="chart-areaspline" type="material-community" onPress={this.toggleStatsOverlay} />
+          <Icon reverse size={15} name="baby-face-outline" type="material-community" onPress={this.toggleFriendsOverlay} />
         </Text>
     </View>
   )
 }
 
-toggleOverlay(){
+getLogout(){
+  let logoutButton = null
+  if(this.props.route.params.parentNavigation){
+    // if coming from CurrentProfile.js
+    logoutButton = <LogoutButton navigation={this.props.route.params.parentNavigation}/>
+  }
+  return(
+    logoutButton
+  )
+}
+
+toggleStatsOverlay(){
   this.refreshInfo()
-  this.setState({ overlay_visible: !this.state.overlay_visible })
+  this.setState({ stats_overlay_visible: !this.state.stats_overlay_visible })
+}
+
+toggleFriendsOverlay(){
+  this.refreshInfo()
+  this.setState({ friends_overlay_visible: !this.state.friends_overlay_visible })
 }
   
 render() {
-  this.props.navigation.setOptions({ title: this.getTitle() })
+  this.props.navigation.setOptions({ headerTitle: this.getTitle(), headerRight: this.getLogout })
   console.log("state", this.state.user)
   let stats = this.state.user.stats || {}
   return (
-    <View style={styles.container}>
+    <View style={styles.container} onPress={ ()=>{alert("asdf")}} >
       
       <View style={styles.groupsContainer}>
-        <Text>{this.state.user.name}'s Groups:</Text>
-        <ScrollView style={styles.usersListContainer}>
+        <Title> Group</Title>
+        <ScrollView pagingEnabled style={styles.usersListContainer}>
           {this.state.userGroups.map((group, key)=> (<GroupThumbnail group={group} key={group._id} navigation={this.props.navigation}>{group.name}</GroupThumbnail>))}
           {/* {this.state.userGroups.map((group, key)=> (<Text key={group._id}>{group.name}</Text>))} */}
         </ScrollView>
       </View>
 
-      <View style={styles.friendsContainer}>
-        <Title> Friends </Title>
-        <ScrollView>
-          { this.state.friends.map((user, key)=> (
-            <UserThumbnail user={user} key={user._id} navigation={this.props.navigation}/>
-          )) }
-        </ScrollView>
+      <Overlay isVisible={ this.state.friends_overlay_visible } onBackdropPress={ this.toggleFriendsOverlay }>
+        <View style={styles.friendsContainer} >
+          <Title> Friends </Title>
+          <ScrollView pagingEnabled >
+            { this.state.friends.map((user, key)=> (
+              <UserThumbnail user={user} key={user._id} navigation={this.props.navigation}/>
+            )) }
+          </ScrollView>
 
-      </View>
+        </View>
+      </Overlay>
         
       <View style={styles.gamesContainer}>
         <Text>{this.state.user.name}'s Games:</Text>
-        <ScrollView>
+        <ScrollView pagingEnabled>
           { this.state.userGames.map((game, key)=> (<GameThumbnail key={game._id} game={game} type={'standard'} navigation={this.props.navigation}/>)) }
         </ScrollView>
       </View>
 
       <View style={styles.overlay}>
-        <Overlay isVisible={ this.state.overlay_visible } onBackdropPress={ this.toggleOverlay }>
+        <Overlay isVisible={ this.state.stats_overlay_visible } onBackdropPress={ this.toggleStatsOverlay }>
           <View>
             <Text> Total games: { stats.total_num_of_games } (completed: { stats.num_finished_games })</Text>
             <Text> Average Score: { stats.avg_score_over_all_games } </Text>

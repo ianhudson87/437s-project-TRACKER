@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import AsyncStorage from '@react-native-community/async-storage'
 import { CommonActions } from '@react-navigation/native'
 import { StyleSheet, ScrollView, Text, TextInput, View} from 'react-native'
-import { ButtonGroup, Overlay, Icon, Button } from 'react-native-elements'
+import { ButtonGroup, Overlay, Icon, Button, Input, ListItem } from 'react-native-elements'
 import { Title } from 'react-native-paper'
 import { createGame, getObjectsByIDs, fetchUsers } from "../constants/api"
 
@@ -39,6 +39,7 @@ class CreateNewGame extends Component {
     this.updateIndex = this.updateIndex.bind(this);
     this.toggleGameOverlay = this.toggleGameOverlay.bind(this);
     this.toggleTournamentOverlay = this.toggleTournamentOverlay.bind(this);
+    this.getUserSelectButton = this.getUserSelectButton.bind(this);
   }
 
   componentDidMount(){
@@ -200,11 +201,23 @@ class CreateNewGame extends Component {
     this.setState({ tournament_overlay_visible: !this.state.tournament_overlay_visible })
   }
 
+  getUserSelectButton(user, key){
+    let icon_name = this.state.opponent_ids.includes(user._id) ? 'checkbox-marked-circle-outline' : 'checkbox-blank-circle-outline'
+    return(
+      <ListItem key={key} bottomDivider onPress={()=>{this.handleSelectOpponent(user)}}>
+        <Icon name={icon_name} type="material-community" />
+        <ListItem.Content>
+        <ListItem.Title>{user.name}</ListItem.Title>
+        </ListItem.Content>
+      </ListItem>
+    )
+  }
+
   showGameOptions(game_type){
     if(game_type == "standard"){
     return(
       <View style={styles.gameOptionsContainer}>
-        <View style={{ alignSelf:"center", marginTop: 40 }}>
+        <View style={{ alignSelf:"center" }}>
         <Button  icon={ <Icon name="help-circle-outline" type="material-community" size={20} color="white" /> } title="Info" onPress={this.toggleGameOverlay} />
         </View>
         <View style={styles.opponentsContainer}>
@@ -213,21 +226,44 @@ class CreateNewGame extends Component {
             {/* buttons that show each user */}
             {this.state.users.map((user, key)=> {
               if(user._id != this.state.loggedInUserID){
-                return (<Button title={user.name} key={key} onPress={()=>{this.handleSelectOpponent(user)}} />)
+                return(
+                  this.getUserSelectButton(user, key)
+                  // <ListItem key={key} bottomDivider onPress={()=>{this.handleSelectOpponent(user)}}>
+                  //   <Icon name={'checkbox-blank-circle-outline'} type="material-community" />
+                  //   <ListItem.Content>
+                  //     <ListItem.Title>{user.name}</ListItem.Title>
+                  //   </ListItem.Content>
+                  // </ListItem>
+                )
+                // return (<Button title={user.name} key={key} onPress={()=>{this.handleSelectOpponent(user)}} />)
               }
             })}
           </ScrollView>
         </View>
         
         <View style={styles.submitContainer}>
-          <Text>Opponent User ID: {this.state.opponent_id}</Text>
-          <Text>Opponent User Name: {this.state.opponent_name}</Text>
+          <Text>Opponent User ID: {this.state.opponent_ids}</Text>
+          <Text>Opponent User Name: {this.state.opponent_names}</Text>
 
-          <Text>Game Name:</Text>
-          <TextInput returnKeyType={ 'done' } value={this.state.game_name} onChangeText={(text)=>this.handleGameNameChange(text)} style={styles.textInput}/>
 
-          <Text>Goal Score:</Text>
-          <TextInput keyboardType="number-pad" returnKeyType={ 'done' } value={this.state.goal_score} onChangeText={(text)=>this.handleGoalScoreChange(text)} style={styles.textInput}/>
+          <Input
+            returnKeyType={ 'done' }
+            placeholder="Game Name:"
+            value={this.state.game_name}
+            onChangeText={(text)=>this.handleGameNameChange(text)}
+            // leftIcon={<Icon name='fingerprint'/>}
+          />
+          {/* <TextInput returnKeyType={ 'done' } value={this.state.game_name} onChangeText={(text)=>this.handleGameNameChange(text)} style={styles.textInput}/> */}
+
+          {/* <Text>Goal Score:</Text> */}
+          <Input
+            keyboardType="number-pad"
+            placeholder="Goal Score:"
+            value={this.state.goal_score}
+            onChangeText={(text)=>this.handleGoalScoreChange(text)}
+            // leftIcon={<Icon name='fingerprint'/>}
+          />
+          {/* <TextInput keyboardType="number-pad" returnKeyType={ 'done' } value={this.state.goal_score} onChangeText={(text)=>this.handleGoalScoreChange(text)} style={styles.textInput}/> */}
           <Button title='Create Game' onPress={this.handleNewGame}/>
 
           <View style={styles.overlay}>
@@ -246,7 +282,13 @@ class CreateNewGame extends Component {
         <Button style={{ alignSelf:"center", marginTop: 40 }} icon={ <Icon name="help-circle-outline" type="material-community" size={20} color="white" /> } title="Info" onPress={this.toggleTournamentOverlay} />
         <View style={styles.submitContainer}>
           <Text>All users in group will be put into the tournament!</Text>
-          <Text>Game Name:</Text>
+          <Input
+            returnKeyType={ 'done' }
+            placeholder="Tournament name"
+            value={this.state.game_name}
+            onChangeText={(text)=>this.handleGameNameChange(text)}
+            // leftIcon={<Icon name='fingerprint'/>}
+          />
           <TextInput returnKeyType={ 'done' } value={this.state.game_name} onChangeText={(text)=>this.handleGameNameChange(text)} style={styles.textInput}/>
           <Button title='Create Game' onPress={this.handleNewGame}/>
           <View style={styles.overlay}>
@@ -266,9 +308,7 @@ render() {
   return (
     <View style={styles.container}>
       <View style={styles.gameTypeContainer}>
-        <Title>Create a new game for {this.state.group.name}</Title>
-
-        <Title>Game Type:</Title>
+        <Title>Create new game for {this.state.group.name}</Title>
         {/* buttons that show each game type */}
         <View>
         <ButtonGroup
@@ -296,12 +336,14 @@ const styles = StyleSheet.create({
     flex:1,
   },
   gameOptionsContainer:{
-    flex: 4,
+    // alignItems: "top",
+    // backgroundColor: "blue", 
+    flex: 10,
     position: "relative",
     top: 50
   },
   opponentsContainer:{
-    flex:1,
+    flex:2,
     width: 250,
     alignSelf: "center",
   },

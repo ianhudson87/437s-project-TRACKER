@@ -65,9 +65,6 @@ render() {
             })}
 
         </ScrollView>
-        <Text>
-            hi
-        </Text>
        
       </View>
     )

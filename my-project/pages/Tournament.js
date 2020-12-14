@@ -160,7 +160,7 @@ class Tournament extends Component {
           {roundDescription}
           {this.state.results_to_display[i].map((user, key)=> (
             <View style={styles.buttonContainer}>
-              <Button title={user.name} key={user._id} onPress={(e) => this.handleClick(user, key, numRounds-1-i, e)}/>
+              <Button style={styles.button} title={user.name} key={user._id} onPress={(e) => this.handleClick(user, key, numRounds-1-i, e)}/>
             </View>
           ))} 
         </View>
@@ -189,18 +189,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  // button: {
-  //   // alignItems: 'center',
-  //   // backgroundColor: '#DDDDDD',
-  //   // padding: 10,
-  //   // marginBottom: 30,
-  //   borderColor: 'black',
-  //   borderStyle: 'solid',
-  //   borderWidth: 1,
-  //   backgroundColor: 'pink',
-  //   fontColor: 'green',
-  //   marginBottom: 4
-  // },
+  button: {
+    // alignItems: 'center',
+    // backgroundColor: '#DDDDDD',
+    // padding: 10,
+    // marginBottom: 30,
+    borderColor: 'black',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    backgroundColor: 'pink',
+    fontColor: 'green',
+    marginBottom: 4
+  },
   // buttonOdd: {
   //   // alignItems: 'center',
   //   // backgroundColor: '#DDDDDD',
@@ -231,11 +231,11 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
     // height: "20%",
     flexDirection: 'row',
-    backgroundColor: 'blue'
+    // backgroundColor: 'blue'
   },
   usersListContainer: {
     flex: 1,
-    backgroundColor: 'lightblue',
+    // backgroundColor: 'lightblue',
     marginHorizontal: 0,
     //height: "30%",
     width: "120%"
@@ -243,13 +243,13 @@ const styles = StyleSheet.create({
   round: {
     flex: 5,
     flexDirection: "column",
-    backgroundColor: 'green',
+    backgroundColor: '#AAAAAA',
     padding: 2,
   },
   buttonContainer: {
     borderWidth: 1,
     flex: 1,
-    backgroundColor: 'pink',
+    // backgroundColor: 'pink',
     padding: 2,
     alignItems: 'center',
     justifyContent: 'center',

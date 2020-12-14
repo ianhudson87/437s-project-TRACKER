@@ -10,7 +10,7 @@ import UserThumbnail from '../components/UserThumbnail'
 import FeedObject from '../components/FeedObject'
 import { ScrollView } from 'react-native-gesture-handler'
 
-class UserHome extends Component {
+class Groups extends Component {
 
   constructor(props) {
       super(props);
@@ -37,6 +37,7 @@ class UserHome extends Component {
     }
 
     //useEffect(() => {
+    this.props.navigation.setOptions({ title: 'Your Groups' })
     //});
   }
 
@@ -144,7 +145,6 @@ class UserHome extends Component {
 
   
 render() {
-  this.props.navigation.setOptions({ title: 'Welcome, ' + this.state.loggedInUser.name })
   
   //this.props.navigation.setOptions({ title: 'Welcome, ' + this.state.loggedInUser.name })
   console.log("NAVIGATION", this.props.navigation)
@@ -152,27 +152,21 @@ render() {
   const loggedInUser = this.state.loggedInUser;
     return (
       <View style={styles.container}>
-
-        {/* <View style={styles.groupsContainer}>
-          <Title>My Groups: <Icon size={19} name="plus-one" onPress={() => this.props.navigation.navigate('JoinGroup')} /></Title>
-          <ScrollView horizontal={true}>
+        <View style={{ flexDirection: "row" }}>
+          <View style= {{ flex: 1 }}/>
+          <View style={{ flex: 1, paddingHorizontal: 5 }}>
+            <Button title="Create" onPress={() => this.props.navigation.navigate("CreateNewGroup")}/>
+          </View>
+          <View style={{ flex: 1, paddingHorizontal: 5 }}>
+            <Button title="Join" onPress={() => this.props.navigation.navigate("JoinGroup")}/>
+          </View>
+          <View style= {{ flex: 1 }}/>
+        </View>
+        <View style={styles.groupsContainer}>
+          <ScrollView pagingEnabled>
             { this.state.groups.map((group, key)=> (<GroupThumbnail group={group} key={group._id} navigation={this.props.navigation}/>)) }
           </ScrollView>
           
-        </View> */}
-
-
-        <View style={styles.feedContainer}>
-        <Title>Activity Feed</Title>
-        <ScrollView pagingEnabled>
-          {
-            this.state.feed.map((feed, key)=> (
-              <View key={key} style={styles.feedObjectContainer}>
-                <FeedObject feed={feed} key={feed.time_obj} navigation={this.props.navigation}/>
-              </View>
-            ))
-          }
-          </ScrollView>
         </View>
 
 
@@ -188,6 +182,12 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    // alignItems: 'center',
+  },
+  groupsContainer: {
+    flex:1,
+    paddingBottom: 10,
+    alignItems: 'center'
   },
   // friendsContainer: {
   //   flex:1,
@@ -213,4 +213,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default UserHome;
+export default Groups;

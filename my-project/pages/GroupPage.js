@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import AsyncStorage from '@react-native-community/async-storage'
 import { StyleSheet, TouchableOpacity, Text, Button, View, ScrollView } from 'react-native'
-import { Icon, Overlay, Divider } from 'react-native-elements'
+import { Icon, Overlay, Divider, ListItem } from 'react-native-elements'
 import { Title } from 'react-native-paper'
 import { getObjectByID, getObjectsByIDs } from "../constants/api"
 import GameThumbnail from "../components/GameThumbnail"
@@ -19,12 +19,15 @@ constructor(props) {
     tournamentsInGroup: [], // contains list of tournament objects
     stats: {users_wins_dict: {}}, // stats of the group
     overlay_visible: false, // stats overlay visibility
+    code_overlay_visible: false,
   }
 
   this.handleNewUser = this.handleNewUser.bind(this);
   this.handleNewGame = this.handleNewGame.bind(this);
   this.refreshInfo = this.refreshInfo.bind(this);
   this.toggleOverlay = this.toggleOverlay.bind(this);
+  this.toggleCodeOverlay = this.toggleCodeOverlay.bind(this);
+  this.getTitle = this.getTitle.bind(this);
 }
 
 componentDidMount(){
@@ -39,7 +42,7 @@ async refreshInfo(){
   AsyncStorage.getItem('loggedInUserID').then((value)=>{
     // get the id of the logged in user
     newState.loggedInUserID = value // this.setState({loggedInUserID: value})
-  }).then(()=>{console.log("data: group:", this.state.groupID, "user", this.state.loggedInUser)})
+  }).then(()=>{console.log("data: group:", newState)})
 
 
 
@@ -127,64 +130,103 @@ toggleOverlay(){
   this.setState({ overlay_visible: !this.state.overlay_visible })
 }
 
+toggleCodeOverlay(){
+  // this.refreshInfo()
+  this.setState({ code_overlay_visible: !this.state.code_overlay_visible })
+}
+
+getTitle(){
+  return(
+    <View>
+      <Text>
+        {this.state.group.name} <Icon reverse size={15} name="chart-areaspline" type="material-community" onPress={this.toggleOverlay} />
+      </Text>
+    </View>
+  )
+}
+
+getLeaderboardIcon(pos){
+  let icon_table = {0: 'podium-gold', 1: 'podium-silver', 2: 'podium-bronze', 'else': 'emoticon-poop'}
+  if(pos <= 2){
+    return icon_table[pos]
+  }
+  else{
+    return icon_table['else']
+  }
+}
   
 render() {
-  console.log("STATE", this.state)
-    return (
-      <View style={styles.container}>
-        <View style={styles.nameContainer}>
-          <Text style={styles.nameText}>
-            {this.state.group.name}
-            <Button title="stats" onPress={this.toggleOverlay} />
-            join code: {this.state.group.code}
-          </Text>
-        </View>
-        
-        <View style={styles.usersContainer}>
-          {console.log("USERS HERE", this.state.usersInGroup)}
-          <Title>Players <Icon size={19} name="person-add" title='Add User' onPress={(e) => this.handleNewUser(e)}/></Title>
-          <ScrollView>
-            { this.state.usersInGroup.map((user, key)=> (<UserThumbnail key={user._id} user={user} navigation={this.props.navigation} />)) }
-          </ScrollView>
-        </View>
+
+  this.props.navigation.setOptions({ headerTitle: this.getTitle(), headerRight: this.getLogout })
+  // console.log("STATE", this.state)
+  return (
+    <View style={styles.container}>
+      {/* <View style={styles.nameContainer}>
+        <Text style={styles.nameText}>
+          <Button title="stats" onPress={this.toggleOverlay} />
           
-        <View style={styles.gamesContainer}>
-          <Title>Games <Icon size={19} name="create" onPress={() => this.handleNewGame()} /></Title>
-          <ScrollView>
-            { console.log("GamesInGroup", this.state.gamesInGroup)}
-            { this.state.gamesInGroup.map((game, key)=> (<GameThumbnail key={game._id} game={game} type="standard" navigation={this.props.navigation}/>)) }
-          </ScrollView>
-        </View>
+        </Text>
+      </View> */}
+      
+      <View style={styles.usersContainer}>
+        {/* {console.log("USERS HERE", this.state.usersInGroup)} */}
+        <Title>Players <Icon size={15} reverse name="person-add" onPress={this.toggleCodeOverlay}/></Title>
+        <ScrollView>
+          { this.state.usersInGroup.map((user, key)=> (<UserThumbnail key={user._id} user={user} navigation={this.props.navigation} />)) }
+        </ScrollView>
+      </View>
+        
+      <View style={styles.gamesContainer}>
+        <Title>Games <Icon size={15} name="create" reverse onPress={() => this.handleNewGame()} /></Title>
+        <ScrollView style={{flex:1}}>
+          {/* { console.log("GamesInGroup", this.state.gamesInGroup)} */}
+          { this.state.gamesInGroup.map((game, key)=> (<GameThumbnail key={game._id} game={game} type="standard" navigation={this.props.navigation}/>)) }
+        </ScrollView>
 
         <Divider />
-        
-        <View style={styles.gamesContainer}>
-          {/* <Text>Tournaments in the group:</Text> */}
-          <ScrollView>
-            { this.state.tournamentsInGroup.map((tournament, key)=> (<GameThumbnail key={tournament._id} game={tournament} type="tournament" navigation={this.props.navigation}/>)) }
-          </ScrollView>
-        </View>
 
-        <View style={styles.overlay}>
-          <Overlay isVisible={ this.state.overlay_visible } onBackdropPress={ this.toggleOverlay }>
-            <View>
-              <Text> Total Games: {this.state.stats.total_num_of_games} (completed: {this.state.stats.num_finished_games}) </Text>
-              <Text> Leaderboard: </Text>
-              {
-                Array.from(Object.values(this.state.stats.users_wins_dict)).sort((a,b) => {return a.wins < b.wins ? 1: -1}).map( (wins_user, index) => {
-                  return(
-                    <Text key={wins_user.user_name}> {wins_user.user_name}: {wins_user.wins} wins </Text>
-                  )
-                })
-              }
-            </View>
-          </Overlay>
-        </View>
-
-        {/* <Button title='Create new game' onPress={() => this.handleNewGame()} /> */}
+        <ScrollView style={{flex:1}}>
+          { this.state.tournamentsInGroup.map((tournament, key)=> (<GameThumbnail key={tournament._id} game={tournament} type="tournament" navigation={this.props.navigation}/>)) }
+        </ScrollView>
       </View>
-    )
-  }
+      
+      <Overlay isVisible={ this.state.overlay_visible } onBackdropPress={ this.toggleOverlay }>
+        <View>
+          <Title> Total Games: {this.state.stats.total_num_of_games} (completed: {this.state.stats.num_finished_games}) </Title>
+          <View>
+            <ScrollView style={{height: 500}}>
+            {Array.from(Object.values(this.state.stats.users_wins_dict)).sort((a,b) => {return a.wins < b.wins ? 1: -1}).map( (wins_user, index) => {
+              return(
+                <ListItem key={index} bottomDivider>
+                  <ListItem.Content>
+                    <Icon name={this.getLeaderboardIcon(index)} type="material-community" />
+                    <ListItem.Title>{wins_user.user_name}</ListItem.Title>
+                    <ListItem.Subtitle>{wins_user.wins} wins</ListItem.Subtitle>
+                  </ListItem.Content>
+                </ListItem>
+                // <Text key={wins_user.user_name}> {wins_user.user_name}: {wins_user.wins} wins </Text>
+              )
+            })}
+            </ScrollView>
+          </View>
+        </View>
+      </Overlay>
+
+      <Overlay isVisible={ this.state.code_overlay_visible } onBackdropPress={ this.toggleCodeOverlay }>
+        <View style={{ alignItems: 'center' }}>
+          <Text style={{ fontSize: 20 }}>
+            Send this code to other people to allow them to join the group!
+          </Text>
+          <Text style={{ fontWeight: 'bold', fontSize: 20}}>
+            {this.state.group.code}
+          </Text>
+        </View>
+      </Overlay>
+
+      {/* <Button title='Create new game' onPress={() => this.handleNewGame()} /> */}
+    </View>
+  )
+}
 }
 
 const styles = StyleSheet.create({
@@ -193,6 +235,9 @@ const styles = StyleSheet.create({
   //   backgroundColor: 'lightblue',
   //   marginHorizontal: 0,
   // },
+  overlay: {
+    flex: 1,
+  },
   container: {
     flex: 1,
   },

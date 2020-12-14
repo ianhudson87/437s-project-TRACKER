@@ -29,7 +29,7 @@ class GroupThumbnail extends Component {
     console.log('button click')
     // handler for user clicks on the group
     const navigation = this.props.navigation;
-    navigation.navigate("GroupPage", {groupID: this.state.group_info._id})
+    navigation.push("GroupPage", {groupID: this.state.group_info._id})
   }
 
   

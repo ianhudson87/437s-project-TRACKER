@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import AsyncStorage from '@react-native-community/async-storage'
 import { CommonActions } from '@react-navigation/native'
-import { Input, Button } from 'react-native-elements'
+import { Input, Button, Tooltip } from 'react-native-elements'
 import {
   StyleSheet,
   TouchableOpacity,
   Text,
   View,
+  Modal,
+  Icon,
 } from 'react-native'
 import { joinGroup } from "../constants/api"
 
@@ -52,11 +54,14 @@ class JoinGroup extends Component {
 render() {
     return (
       <View style={styles.container}>
-        <Input
-          placeholder="Group join code"
-          value = {this.state.code}
-          onChangeText={(text) => this.handleChangeCode(text)}
-        />
+        <View>
+          <Input
+            placeholder="Group join code"
+            value = {this.state.code}
+            onChangeText={(text) => this.handleChangeCode(text)}
+          />
+          <Text>Each group has a join code that is displayed on the group page. Ask someone in the group for the code!</Text>
+        </View>
         <Button
           title="join!"
           onPress={this.joinGroup}
