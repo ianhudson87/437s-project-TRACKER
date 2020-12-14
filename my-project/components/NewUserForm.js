@@ -14,7 +14,8 @@ class NewUserForm extends Component {
             password: '',
             verification_code: '', // what user inputs as verification_code
             pending_user_id: null, // id of user that has been created, but not been verified. This gets populated in handleRegister
-            overlay_visible: false
+            overlay_visible: false,
+            validEmail: true,
         };
 
         this.handleChangeName = this.handleChangeName.bind(this);
@@ -24,6 +25,7 @@ class NewUserForm extends Component {
         this.handleRegister = this.handleRegister.bind(this);
         this.handleVerify = this.handleVerify.bind(this);
         this.toggleOverlay = this.toggleOverlay.bind(this);
+        this.handler = this.handler.bind(this);
     }
 
     handleChangeName(text) {
@@ -47,22 +49,29 @@ class NewUserForm extends Component {
 
     handleRegister(event) {
         // handler for when register button gets pressed
-        createPendingUser(this.state.username, this.state.email, this.state.password).then((data)=>{
-            console.log(data)
-            this.setState({response: data})
-            if(data.error){
-                // error in creating pendingUser
-                alert('error in creating user')
-            }
-            else if(data.repeatedUser){
-                // username already exists
-                alert('Username already exists');
-            }
-            else{
-                // good registration (was able to create pendingUser). show verification popup
-                this.setState({ overlay_visible: true, pending_user_id: data.pendingUserID })
-            }
-        })
+        if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.state.email)){
+            this.setState({validEmail: true})
+            createPendingUser(this.state.username, this.state.email, this.state.password).then((data)=>{
+                console.log(data)
+                this.setState({response: data})
+                if(data.error){
+                    // error in creating pendingUser
+                    alert('error in creating user')
+                }
+                else if(data.repeatedUser){
+                    // username already exists
+                    alert('Username already exists');
+                }
+                else{
+                    // good registration (was able to create pendingUser). show verification popup
+                    this.setState({ overlay_visible: true, pending_user_id: data.pendingUserID })
+                }
+            })
+        }
+        else{
+            this.setState({validEmail: false})
+        }
+        
         event.preventDefault();
     }
 
@@ -109,6 +118,19 @@ class NewUserForm extends Component {
         this.setState({ overlay_visible: !this.state.overlay_visible })
     }
 
+    handler(){
+        if(this.state.validEmail){
+            return (<View></View>)
+        }
+        else{
+            return (
+                <View>
+                    <Text style={{color: 'red'}}>Please enter a valid email address</Text>
+                </View>
+            )
+        }
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -133,6 +155,8 @@ class NewUserForm extends Component {
                     leftIcon={<Icon name='lock'/>}
                 />
                 <Button title="Register" onPress={this.handleRegister} />
+
+                {this.handler()}
 
                 <Overlay isVisible={ this.state.overlay_visible } onBackdropPress={ this.toggleOverlay }>
                     <Text> A code has been sent to you email. Input below to verify your email </Text>
