@@ -36,7 +36,7 @@ class UserThumbnail extends Component {
   
 render() {
   
-  let info = typeof(this.state.user_info.info) == 'undefined' ? '' : this.state.user_info.info
+  let info = this.state.user_info.info == 'none' || typeof(this.state.user_info.info) == 'undefined' ? '' : this.state.user_info.info
   
   return (
     <ListItem key={this.state.user_info._id} bottomDivider onPress={this.goToUser}>
