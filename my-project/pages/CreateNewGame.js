@@ -193,7 +193,7 @@ class CreateNewGame extends Component {
           else{
             // game was created
             let game = data.game_info
-            alert("game " + game.name + " was created")
+            alert("game " + game.name + " request was sent")
             console.log(game)
   
             this.props.navigation.dispatch(

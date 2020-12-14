@@ -231,6 +231,7 @@ export const createGroup = async (req, res) => {
         // name not taken yet
         let group = await newGroup.save()
         await Models.UserModel.updateOne({ '_id': creator_id }, { '$push': { groups: group._id } })
+        await Models.UserModel.updateOne({ '_id': creator_id }, { '$push': { group_time_joined: Date.now() } })
         return res.status(203).json({ group: group, error:false, repeatedGroup:false })
     } catch(e) {
         return res.status(400).json({ error:true, message: "error with creating user", error_msg:e})
