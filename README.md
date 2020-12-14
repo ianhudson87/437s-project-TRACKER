@@ -39,7 +39,7 @@ Our semester long project for 437S: Software Engineering Workshop. Idea is to ma
     - Tournament:
 	    - bracket style
     - Stats:
-    	    - display stats for games for each group and each users.
+	    - display stats for games for each group and each users.
 		    - eg: win rate, leader board, avg score
 - Navigation:
     - Navigation stack
