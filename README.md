@@ -24,7 +24,7 @@ Our semester long project for 437S: Software Engineering Workshop. Idea is to ma
     - Friends
 	    - can add users as friends to see their updates in your activity feed
     - Groups
-	    - can add users to group
+	    - join code for users
 	    - can create games within the group
 	    - people within the group are the people that can be involved in a game
 	    - group descriptions
@@ -35,10 +35,10 @@ Our semester long project for 437S: Software Engineering Workshop. Idea is to ma
 	    - displays when friends join a group or finish a game
 - Games:
     - Request users in your group to join a game
-	    - game created upon all users accepting    
-	    - scores update real time
+	    - game created upon all users accepting
     - Simple counter:
 	    - has maximum score, first person to reach max wins
+	    - scores update real time
     - Tournament:
 	    - bracket style
     - Stats:
