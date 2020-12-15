@@ -40,6 +40,16 @@ class GameRequest extends Component {
       this.accept_game = this.accept_game.bind(this)
   }
 
+  componentDidUpdate(prevProps){
+    console.log("HEREERHEHREHRHERHE")
+    if(this.props.pending_game.users_accepted != prevProps.pending_game.users_accepted){
+      console.log(this.props.pending_game.users_accepted, prevProps.users_accepted)
+      console.log("PREV PROPS")
+      this.users_accepted_ids = this.props.pending_game.users_accepted
+      this.getInfo()
+    }
+  }
+
   componentDidMount(){
     this.getInfo()
   }
